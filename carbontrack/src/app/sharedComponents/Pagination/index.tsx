@@ -4,7 +4,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 interface PaginationProps {
   page: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+onPageChange: (page: number) => void;
   isDark: boolean;
 }
 
