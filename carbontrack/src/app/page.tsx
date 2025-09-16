@@ -1,11 +1,11 @@
+"use client";
 import Image from "next/image";
+import Button from "./sharedComponents/Button";
 
 export default function Home() {
   return (
-<div>
-  <h1>
-      Carbon Track
-  </h1>
+<div >
+  
 </div>
   );
 }
