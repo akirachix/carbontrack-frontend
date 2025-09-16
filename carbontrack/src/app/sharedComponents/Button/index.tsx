@@ -19,7 +19,7 @@ const Button = ({buttonText, variant, onclickHandler, icon, type="button"}: Butt
             case "save":
                 return 'bg-[#F79B72] text-white font-bold  p-2 w-50 h-15 hover:bg-[#2A4759] transition-colors duration-400 ease-in-out';
             default:
-                return'bg-[#F79B72] text-white p-2 w-70 h-10'
+                return'bg-[#F79B72] text-white p-2 w-45 h-15 font-bold'
         }
     }
     const variantStyles = buttonVariants();
