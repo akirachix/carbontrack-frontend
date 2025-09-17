@@ -23,10 +23,10 @@ const Calendar = ({ selectedDate, setSelectedDate }: CalendarProps) => {
         onClick={handleIconClick}
       />
       <DatePicker
-        selected={selectedDate ?? new Date()} // Fallback to today's date if null
+        selected={selectedDate ?? new Date()} 
         onChange={(date: Date | null) => {
           setSelectedDate(date);
-          setIsOpen(false); // Close the calendar after selecting a date
+          setIsOpen(false); 
         }}
         dateFormat="yyyy/MM/dd"
         placeholderText="Choose a date"
