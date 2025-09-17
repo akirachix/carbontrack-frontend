@@ -1,11 +1,10 @@
-import Image from "next/image";
+import Sidebar from "./sharedComponents/FactorySidebar";
 
 export default function Home() {
   return (
 <div>
-  <h1>
-      Carbon Track
-  </h1>
+  
+  <Sidebar/>
 </div>
   );
 }
