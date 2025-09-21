@@ -1,11 +1,22 @@
-import Image from "next/image";
+
+"use client"
+import Sidebar from "./sharedComponents/KtdaSideBar";
 
 export default function Home() {
   return (
-<div>
-  <h1>
-      Carbon Track
-  </h1>
+    <div>
+     <Sidebar/>
+    </div>
+
+"use client";
+import Image from "next/image";
+import Button from "./sharedComponents/Button";
+
+export default function Home() {
+  return (
+<div >
+  
 </div>
+ develop
   );
 }
