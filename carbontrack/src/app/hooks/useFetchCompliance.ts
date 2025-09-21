@@ -23,21 +23,5 @@ export default function useFetchCompliance() {
 
   
 
-  return { compliance, loading, error, updateCompliance };
-}
-
-export async function updateCompliance(
-  complianceId: number,
-  compliance_target: string,
-  factory: number
-) {
-  const res = await fetch(`/api/compliance/${complianceId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ compliance_target, factory }),
-  });
-  if (!res.ok) {
-    throw new Error("Failed to update compliance");
-  }
-  return res.json();
+  return { compliance, loading, error };
 }
