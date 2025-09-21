@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useState } from 'react';
 import useFactoryEmissions from '../hooks/useFetchFactoryData';
 import { IoSettingsOutline, IoPersonOutline } from 'react-icons/io5';

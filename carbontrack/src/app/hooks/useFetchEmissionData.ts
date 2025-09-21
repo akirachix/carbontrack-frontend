@@ -16,7 +16,7 @@ import type {
 export function useEmissionsData() {
   const [factoryEmissions, setFactoryEmissions] = useState<FactoryEmission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); 
   const [selectedDate, setSelectedDate] = useState('');
   const [noDataForDate, setNoDataForDate] = useState(false);
   const [emissions, setEmissions] = useState<EmissionData[]>([]);
@@ -40,8 +40,8 @@ export function useEmissionsData() {
         setEnergyEntries(energyEntriesData);
         setFactories(factoriesData);
         setMcus(mcusData);
-      } catch {
-        setError('Error loading data. Please try again later.');
+      } catch(error) {
+        setError((error as Error).message); 
       } finally {
         setLoading(false);
       }
