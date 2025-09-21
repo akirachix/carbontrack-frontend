@@ -64,7 +64,7 @@ describe("useFetchCompliance Hook", () => {
   });
 
   it("should post compliance successfully", async () => {
-    (fetchCompliance as jest.Mock).mockResolvedValueOnce({ results: [] }); // initial load
+    (fetchCompliance as jest.Mock).mockResolvedValueOnce({ results: [] }); 
     (fetchCompliance as jest.Mock).mockResolvedValueOnce({
       results: [
         {
