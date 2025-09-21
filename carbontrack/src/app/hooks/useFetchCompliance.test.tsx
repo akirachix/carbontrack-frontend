@@ -2,11 +2,10 @@ import { renderHook, act } from "@testing-library/react";
 import useFetchCompliance from "../hooks/useFetchCompliance";
 import { fetchCompliance } from "../utils/fetchCompliance";
 
-// Mock the fetchCompliance util
 jest.mock("../utils/fetchCompliance", () => ({
   fetchCompliance: jest.fn(),
 }));
-// Mock fetch (for postCompliance)
+
 global.fetch = jest.fn();
 
 describe("useFetchCompliance Hook", () => {
@@ -28,10 +27,8 @@ describe("useFetchCompliance Hook", () => {
       ],
     });
     const { result } = renderHook(() => useFetchCompliance());
-
-    // Wait for async effect updates inside act
     await act(async () => {
-      await Promise.resolve(); // microtask delay allows effect to finish
+      await Promise.resolve(); 
     });
 
     expect(result.current.loading).toBe(false);
@@ -90,8 +87,6 @@ describe("useFetchCompliance Hook", () => {
       await Promise.resolve();
     });
 
- 
-
     expect(result.current.compliance).toHaveLength(1);
     expect(result.current.compliance[0].compliance_target).toBe("30");
   });
@@ -107,7 +102,5 @@ describe("useFetchCompliance Hook", () => {
     await act(async () => {
       await Promise.resolve();
     });
-
-    
   });
 });
