@@ -9,13 +9,13 @@ function GetStarted() {
   const router = useRouter();
   const handleRoleSelect = (role: string) => {
     if (role === "ktda") {
-      router.push("/ktdaManagerSignup"); 
+      router.push("/ktda-manager-signup"); 
     } else if (role === "factory") {
-      router.push("/factoryManagerSignup"); 
+      router.push("/factory-manager-signup"); 
     }
   };
   return (
-    <main className="h-screen w-screen 2xl:py-30 justify-center bg-gray-100 ">
+    <main className="w-screen 2xl:pt-50 justify-center bg-gray-100 ">
       <div>
         <Image
           src={"/images/Ellipse 11.png"}
@@ -28,11 +28,7 @@ function GetStarted() {
       </div>
       <div className="flex flex-col text-center items-center ">
         <div className="flex justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <motion.div initial={{ opacity: 0, scale: 0.9 }}  animate={{ opacity: 1, scale: 1 }}  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }} >
             <Image
               src="/images/logo.png"
               alt="Carbon Track Logo"
@@ -43,21 +39,13 @@ function GetStarted() {
             />
           </motion.div>
         </div>
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-          className="text-5xl md:text-3xl lg:text-4xl font-black text-[#2A4759] 2xl:text-[50px]"
-        >
+        <motion.h1 initial={{ opacity: 0, y: 20 }}  animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+          className="text-5xl md:text-3xl lg:text-4xl font-black text-[#2A4759] 2xl:text-[50px]">
           Carbon Track
         </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1, ease: "easeOut" }}
-          className="text-base md:text-lg lg:text-xl 2xl:text-[40px] 2xl:pt-15 2xl:pb-5 font-semibold text-[#F79B72]"
-        >
-          Let’s get started, Select your role.
+        <motion.p  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}  transition={{ duration: 1, delay: 1, ease: "easeOut" }}
+          className="text-base md:text-lg lg:text-xl 2xl:text-[40px] 2xl:pt-15 2xl:pb-5 font-semibold text-[#F79B72]">
+          Let’s get started, select your role.
         </motion.p>
       </div>
       <div className="flex justify-center gap-10">
