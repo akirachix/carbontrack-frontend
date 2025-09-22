@@ -12,13 +12,8 @@ import Link from "next/link";
 const Sidebar = () => {
   const pathname = usePathname();
   const navItems = [
-<<<<<<< HEAD
-    { href: "/ktda_dashboard", Icon: RxDashboard, label: "Dashboard" },
-    { href: "/emissionheatmap", Icon: FiCloud, label: "Emissions" },
-=======
     { href: "/", Icon: RxDashboard, label: "Dashboard" },
     { href: "/emissions", Icon: FiCloud, label: "Emissions" },
->>>>>>> 012c5b6fdbdd029277fd6666b3c569e178bf34c2
     { href: "/factory", Icon: TbBuildingFactory, label: "Factories" },
     { href: "/compliance_page", Icon: GoVerified, label: "Compliance" },
   ];

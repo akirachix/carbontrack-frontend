@@ -1,5 +1,5 @@
 "use client";
-import SidebarLayout from "../components/SideBarLayout/layout";
+
 import { useState } from "react";
 import useFetchCompliance from "../hooks/useFetchCompliance";
 import useFetchFactories from "../hooks/useFetchFactories";
@@ -7,6 +7,7 @@ import Pagination from "../sharedComponents/Pagination";
 import ComplianceTargetModal from "./component/AddTarget";
 import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import { updateCompliance } from "../utils/fetchCompliance";
+import SidebarLayout from "../components/SideBarLayout";
 
 export default function ComplianceDashboard() {
   const {
