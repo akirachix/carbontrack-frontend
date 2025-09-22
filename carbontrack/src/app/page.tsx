@@ -1,6 +1,6 @@
 
 "use client"
-import Sidebar from "./sharedComponents/KtdaSideBar";
+import Sidebar from "./sharedComponents/FactorySidebar"
 
 export default function Home() {
   return (
@@ -8,15 +8,6 @@ export default function Home() {
      <Sidebar/>
     </div>
 
-"use client";
-import Image from "next/image";
-import Button from "./sharedComponents/Button";
+  )}
 
-export default function Home() {
-  return (
-<div >
-  
-</div>
- develop
-  );
-}
+
