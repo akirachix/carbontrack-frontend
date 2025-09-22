@@ -1,7 +1,6 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { useFetchEnergyEntries } from "../hooks/useFetchEnergyEntries";
-import { fetchEnergy } from "../utils/fetchEnergyEntries";
-
+import * as fetchEnergyModule from "../utils/fetchEnergyEntries";
 
 jest.mock("../utils/fetchEnergyEntries", () => ({
   fetchEnergy: jest.fn(),
@@ -29,68 +28,115 @@ describe("useFetchEnergyEntries", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     localStorage.clear();
+
+    Object.defineProperty(window, "localStorage", {
+      value: {
+        getItem: jest.fn((key) => (key === "factoryId" ? "10" : null)),
+        setItem: jest.fn(),
+        clear: jest.fn(),
+      },
+      writable: true,
+    });
   });
 
   it("loads and sums CO₂ emissions for factoryId 10", async () => {
-    (fetchEnergy as jest.Mock).mockResolvedValue(mockEnergyData);
+    (fetchEnergyModule.fetchEnergy as jest.Mock).mockResolvedValue(mockEnergyData);
 
-    const { result } = renderHook(() => useFetchEnergyEntries());
+    const selectedDate = new Date("2025-09-18");
+
+    const { result } = renderHook(() => useFetchEnergyEntries(selectedDate));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
     expect(result.current.error).toBeNull();
-    expect(result.current.totalCO2).toBeCloseTo(4.0); 
+    expect(result.current.totalCO2).toBeCloseTo(4.0);
   });
 
   it("filters by selectedDate", async () => {
-    (fetchEnergy as jest.Mock).mockResolvedValue(mockEnergyData);
+    (fetchEnergyModule.fetchEnergy as jest.Mock).mockResolvedValue(mockEnergyData);
 
     const selectedDate = new Date("2025-09-18");
 
-    const { result } = renderHook(() =>
-      useFetchEnergyEntries(selectedDate)
-    );
+    const { result } = renderHook(() => useFetchEnergyEntries(selectedDate));
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
     expect(result.current.totalCO2).toBeCloseTo(4.0);
   });
-  
+
   it("returns 0 if no entries match factoryId 10", async () => {
-    (fetchEnergy as jest.Mock).mockResolvedValue([
+    (fetchEnergyModule.fetchEnergy as jest.Mock).mockResolvedValue([
       { factory: 11, co2_equivalent: "5.0", created_at: "2025-09-18T09:00:00.000Z" },
     ]);
-    const { result } = renderHook(() => useFetchEnergyEntries());
+
+    const selectedDate = new Date("2025-09-18");
+    const { result } = renderHook(() => useFetchEnergyEntries(selectedDate));
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
     expect(result.current.totalCO2).toBe(0);
   });
 
-  it("handles non-array response", async () => {
-    (fetchEnergy as jest.Mock).mockResolvedValue({ bad: "data" });
-    const { result } = renderHook(() => useFetchEnergyEntries());
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
-    expect(result.current.error).toBe("Fetched data is not an array");
-    expect(result.current.totalCO2).toBeNull();
-  });
 
   it("handles missing factoryId in localStorage", async () => {
-    Storage.prototype.setItem = jest.fn();
+    Object.defineProperty(window, "localStorage", {
+      value: {
+        getItem: jest.fn(() => null),
+        setItem: jest.fn(),
+        clear: jest.fn(),
+      },
+      writable: true,
+    });
 
-    (fetchEnergy as jest.Mock).mockResolvedValue(mockEnergyData);
+    (fetchEnergyModule.fetchEnergy as jest.Mock).mockResolvedValue(mockEnergyData);
+    const selectedDate = new Date("2025-09-18");
+    const { result } = renderHook(() => useFetchEnergyEntries(selectedDate));
 
-    localStorage.clear(); 
-    const { result } = renderHook(() => useFetchEnergyEntries());
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
     expect(result.current.error).toBe("Factory ID not found in local storage");
     expect(result.current.totalCO2).toBeNull();
   });
+
+  it("sets error state when fetchEnergy throws an error", async () => {
+  const errorMsg = "Network error";
+  (fetchEnergyModule.fetchEnergy as jest.Mock).mockRejectedValue(new Error(errorMsg));
+  const selectedDate = new Date("2025-09-18");
+  const { result } = renderHook(() => useFetchEnergyEntries(selectedDate));
+
+  await waitFor(() => {
+    expect(result.current.loading).toBe(false);
+  });
+
+  expect(result.current.error).toBe(errorMsg);
+  expect(result.current.totalCO2).toBeNull();
+});
+
+it("loading state is true initially", async () => {
+  (fetchEnergyModule.fetchEnergy as jest.Mock).mockResolvedValue(mockEnergyData);
+  const selectedDate = new Date("2025-09-18");
+  const { result } = renderHook(() => useFetchEnergyEntries(selectedDate));
+  expect(result.current.loading).toBe(true);
+  
+  await waitFor(() => {
+    expect(result.current.loading).toBe(false);
+  });
+});
+
+it("handles empty response", async () => {
+  (fetchEnergyModule.fetchEnergy as jest.Mock).mockResolvedValue([]); 
+  const selectedDate = new Date("2025-09-18");
+  const { result } = renderHook(() => useFetchEnergyEntries(selectedDate));
+  await waitFor(() => {
+    expect(result.current.loading).toBe(false);
+  });
+  expect(result.current.error).toBeNull();
+  expect(result.current.totalCO2).toBe(0);
+});
 });

@@ -11,7 +11,6 @@ jest.mock('../components/FactoryLayout', () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-
 jest.mock('react-datepicker', () => ({
   __esModule: true,
   default: ({ selected, onChange }: any) => (
@@ -35,21 +34,11 @@ jest.mock('recharts', () => ({
   ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
 }));
 
-jest.mock('react-icons/fa', () => ({
-  FaRegCalendarAlt: () => <div data-testid="calendar-icon" />,
-}));
-
-jest.mock('react-icons/io5', () => ({
-  IoSettingsOutline: () => <div data-testid="settings-icon" />,
-  IoPersonOutline: () => <div data-testid="profile-icon" />,
-}));
-
 describe('DashboardPage Component', () => {
   const mockSetSelectedDate = jest.fn();
   const mockSelectedDate = new Date('2023-05-15');
 
   beforeEach(() => {
-   
     jest.clearAllMocks();
     (useFetchEmissions as jest.Mock).mockReturnValue({
       selectedDate: mockSelectedDate,
@@ -67,7 +56,6 @@ describe('DashboardPage Component', () => {
     });
   });
 
-
   test('displays emission data correctly', () => {
     render(<DashboardPage />);
     expect(screen.getByText('0.123456 kgs')).toBeInTheDocument();
@@ -82,39 +70,33 @@ describe('DashboardPage Component', () => {
       todayTotal: null,
       monthTotal: null,
     });
-    
+
     (useFetchEnergyEntries as jest.Mock).mockReturnValue({
-      ...useFetchEnergyEntries(),
+      ...useFetchEnergyEntries(mockSelectedDate),
       totalCO2: null,
     });
-    
     render(<DashboardPage />);
-    
     expect(screen.getAllByText('No data')).toHaveLength(3);
   });
 
   test('handles energy loading state', () => {
     (useFetchEnergyEntries as jest.Mock).mockReturnValue({
-      ...useFetchEnergyEntries(),
+      ...useFetchEnergyEntries(mockSelectedDate),
       totalCO2: null,
-      error: true, 
+      error: true,
     });
-    
     render(<DashboardPage />);
-    
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   test('updates date when date picker changes', () => {
     render(<DashboardPage />);
-    
     const datePicker = screen.getByTestId('date-picker');
     fireEvent.change(datePicker, { target: { value: '2023-06-20' } });
-    
     expect(mockSetSelectedDate).toHaveBeenCalledWith(new Date('2023-06-20'));
   });
 
-  
+
   test('renders charts with data', () => {
     render(<DashboardPage />);
     expect(screen.getByTestId('bar-chart')).toBeInTheDocument();

@@ -1,30 +1,34 @@
 import { useEffect, useState } from "react";
 import { fetchEnergy } from "../utils/fetchEnergyEntries";
 
+interface EnergyEntry {
+  factory: number;
+  created_at: string;
+  co2_equivalent: string;
+}
+
 export function useFetchEnergyEntries(selectedDate: Date) {
   const [totalCO2, setTotalCO2] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    localStorage.setItem("factoryId", "11");
+    localStorage.setItem("factoryId", "3");
   }, []);
 
+  
   useEffect(() => {
     async function fetchFactoryEmissions() {
       setLoading(true);
       setError(null);
       try {
-        const factoryId = localStorage.getItem("factoryId");
+        const factoryId = localStorage.getItem("factoryId");        
         if (!factoryId) {
-          throw new Error("Factory ID not found in local storage");
+          setError("Factory ID not found in local storage");
+          return;
         }
         const factoryIdNum = parseInt(factoryId);
-        const data = await fetchEnergy();
-
-        if (!Array.isArray(data)) {
-          throw new Error("Fetched data is not an array");
-        }
+        const data: EnergyEntry[] = await fetchEnergy();
 
         let filteredData = data.filter(entry => entry.factory === factoryIdNum);
 

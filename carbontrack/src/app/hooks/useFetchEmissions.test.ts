@@ -39,9 +39,7 @@ describe("useFetchEmissions", () => {
 
   it("recalculates totals when selectedDate changes", async () => {
     (fetchEmissions as jest.Mock).mockResolvedValue(mockEmissions);
-
     const { result } = renderHook(() => useFetchEmissions());
-
     await waitFor(() => expect(result.current.loading).toBe(false));
 
     act(() => {
@@ -51,4 +49,40 @@ describe("useFetchEmissions", () => {
     expect(result.current.todayTotal).toBe(0);
     expect(result.current.lineData.every(d => d.value === 0)).toBe(true);
   });
+
+ it("handles empty response", async () => {
+  (fetchEmissions as jest.Mock).mockResolvedValue([]); 
+  const { result } = renderHook(() => useFetchEmissions());
+  await waitFor(() => {
+    expect(result.current.loading).toBe(false);
+  });
+
+  expect(result.current.error).toBeNull();
+  expect(result.current.todayTotal).toBe(null);
+  expect(result.current.monthTotal).toBe(null);
+  expect(result.current.barData).toEqual([]);
+  expect(result.current.lineData).toEqual([]);
+});
+
+
+  it("shows loading state initially", () => {
+    (fetchEmissions as jest.Mock).mockImplementation(() => new Promise(() => {}));
+     
+    const { result } = renderHook(() => useFetchEmissions());
+    expect(result.current.loading).toBe(true);
+  });
+  
+  it("sets error state correctly when fetchEmissions fails", async () => {
+    (fetchEmissions as jest.Mock).mockRejectedValue(new Error("Network Error"));
+    const { result } = renderHook(() => useFetchEmissions());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.error).toBe("Network Error");
+    expect(result.current.todayTotal).toBeNull();
+    expect(result.current.monthTotal).toBeNull();
+    expect(result.current.barData).toEqual([]);
+    expect(result.current.lineData).toEqual([]);
+  });
+
+
 });
