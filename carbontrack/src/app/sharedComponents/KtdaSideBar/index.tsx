@@ -13,7 +13,7 @@ const Sidebar = () => {
   const pathname = usePathname();
   const navItems = [
     { href: "/", Icon: RxDashboard, label: "Dashboard" },
-    { href: "/emissionheatmap", Icon: FiCloud, label: "Emissions" },
+    { href: "/emissions", Icon: FiCloud, label: "Emissions" },
     { href: "/factory", Icon: TbBuildingFactory, label: "Factories" },
     { href: "/compliance", Icon: GoVerified, label: "Compliance" },
   ];

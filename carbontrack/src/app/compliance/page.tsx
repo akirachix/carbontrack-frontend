@@ -1,4 +1,4 @@
-import SidebarLayout from "../components/SideBarLayout/layout";
+import SidebarLayout from "../components/SideBarLayout";
 
 export default function Compliance(){
     return(
