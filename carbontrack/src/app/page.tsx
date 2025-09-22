@@ -7,6 +7,5 @@ export default function Home() {
     <div>
      <Sidebar/>
     </div>
-
   );
 }

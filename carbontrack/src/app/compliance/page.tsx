@@ -1,11 +1,11 @@
-import SidebarLayout from "../components/SideBarLayout/layout";
+import SidebarLayout from "../components/SideBarLayout";
 
-export default function Emissions(){
+export default function Compliance(){
     return(
        <SidebarLayout>
          <div>
             <h1>
-                Emissions
+                Compliance
             </h1>
         </div>
        </SidebarLayout>

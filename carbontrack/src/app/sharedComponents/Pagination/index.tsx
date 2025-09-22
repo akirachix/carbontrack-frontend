@@ -1,43 +1,35 @@
 import React, { useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-
 interface PaginationProps {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
   isDark: boolean;
 }
-
 const Pagination: React.FC<PaginationProps> = ({ page, totalPages, onPageChange, isDark }) => {
   const [edit, setEdit] = useState(false);
   const [draftValue, setDraftValue] = useState(page);
-
   const handleEdit = () => {
     setEdit(true);
     setDraftValue(page);
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, "");
     setDraftValue(Number(value));
   };
-
   const handleSubmit = () => {
     if (draftValue >= 1 && draftValue <= totalPages) {
       onPageChange(draftValue);
     }
     setEdit(false);
   };
-
   const handleBlur = () => {
     handleSubmit();
   };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSubmit();
     if (e.key === "Escape") setEdit(false);
   };
-
   return (
     <div className="flex items-center justify-center mt-7 gap-6">
       <button
@@ -86,5 +78,4 @@ const Pagination: React.FC<PaginationProps> = ({ page, totalPages, onPageChange,
     </div>
   );
 };
-
 export default Pagination;
