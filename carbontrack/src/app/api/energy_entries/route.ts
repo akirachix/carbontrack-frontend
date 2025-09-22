@@ -1,5 +1,4 @@
 const baseUrl = process.env.BASE_URL;
-
 export async function GET(){
 try {
     const responce = await fetch(`${baseUrl}/energy_entries`)

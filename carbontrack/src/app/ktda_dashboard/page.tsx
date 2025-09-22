@@ -3,7 +3,7 @@ import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import useFetchCompliance from "../hooks/useFetchCompliance";
 import useFetchEnergy from "../hooks/useFetchEnergyEntries";
-import useFetchEmissions from "../hooks/useFetchEmissions";
+import {useFetchEmissions} from "../hooks/useFetchEmissions";
 import useFetchFactories from "../hooks/useFetchFactories";
 import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import SidebarLayout from "../components/SideBarLayout";

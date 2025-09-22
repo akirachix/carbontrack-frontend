@@ -1,17 +1,16 @@
 const baseUrl = process.env.BASE_URL;
-
 export async function GET(){
-try {
-    const responce = await fetch(`${baseUrl}/emissions/`)
-    const result = await responce.json();
+    try {
+        const response = await fetch (`${baseUrl}/emissions/`);
+        const result = await response.json();     
 
-    return new Response(JSON.stringify(result), {
-        status: 200
-    })
-    
-} catch (error) {
-    return new Response((error as Error).message, {
-        status: 500
-    });
-}
+        return new Response(JSON.stringify(result),{
+            status:200
+        });
+
+    }catch(error){
+        return new Response((error as Error).message,{
+            status: 500,
+        });
+    }
 }
