@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { fetchEmissions } from '../utils/fetchEmissions';
 import { fetchFactories } from '../utils/fetchFactories';
 import { fetchMcus } from '../utils/fetchMcu';
-import { fetchEnergyEntries } from '../utils/fetchEnergyEntries';
+import { fetchEnergy } from '../utils/fetchEnergyEntries';
 import { processEmissionData, FactoryEmission } from '../utils/fetchEmissionData';
 
 import type {
@@ -33,7 +33,7 @@ export function useEmissionsData() {
           fetchEmissions(),
           fetchFactories(),
           fetchMcus(),
-          fetchEnergyEntries(),
+          fetchEnergy(),
         ]);
         
         setEmissions(emissionsData);

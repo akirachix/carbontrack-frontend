@@ -3,7 +3,7 @@ import { useEmissionsData } from './useFetchEmissionData';
 import { fetchEmissions } from '../utils/fetchEmissions';
 import { fetchFactories } from '../utils/fetchFactories';
 import { fetchMcus } from '../utils/fetchMcu';
-import { fetchEnergyEntries } from '../utils/fetchEnergyEntries';
+import { fetchEnergy } from '../utils/fetchEnergyEntries'; 
 import { processEmissionData } from '../utils/fetchEmissionData';
 
 jest.mock('../utils/fetchEmissions', () => ({
@@ -18,8 +18,8 @@ jest.mock('../utils/fetchMcu', () => ({
   fetchMcus: jest.fn(),
 }));
 
-jest.mock('../utils/fetchEnergyEntries', () => ({
-  fetchEnergyEntries: jest.fn(),
+jest.mock('../utils/fetchEnergy', () => ({
+  fetchEnergy: jest.fn(),
 }));
 
 jest.mock('../utils/fetchEmissionData', () => ({
@@ -56,7 +56,7 @@ describe('useEmissionsData', () => {
     (fetchEmissions as jest.Mock).mockResolvedValue(mockEmissions);
     (fetchFactories as jest.Mock).mockResolvedValue(mockFactories);
     (fetchMcus as jest.Mock).mockResolvedValue(mockMcus);
-    (fetchEnergyEntries as jest.Mock).mockResolvedValue(mockEnergyEntries);
+    (fetchEnergy as jest.Mock).mockResolvedValue(mockEnergyEntries);
     (processEmissionData as jest.Mock).mockReturnValue(mockProcessedData);
   });
 
@@ -79,7 +79,7 @@ describe('useEmissionsData', () => {
     expect(fetchEmissions).toHaveBeenCalled();
     expect(fetchFactories).toHaveBeenCalled();
     expect(fetchMcus).toHaveBeenCalled();
-    expect(fetchEnergyEntries).toHaveBeenCalled();
+    expect(fetchEnergy).toHaveBeenCalled();
     expect(processEmissionData).toHaveBeenCalledWith(
       mockEmissions,
       mockFactories,
