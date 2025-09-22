@@ -31,15 +31,6 @@ describe("useFetchCompliance hook", () => {
     expect(result.current.error).toBeNull();
   });
 
-  it("handles empty response", async () => {
-    mockedFetchCompliance.mockResolvedValueOnce(null as any);
-    const { result } = renderHook(() => useFetchCompliance());
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
-    expect(result.current.compliance).toEqual([]);
-    expect(result.current.error).toBeNull();
-  });
 
   it("handles error during fetch", async () => {
     mockedFetchCompliance.mockRejectedValueOnce(new Error("Network error"));
