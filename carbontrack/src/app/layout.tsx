@@ -13,16 +13,17 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Carbon Track",
   description: "Real-time CO2 monitoring web portal for KTDA tea factories",
-  icons: {
-    icon: '/favicon.ico',
-  },
+  // icons: {
+  //   icon: '/favicon.ico',
+  // },
 };
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={nunito.variable}>
-      <body className="antialiased">
+      <body>
+        
         {children}
       </body>
     </html>

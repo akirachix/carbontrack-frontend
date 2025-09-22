@@ -1,35 +1,45 @@
-import { fetchFactories } from './fetchFactories';
+import { fetchFactories } from "./fetchFactories";
 
 describe('fetchFactories', () => {
   beforeEach(() => {
-    global.fetch = jest.fn();
+    jest.resetAllMocks();
   });
 
-  it('returns data on success', async () => {
-    const mockData = [{ factory_id: '1', factory_name: 'Factory A' }];
-    (fetch as jest.Mock).mockResolvedValue({
-      ok: true,
-      json: async () => mockData,
-    });
+  it('returns data when fetch is successful and response is ok', async () => {
+    const mockData = { factories: [{ id: 1, name: 'Factory A' }] };
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockData),
+      } as Response)
+    );
 
     const result = await fetchFactories();
     expect(result).toEqual(mockData);
-    expect(fetch).toHaveBeenCalledWith('/api/factories/', expect.any(Object));
+    expect(fetch).toHaveBeenCalledWith('/api/factories');
   });
 
-  it('throws error with message on failure response', async () => {
-    const errorMessage = 'Failed to load factories';
-    (fetch as jest.Mock).mockResolvedValue({
-      ok: false,
-      json: async () => ({ message: errorMessage }),
-    });
+  it('throws error when response is not ok', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        statusText: 'Not Found',
+      } as Response)
+    );
 
-    await expect(fetchFactories()).rejects.toThrow(errorMessage);
+    await expect(fetchFactories()).rejects.toThrow(
+      'Something went wrongNot Found'
+    );
+    expect(fetch).toHaveBeenCalledWith('/api/factories');
   });
 
-  it('throws error on fetch exception', async () => {
-    (fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+  it('throws error when fetch rejects', async () => {
+    const fetchError = new Error('Network Error');
+    global.fetch = jest.fn(() => Promise.reject(fetchError));
 
-    await expect(fetchFactories()).rejects.toThrow('Network error');
+    await expect(fetchFactories()).rejects.toThrow(
+      'Failed to fetch usersNetwork Error'
+    );
+    expect(fetch).toHaveBeenCalledWith('/api/factories');
   });
 });

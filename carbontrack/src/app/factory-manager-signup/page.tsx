@@ -5,12 +5,12 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import Button from "../sharedComponents/Button";
-import { useFetchFactories } from "../hooks/useFetchFactories";
+import useFetchFactories from "../hooks/useFetchFactories";
 import { useFetchSignup } from "../hooks/useFetchSignup";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { factories, loadingFactories, factoryError } = useFetchFactories(); 
+  const { factories, loading, error } = useFetchFactories(); 
   const { signup, loading: loadingSignup, error: signupError } = useFetchSignup();
 
   const defaultFormState = {
@@ -34,8 +34,8 @@ export default function SignupPage() {
   });
 
   useEffect(() => {
-    if (factoryError || signupError) setGeneralError(factoryError || signupError);
-  }, [factoryError, signupError]);
+    if (error || signupError) setGeneralError(error || signupError);
+  }, [error, signupError]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     let { name, value } = e.target;
@@ -192,7 +192,7 @@ export default function SignupPage() {
                   value={formData.factory}
                   onChange={handleChange}
                   className="w-full p-3 border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
-                  disabled={loadingFactories}
+                  disabled={loading}
                   required
                 >
                   <option value="" disabled>

@@ -1,15 +1,14 @@
-export async function fetchFactories() {
-  try {
-    const response = await fetch("/api/factories/", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to load factories");
+const baseUrl = '/api/factories';
+
+
+export  async function fetchFactories() {
+    try {
+        const response= await fetch(baseUrl);
+        if (!response.ok) {
+            throw new Error("Something went wrong" + response.statusText);
     }
-    return await response.json();
-  } catch (error) {
-    throw new Error((error as Error).message || "Something went wrong");
-  }
-}
+    const result= await response.json();
+        return result;
+}catch (error) {
+        throw new Error('Failed to fetch users' + (error as Error).message)
+    }}
