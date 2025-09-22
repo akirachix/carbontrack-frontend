@@ -21,12 +21,12 @@ describe('Utility Functions', () => {
         { factory: 1, co2_equivalent: '1', tea_processed_amount: '10' },
       ];
       const emissions = [{ factory: 1, emission_rate: '3' }]; 
-      const factoryMap = { 1: 'Alpha' };
+      const factoryMap = { 1: 'Maramba' };
 
       const alerts = calculateAlerts(compliance, energy, emissions, factoryMap);
       expect(alerts).toHaveLength(1);
       expect(alerts[0].factoryId).toBe(1);
-      expect(alerts[0].factoryName).toBe('Alpha');
+      expect(alerts[0].factoryName).toBe('Maramba');
       expect(alerts[0].emissionPerKg).toBeCloseTo((3 + 1 + 3) / 20);
     });
 
@@ -34,7 +34,7 @@ describe('Utility Functions', () => {
       const compliance = [{ factory: 1, compliance_target: '0.1' }];
       const energy = [{ factory: 1, co2_equivalent: '3', tea_processed_amount: '0' }];
       const emissions = [{ factory: 1, emission_rate: '3' }];
-      const factoryMap = { 1: 'Alpha' };
+      const factoryMap = { 1: 'Maramba' };
 
       const alerts = calculateAlerts(compliance, energy, emissions, factoryMap);
       expect(alerts).toEqual([]);
