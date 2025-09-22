@@ -27,7 +27,9 @@ jest.mock('../sharedComponents/Calendar', () => ({
       >
         Select Date
       </button>
-      <div>Selected: {selectedDate ? selectedDate.toISOString().split('T')[0] : 'None'}</div>
+      <div>Selected: {selectedDate ? 
+        `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}` 
+        : 'None'}</div>
     </div>
   )
 }));
