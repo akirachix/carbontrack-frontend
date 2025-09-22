@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import { FiCalendar } from "react-icons/fi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 012c5b6fdbdd029277fd6666b3c569e178bf34c2
 interface CalendarProperties {
   selectedDate: Date | null;
   setSelectedDate: (date: Date | null) => void;
@@ -16,10 +11,6 @@ const Calendar = ({ selectedDate, setSelectedDate }: CalendarProperties) => {
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
-<<<<<<< HEAD
-
-=======
->>>>>>> 012c5b6fdbdd029277fd6666b3c569e178bf34c2
   const CustomInput = ({ value, onClick }: { value?: string; onClick?: () => void }) => (
     <div
       onClick={onClick}
@@ -53,17 +44,10 @@ const Calendar = ({ selectedDate, setSelectedDate }: CalendarProperties) => {
         onCalendarClose={() => {
           setIsOpen(false);
         }}
-<<<<<<< HEAD
-       
-=======
->>>>>>> 012c5b6fdbdd029277fd6666b3c569e178bf34c2
       />
     </div>
   );
 };
-<<<<<<< HEAD
-export default Calendar;
-=======
 export default Calendar;
 
 
@@ -76,4 +60,3 @@ export default Calendar;
 
 
 
->>>>>>> 012c5b6fdbdd029277fd6666b3c569e178bf34c2
