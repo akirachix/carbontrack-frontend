@@ -68,8 +68,8 @@ describe("useFetchEmission hook", () => {
     expect(result.current.error).toBeNull();
     expect(result.current.todayTotal).toBeCloseTo(15);
     expect(result.current.monthTotal).toBeCloseTo(15);
-    expect(result.current.barData.length).toBe(12); // months
-    expect(result.current.lineData.length).toBe(24); // hours
+    expect(result.current.barData.length).toBe(12); 
+    expect(result.current.lineData.length).toBe(24); 
   });
 
   it("handles empty emission data", async () => {
