@@ -1,43 +1,30 @@
+import { useEffect, useState } from "react";
+import { fetchCompliance } from "../utils/fetchCompliance";
 
-import { useState, useEffect } from "react";
-export default function useFetchCompliance() {
-  const [compliance, setCompliance] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+export interface ComplianceType {
+  compliance_id: number;
+  factory: number;
+  compliance_status: string;
+  compliance_target: string;
+  created_at: string;
+  updated_at?: string;
+}
+const useFetchCompliance = () => {
+  const [compliance, setCompliance] = useState<ComplianceType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
-    const fetchCompliance = async () => {
+    (async () => {
       try {
-        const res = await fetch("/api/compliance");
-        if (!res.ok) throw new Error("Failed to fetch compliance");
-        const data = await res.json();
-        setCompliance(data);
+        const data = await fetchCompliance();
+        setCompliance(data?.results || data || []);
       } catch (err) {
         setError((err as Error).message);
       } finally {
         setLoading(false);
       }
-    };
-    fetchCompliance();
+    })();
   }, []);
-
-  
-
-  return { compliance, loading, error, updateCompliance };
-}
-
-export async function updateCompliance(
-  complianceId: number,
-  compliance_target: string,
-  factory: number
-) {
-  const res = await fetch(`/api/compliance/${complianceId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ compliance_target, factory }),
-  });
-  if (!res.ok) {
-    throw new Error("Failed to update compliance");
-  }
-  return res.json();
-}
+  return { compliance, loading, error };
+};
+export default useFetchCompliance;

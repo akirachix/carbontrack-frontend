@@ -8,7 +8,6 @@ export interface EmissionType {
   mcu_device_id: string;
   updated_at: string;
 }
-
 const useFetchEmissions = () => {
   const [emissions, setEmissions] = useState<EmissionType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,5 +28,4 @@ const useFetchEmissions = () => {
 
   return { emissions, loading, error };
 };
-
 export default useFetchEmissions;

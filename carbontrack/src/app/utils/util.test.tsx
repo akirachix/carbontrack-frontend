@@ -1,26 +1,18 @@
-import {
-  mapFactories,
-  calculateAlerts,
-  calculateEmissionTrend,
-  calculateEnergySummary,
-  calculateTotalEmissions,
-  filterByDate,
-} from './emissionData';
+import { mapFactories, calculateAlerts, calculateEmissionTrend, calculateEnergySummary, calculateTotalEmissions, filterByDate}  from '../utils/util';
 
 describe('Utility Functions', () => {
   describe('mapFactories', () => {
     it('maps factory_id to factory_name correctly', () => {
       const factories = [
-        { factory_id: 1, factory_name: 'Alpha' },
-        { factory_id: 2, factory_name: 'Beta' },
+        { factory_id: 1, factory_name: 'Maramba' },
+        { factory_id: 2, factory_name: 'Boito'},
       ];
       expect(mapFactories(factories)).toEqual({
-        1: 'Alpha',
-        2: 'Beta',
+        1: 'Maramba',
+        2: 'Boito',
       });
     });
   });
-
   describe('calculateAlerts', () => {
     it('detects factories exceeding compliance target', () => {
       const compliance = [{ factory: 1, compliance_target: '0.1' }]; 

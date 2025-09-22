@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DashboardPage from "./page";
+import useFetchEnergyEntries from "../hooks/useFetchEnergyEntries";
 
 
 jest.mock("../components/SideBarLayout/layout", () => ({ children }: any) => <>{children}</>);
@@ -32,7 +33,7 @@ jest.mock("../hooks/useFetchEmissions", () =>
 jest.mock("../hooks/useFetchFactories", () =>
   jest.fn(() => ({
     factories: [
-      { factory_id: 1, name: "Factory A" },
+      { factory_id: 1, name: "maramba" },
     ],
     loading: false,
   }))
@@ -60,7 +61,7 @@ jest.mock("recharts", () => {
 });
 
 
-import useFetchEnergyEntries from "../hooks/useFetchEnergyEntries";
+
 
 describe("DashboardPage", () => {
   beforeEach(() => {
@@ -107,7 +108,6 @@ describe("DashboardPage", () => {
       energy: [],
       loading: true,
     });
-
     render(<DashboardPage />);
     expect(screen.getByText("Loading data...")).toBeInTheDocument();
   });

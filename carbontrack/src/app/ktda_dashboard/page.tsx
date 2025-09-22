@@ -10,9 +10,7 @@ import SidebarLayout from "../components/SideBarLayout/layout";
 import AlertModal from "./component/HighEmissionAlerts";
 import { IoMdWarning } from "react-icons/io";
 import Calendar from "../sharedComponents/Calendar";
-import {mapFactories,calculateAlerts,calculateEmissionTrend,
-  calculateEnergySummary,
-  calculateTotalEmissions,filterByDate} from "../utils/emissionData";
+import {mapFactories, calculateAlerts, calculateEmissionTrend,calculateEnergySummary,calculateTotalEmissions, filterByDate} from "../utils/util";
 
 const COLORS = ["#F79B72", "#2A4564", "#a5a5a5"];
 
@@ -82,8 +80,7 @@ export default function DashboardPage() {
                   <h2 className="text-xl font-bold mt-5">
                     {filteredCompliance.length > 0
                       ? ((filteredCompliance.filter((c) => c.compliance_status === "compliant").length / filteredCompliance.length) * 100).toFixed(1)
-                      : 0}{" "}
-                    %
+                      : 0}{" "}%
                   </h2>
                 </div>
                 <div className="bg-gray-800 p-4 rounded-lg h-30 w-90">
