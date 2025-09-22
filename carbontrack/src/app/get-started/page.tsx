@@ -15,7 +15,7 @@ function GetStarted() {
     }
   };
   return (
-    <main className="w-screen 2xl:pt-50 justify-center bg-gray-100 ">
+    <main className="w-screen 2xl:pt-50 justify-center bg-gray-100 h-screen">
       <div>
         <Image
           src={"/images/Ellipse 11.png"}

@@ -19,7 +19,7 @@ export default function DashboardPage() {
     <FactoryLayout>
       <div className="bg-black text-white w-full md:w-full  min-h-screen flex ">
         <main className="flex-1 p-6 md:p-8 overflow-auto w-full mx-auto">
-          <div className="flex justify-end w-16 ml-270 space-x-4">
+          <div className="flex justify-end w-16 ml-350 space-x-4">
             <Link href="">
               <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
             </Link>

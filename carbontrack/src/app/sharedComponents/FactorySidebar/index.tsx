@@ -11,7 +11,7 @@ import Link from "next/link";
 const FactorySidebar = () => {
     const pathname = usePathname();
     const navItems = [
-        { href: "/factorydashboard", Icon: RxDashboard, label: "Dashboard" },
+        { href: "/factory-dashboard", Icon: RxDashboard, label: "Dashboard" },
         { href: "/records", Icon: GoDatabase, label: "Records" },
     ];
     return (
