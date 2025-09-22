@@ -6,7 +6,7 @@ import useFetchEnergy from "../hooks/useFetchEnergyEntries";
 import useFetchEmissions from "../hooks/useFetchEmissions";
 import useFetchFactories from "../hooks/useFetchFactories";
 import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
-import SidebarLayout from "../components/SideBarLayout/layout";
+import SidebarLayout from "../components/SideBarLayout";
 import AlertModal from "./component/HighEmissionAlerts";
 import { IoMdWarning } from "react-icons/io";
 import Calendar from "../sharedComponents/Calendar";
