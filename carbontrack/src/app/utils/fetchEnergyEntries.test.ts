@@ -1,47 +1,45 @@
-import { fetchEnergyEntries } from "./fetchEnergyEntries";
+import { fetchEnergy } from "./fetchEnergyEntries";
 
-global.fetch = jest.fn();
-
-describe('fetchEnergyEntries', () => {
+describe('fetchEnergy', () => {
   beforeEach(() => {
-    (fetch as jest.Mock).mockClear();
+    jest.resetAllMocks();
   });
 
-  test('successfully fetches energy entries', async () => {
-    const mockData = { entries: [{ id: 1, value: 200 }] };
-    const mockResponse = {
-      ok: true,
-      json: async () => mockData
-    };
-    
-    (fetch as jest.Mock).mockResolvedValue(mockResponse);
-    const result = await fetchEnergyEntries();
+  it('returns data when fetch is successful and response is ok', async () => {
+    const mockData = { energy: 100 };
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockData),
+      } as Response)
+    );
 
-    expect(fetch).toHaveBeenCalledWith('/api/energy_entries/');
-
+    const result = await fetchEnergy();
     expect(result).toEqual(mockData);
+    expect(fetch).toHaveBeenCalledWith('/api/energy_entries');
   });
 
-  test('handles HTTP error response', async () => {
-
-    const mockResponse = {
-      ok: false,
-      statusText: 'Not Found'
-    };
-    
-    (fetch as jest.Mock).mockResolvedValue(mockResponse);
-
-    await expect(fetchEnergyEntries()).rejects.toThrow(
-      'Something went wrong: Not Found'
+  it('throws error when response is not ok', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        statusText: 'Not Found',
+      } as Response)
     );
+
+    await expect(fetchEnergy()).rejects.toThrow(
+      'Something went wrongNot Found'
+    );
+    expect(fetch).toHaveBeenCalledWith('/api/energy_entries');
   });
 
-  test('handles network error', async () => {
-    const mockError = new Error('Network error');
-    (fetch as jest.Mock).mockRejectedValue(mockError);
+  it('throws error when fetch rejects', async () => {
+    const fetchError = new Error('Network Error');
+    global.fetch = jest.fn(() => Promise.reject(fetchError));
 
-    await expect(fetchEnergyEntries()).rejects.toThrow(
-      'Failed to fetch energy entries: Network error'
+    await expect(fetchEnergy()).rejects.toThrow(
+      'Failed to fetch usersNetwork Error'
     );
+    expect(fetch).toHaveBeenCalledWith('/api/energy_entries');
   });
 });

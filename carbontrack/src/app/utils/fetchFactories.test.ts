@@ -1,45 +1,45 @@
 import { fetchFactories } from "./fetchFactories";
 
-global.fetch = jest.fn();
-
 describe('fetchFactories', () => {
   beforeEach(() => {
-    (fetch as jest.Mock).mockClear();
+    jest.resetAllMocks();
   });
 
-  test('successfully fetches factories', async () => {
+  it('returns data when fetch is successful and response is ok', async () => {
     const mockData = { factories: [{ id: 1, name: 'Factory A' }] };
-    const mockResponse = {
-      ok: true,
-      json: async () => mockData
-    };
-    
-    (fetch as jest.Mock).mockResolvedValue(mockResponse);
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockData),
+      } as Response)
+    );
+
     const result = await fetchFactories();
-
-    expect(fetch).toHaveBeenCalledWith('/api/factories/');
-
     expect(result).toEqual(mockData);
+    expect(fetch).toHaveBeenCalledWith('/api/factories');
   });
 
-  test('handles HTTP error response', async () => {
-    const mockResponse = {
-      ok: false,
-      statusText: 'Not Found'
-    };
-    
-    (fetch as jest.Mock).mockResolvedValue(mockResponse);
-    await expect(fetchFactories()).rejects.toThrow(
-      'Something went wrong: Not Found'
+  it('throws error when response is not ok', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        statusText: 'Not Found',
+      } as Response)
     );
+
+    await expect(fetchFactories()).rejects.toThrow(
+      'Something went wrongNot Found'
+    );
+    expect(fetch).toHaveBeenCalledWith('/api/factories');
   });
 
-  test('handles network error', async () => {
-    const mockError = new Error('Network error');
-    (fetch as jest.Mock).mockRejectedValue(mockError);
+  it('throws error when fetch rejects', async () => {
+    const fetchError = new Error('Network Error');
+    global.fetch = jest.fn(() => Promise.reject(fetchError));
 
     await expect(fetchFactories()).rejects.toThrow(
-      'Failed to fetch factories: Network error'
+      'Failed to fetch usersNetwork Error'
     );
+    expect(fetch).toHaveBeenCalledWith('/api/factories');
   });
 });

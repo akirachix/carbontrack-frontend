@@ -2,7 +2,7 @@ const baseUrl = process.env.BASE_URL;
 
 export async function GET(){
 try {
-    const responce = await fetch(`${baseUrl}/factories`)
+    const responce = await fetch(`${baseUrl}/compliance`)
     const result = await responce.json();
 
     return new Response(JSON.stringify(result), {
@@ -14,4 +14,5 @@ try {
         status: 500
     });
 }
-}
+};
+

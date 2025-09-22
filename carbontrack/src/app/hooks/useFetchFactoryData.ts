@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchEmissions } from '../utils/fetchEmissions';
 import { fetchFactories } from '../utils/fetchFactories';
 import { fetchMcus } from '../utils/fetchMcu';
-import { fetchEnergyEntries } from '../utils/fetchEnergyEntries';
+import { fetchEnergy } from '../utils/fetchEnergyEntries';
 
 import {
   EmissionData,
@@ -81,7 +81,7 @@ export default function useFactoryEmissions(selectedDate?: string) {
           fetchEmissions(),
           fetchFactories(),
           fetchMcus(),
-          fetchEnergyEntries(),
+          fetchEnergy(),
         ]);
 
         const processed = processEmissionData(
