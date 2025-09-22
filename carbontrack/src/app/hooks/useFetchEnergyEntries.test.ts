@@ -1,8 +1,8 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { jest } from "@jest/globals";
 import { fetchEmissions } from "../utils/fetchEmissions";
-import { useFetchEmissions } from "./useFetchEmissions"; // Adjust import path accordingly
-import useFetchEmission from "./useFetchEmissions"; // Adjust import path
+import { useFetchEmissions } from "./useFetchEmissions"; 
+import useFetchEmission from "./useFetchEmissions"; 
 
 
 jest.mock("../utils/fetchEmissions");
