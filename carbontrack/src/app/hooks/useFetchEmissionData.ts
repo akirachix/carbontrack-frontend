@@ -57,10 +57,10 @@ export function useEmissionsData() {
 
     if (selectedDate) {
       filteredEmissions = emissions.filter(
-        (item) => typeof item.created_at === 'string' && item.created_at.startsWith(selectedDate)
+        (item) => item.created_at.startsWith(selectedDate)
       );
       filteredEnergyEntries = energyEntries.filter(
-        (item) => typeof item.created_at === 'string' && item.created_at.startsWith(selectedDate)
+        (item) => item.created_at.startsWith(selectedDate)
       );
       
       if (filteredEmissions.length === 0 && filteredEnergyEntries.length === 0) {

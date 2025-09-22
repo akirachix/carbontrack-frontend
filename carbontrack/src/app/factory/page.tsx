@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import useFactoryEmissions from '../hooks/useFetchFactoryData';
 import { IoSettingsOutline, IoPersonOutline } from 'react-icons/io5';
-import SidebarLayout from '../components/SideBarLayout/layout';
+import SidebarLayout from '../components/SideBarLayout';
 import Link from 'next/link';
 import Pagination from '../sharedComponents/Pagination';
 import type { FactoryEmission } from '../types';

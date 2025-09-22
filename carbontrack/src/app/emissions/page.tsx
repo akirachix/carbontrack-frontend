@@ -3,14 +3,13 @@ import React, { useState} from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useEmissionsData } from '../hooks/useFetchEmissionData';
 import { blendColors } from '../utils/fetchEmissionData';
-import SidebarLayout from '../components/SideBarLayout/layout';
+import SidebarLayout from '../components/SideBarLayout';
 import { IoPersonOutline, IoSettingsOutline } from 'react-icons/io5';
 import Link from 'next/link';
 import Calendar from '../sharedComponents/Calendar';
 
 export default function EmissionsHeatmapPage() {
     const { factoryEmissions, loading, error, selectedDate, setSelectedDate, noDataForDate } = useEmissionsData();
-
     const totalBoxes = 67;
     const columns = 10;
     const rows = Math.ceil(totalBoxes / columns);

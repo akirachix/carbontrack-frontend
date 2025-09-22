@@ -1,6 +1,8 @@
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { act } from 'react';
 import EmissionsHeatmapPage from './page';
+import { useEmissionsData } from '../hooks/useFetchEmissionData';
+import { blendColors } from '../utils/fetchEmissionData';
 
 jest.mock('../hooks/useFetchEmissionData', () => ({
   useEmissionsData: jest.fn()
@@ -10,7 +12,7 @@ jest.mock('../utils/fetchEmissionData', () => ({
   blendColors: jest.fn()
 }));
 
-jest.mock('../components/SideBarLayout/layout', () => ({
+jest.mock('../components/SideBarLayout', () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="sidebar-layout">{children}</div>
@@ -69,11 +71,9 @@ describe('EmissionsHeatmapPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    const { useEmissionsData } = require('../hooks/useFetchEmissionData');
-    useEmissionsData.mockReturnValue(mockUseEmissionsData);
+    (useEmissionsData as jest.Mock).mockReturnValue(mockUseEmissionsData);
 
-    const { blendColors } = require('../utils/fetchEmissionData');
-    blendColors.mockImplementation(
+    (blendColors as jest.Mock).mockImplementation(
       (color1: string, color2: string, ratio: number): string => {
         if (ratio > 0.7) return '#2A4759';
         if (ratio > 0.4) return '#53BAFA';
@@ -89,8 +89,7 @@ describe('EmissionsHeatmapPage', () => {
   });
 
   test('displays loading state', () => {
-    const { useEmissionsData } = require('../hooks/useFetchEmissionData');
-    useEmissionsData.mockReturnValue({
+    (useEmissionsData as jest.Mock).mockReturnValue({
       ...mockUseEmissionsData,
       loading: true,
     });
@@ -101,8 +100,7 @@ describe('EmissionsHeatmapPage', () => {
 
   test('displays error state', () => {
     const errorMessage = 'Failed to fetch emissions data';
-    const { useEmissionsData } = require('../hooks/useFetchEmissionData');
-    useEmissionsData.mockReturnValue({
+    (useEmissionsData as jest.Mock).mockReturnValue({
       ...mockUseEmissionsData,
       error: errorMessage,
     });
@@ -112,8 +110,7 @@ describe('EmissionsHeatmapPage', () => {
   });
 
   test('displays no data message', () => {
-    const { useEmissionsData } = require('../hooks/useFetchEmissionData');
-    useEmissionsData.mockReturnValue({
+    (useEmissionsData as jest.Mock).mockReturnValue({
       ...mockUseEmissionsData,
       noDataForDate: true,
     });
@@ -200,8 +197,7 @@ describe('EmissionsHeatmapPage', () => {
   });
 
   test('handles empty emissions data', () => {
-    const { useEmissionsData } = require('../hooks/useFetchEmissionData');
-    useEmissionsData.mockReturnValue({
+    (useEmissionsData as jest.Mock).mockReturnValue({
       ...mockUseEmissionsData,
       factoryEmissions: [],
       noDataForDate: false,
@@ -227,9 +223,8 @@ describe('EmissionsHeatmapPage', () => {
   test('calls blendColors utility with correct parameters', () => {
     render(<EmissionsHeatmapPage />);
     
-    const { blendColors } = require('../utils/fetchEmissionData');
-    expect(blendColors).toHaveBeenCalled();
-    const calls: [string, string, number][] = blendColors.mock.calls as [string, string, number][];
+    expect((blendColors as jest.Mock)).toHaveBeenCalled();
+    const calls: [string, string, number][] = (blendColors as jest.Mock).mock.calls as [string, string, number][];
     expect(calls.length).toBeGreaterThan(0);
 
     calls.forEach(([color1, color2, ratio]: [string, string, number]) => {
@@ -247,8 +242,7 @@ describe('EmissionsHeatmapPage', () => {
   });
 
   test('does not show tooltip when noDataForDate is true', async () => {
-    const { useEmissionsData } = require('../hooks/useFetchEmissionData');
-    useEmissionsData.mockReturnValue({
+    (useEmissionsData as jest.Mock).mockReturnValue({
       ...mockUseEmissionsData,
       noDataForDate: true,
     });
@@ -266,8 +260,7 @@ describe('EmissionsHeatmapPage', () => {
   test('renders correct colors for emission levels', () => {
     render(<EmissionsHeatmapPage />);
 
-    const { blendColors } = require('../utils/fetchEmissionData');
-    const calls: [string, string, number][] = blendColors.mock.calls as [string, string, number][];
+    const calls: [string, string, number][] = (blendColors as jest.Mock).mock.calls as [string, string, number][];
     const totalEmission = mockFactoryEmissions.reduce((sum, item) => sum + item.totalEmission, 0);
     const avgEmission = totalEmission / mockFactoryEmissions.length;
 
@@ -298,5 +291,84 @@ describe('EmissionsHeatmapPage', () => {
         )).toBe(true);
       }
     }
+  });
+
+  test('handles empty data without crashing', () => {
+    (useEmissionsData as jest.Mock).mockReturnValue({
+      ...mockUseEmissionsData,
+      factoryEmissions: [],
+      loading: false,
+      error: null,
+      noDataForDate: false
+    });
+    
+    render(<EmissionsHeatmapPage />);
+    
+    const boxes = document.querySelectorAll('.rounded-\\[10px\\]');
+    expect(boxes.length).toBe(67);
+  });
+
+  test('tooltip behavior with empty data', async () => {
+    (useEmissionsData as jest.Mock).mockReturnValue({
+      ...mockUseEmissionsData,
+      factoryEmissions: [],
+      loading: false,
+      error: null,
+      noDataForDate: false
+    });
+    
+    render(<EmissionsHeatmapPage />);
+    const boxes = document.querySelectorAll('.rounded-\\[10px\\]');
+    
+    await act(async () => {
+      fireEvent.mouseEnter(boxes[0]);
+    });
+
+    expect(screen.queryByText('Factory A')).not.toBeInTheDocument();
+    expect(screen.queryByText('Factory B')).not.toBeInTheDocument();
+    expect(screen.queryByText('Factory C')).not.toBeInTheDocument();
+    expect(screen.queryByText('Factory D')).not.toBeInTheDocument();
+    expect(screen.queryByText('Factory E')).not.toBeInTheDocument();
+
+    expect(screen.queryByText(/Emissions: \d+\.\d+ kg\/s/)).not.toBeInTheDocument();
+  });
+
+  test('handles fetch error without crashing', () => {
+    (useEmissionsData as jest.Mock).mockReturnValue({
+      ...mockUseEmissionsData,
+      factoryEmissions: [],
+      loading: false,
+      error: 'Network error',
+      noDataForDate: false
+    });
+    
+    render(<EmissionsHeatmapPage />);
+
+    expect(screen.getByText('Network error')).toBeInTheDocument();
+    
+    const boxes = document.querySelectorAll('.rounded-\\[10px\\]');
+    expect(boxes.length).toBe(0);
+  });
+
+  test('tooltip behavior when fetch fails', async () => {
+    (useEmissionsData as jest.Mock).mockReturnValue({
+      ...mockUseEmissionsData,
+      factoryEmissions: [],
+      loading: false,
+      error: 'API error',
+      noDataForDate: false
+    });
+    
+    render(<EmissionsHeatmapPage />);
+    
+    const boxes = document.querySelectorAll('.rounded-\\[10px\\]');
+    expect(boxes.length).toBe(0);
+    
+    expect(screen.queryByText('Factory A')).not.toBeInTheDocument();
+    expect(screen.queryByText('Factory B')).not.toBeInTheDocument();
+    expect(screen.queryByText('Factory C')).not.toBeInTheDocument();
+    expect(screen.queryByText('Factory D')).not.toBeInTheDocument();
+    expect(screen.queryByText('Factory E')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Emissions: \d+\.\d+ kg\/s/)).not.toBeInTheDocument();
   });
 });

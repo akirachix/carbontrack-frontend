@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import SidebarLayout from './layout';
+import SidebarLayout from '.';
 
 
 jest.mock('../../sharedComponents/KtdaSideBar', () => ({

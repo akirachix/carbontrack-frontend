@@ -92,8 +92,8 @@ export default function useFactoryEmissions(selectedDate?: string) {
           selectedDate
         );
         setFactoryEmissions(processed);
-      } catch (err) {
-        setError("Error loading data. Please try again later.");
+      } catch(error) {
+        setError((error as Error).message); 
       } finally {
         setLoading(false);
       }

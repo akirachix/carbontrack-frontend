@@ -1,13 +1,14 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { act } from 'react';
 import FactoryEmissionLeaderboard from './page';
+import useFactoryEmissions from '../hooks/useFetchFactoryData';
 
 jest.mock('../hooks/useFetchFactoryData', () => ({
   __esModule: true,
   default: jest.fn()
 }));
 
-jest.mock('../components/SideBarLayout/layout', () => ({
+jest.mock('../components/SideBarLayout', () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="sidebar-layout">{children}</div>
@@ -66,11 +67,8 @@ describe('FactoryEmissionLeaderboard', () => {
   ];
 
   beforeEach(() => {
-
     jest.clearAllMocks();
-
-    const useFactoryEmissions = require('../hooks/useFetchFactoryData').default;
-    useFactoryEmissions.mockReturnValue({
+    (useFactoryEmissions as jest.Mock).mockReturnValue({
       factoryEmissions: mockFactoryEmissions,
       loading: false,
       error: null
@@ -83,8 +81,7 @@ describe('FactoryEmissionLeaderboard', () => {
   });
 
   test('displays loading state', () => {
-    const useFactoryEmissions = require('../hooks/useFetchFactoryData').default;
-    useFactoryEmissions.mockReturnValue({
+    (useFactoryEmissions as jest.Mock).mockReturnValue({
       factoryEmissions: [],
       loading: true,
       error: null
@@ -96,8 +93,7 @@ describe('FactoryEmissionLeaderboard', () => {
 
   test('displays error state', () => {
     const errorMessage = 'Failed to fetch factory data';
-    const useFactoryEmissions = require('../hooks/useFetchFactoryData').default;
-    useFactoryEmissions.mockReturnValue({
+    (useFactoryEmissions as jest.Mock).mockReturnValue({
       factoryEmissions: [],
       loading: false,
       error: errorMessage
@@ -211,8 +207,7 @@ describe('FactoryEmissionLeaderboard', () => {
   });
 
   test('handles empty emissions data', () => {
-    const useFactoryEmissions = require('../hooks/useFetchFactoryData').default;
-    useFactoryEmissions.mockReturnValue({
+    (useFactoryEmissions as jest.Mock).mockReturnValue({
       factoryEmissions: [],
       loading: false,
       error: null
@@ -221,5 +216,36 @@ describe('FactoryEmissionLeaderboard', () => {
     render(<FactoryEmissionLeaderboard />);
 
     expect(screen.getByText('No matching factory found')).toBeInTheDocument();
+  });
+
+  test('displays appropriate message when no data is available', () => {
+    (useFactoryEmissions as jest.Mock).mockReturnValue({
+      factoryEmissions: [],
+      loading: false,
+      error: null
+    });
+    
+    render(<FactoryEmissionLeaderboard />);
+    
+    expect(screen.getByText('No matching factory found')).toBeInTheDocument();
+    
+    expect(screen.queryByText('Loading factories...')).not.toBeInTheDocument();
+    expect(screen.queryByText('Failed to fetch factory data')).not.toBeInTheDocument();
+  });
+
+  test('displays error message when data fetch fails', () => {
+    const errorMessage = 'Network error: Unable to connect to server';
+    (useFactoryEmissions as jest.Mock).mockReturnValue({
+      factoryEmissions: [],
+      loading: false,
+      error: errorMessage
+    });
+    
+    render(<FactoryEmissionLeaderboard />);
+    
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    
+    expect(screen.queryByText('Loading factories...')).not.toBeInTheDocument();
+    expect(screen.queryByText('No matching factory found')).not.toBeInTheDocument();
   });
 });

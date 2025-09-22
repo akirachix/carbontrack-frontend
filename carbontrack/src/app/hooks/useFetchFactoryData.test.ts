@@ -1,5 +1,9 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import useFactoryEmissions from './useFetchFactoryData';
+import { fetchEmissions } from '../utils/fetchEmissions';
+import { fetchFactories } from '../utils/fetchFactories';
+import { fetchMcus } from '../utils/fetchMcu';
+import { fetchEnergyEntries } from '../utils/fetchEnergyEntries';
 
 jest.mock('../utils/fetchEmissions', () => ({
   fetchEmissions: jest.fn(),
@@ -45,10 +49,10 @@ describe('useFactoryEmissions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    require('../utils/fetchEmissions').fetchEmissions.mockResolvedValue(mockEmissions);
-    require('../utils/fetchFactories').fetchFactories.mockResolvedValue(mockFactories);
-    require('../utils/fetchMcu').fetchMcus.mockResolvedValue(mockMcus);
-    require('../utils/fetchEnergyEntries').fetchEnergyEntries.mockResolvedValue(mockEnergyEntries);
+    (fetchEmissions as jest.Mock).mockResolvedValue(mockEmissions);
+    (fetchFactories as jest.Mock).mockResolvedValue(mockFactories);
+    (fetchMcus as jest.Mock).mockResolvedValue(mockMcus);
+    (fetchEnergyEntries as jest.Mock).mockResolvedValue(mockEnergyEntries);
   });
 
   test('should initialize with loading state', () => {
@@ -67,10 +71,10 @@ describe('useFactoryEmissions', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(require('../utils/fetchEmissions').fetchEmissions).toHaveBeenCalled();
-    expect(require('../utils/fetchFactories').fetchFactories).toHaveBeenCalled();
-    expect(require('../utils/fetchMcu').fetchMcus).toHaveBeenCalled();
-    expect(require('../utils/fetchEnergyEntries').fetchEnergyEntries).toHaveBeenCalled();
+    expect(fetchEmissions).toHaveBeenCalled();
+    expect(fetchFactories).toHaveBeenCalled();
+    expect(fetchMcus).toHaveBeenCalled();
+    expect(fetchEnergyEntries).toHaveBeenCalled();
     expect(result.current.factoryEmissions).toHaveLength(2);
     expect(result.current.factoryEmissions[0].factoryId).toBe(1);
     expect(result.current.factoryEmissions[0].factoryName).toBe('Factory A');
@@ -87,26 +91,29 @@ describe('useFactoryEmissions', () => {
   });
 
   test('should handle errors when fetching data', async () => {
-    require('../utils/fetchEmissions').fetchEmissions.mockRejectedValue(new Error('Network error'));
+    (fetchEmissions as jest.Mock).mockRejectedValue(new Error('Network error'));
     
     const { result } = renderHook(() => useFactoryEmissions());
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(result.current.error).toBe('Error loading data. Please try again later.');
+    expect(result.current.error).toBe('Network error');
     expect(result.current.factoryEmissions).toEqual([]);
   });
 
   test('should filter data when selectedDate is provided', async () => {
     const { result } = renderHook(() => useFactoryEmissions('2023-01-01'));
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
-    expect(require('../utils/fetchEmissions').fetchEmissions).toHaveBeenCalled();
-    expect(require('../utils/fetchFactories').fetchFactories).toHaveBeenCalled();
-    expect(require('../utils/fetchMcu').fetchMcus).toHaveBeenCalled();
-    expect(require('../utils/fetchEnergyEntries').fetchEnergyEntries).toHaveBeenCalled();
+    
+    expect(fetchEmissions).toHaveBeenCalled();
+    expect(fetchFactories).toHaveBeenCalled();
+    expect(fetchMcus).toHaveBeenCalled();
+    expect(fetchEnergyEntries).toHaveBeenCalled();
 
     expect(result.current.factoryEmissions).toHaveLength(2);
     expect(result.current.factoryEmissions[0].factoryId).toBe(1);
@@ -125,11 +132,10 @@ describe('useFactoryEmissions', () => {
       { factory: 2, co2_equivalent: '5.7', created_at: '2023-02-01T10:00:00Z', updated_at: '2023-01-01T10:00:00Z' },
     ];
     
-    require('../utils/fetchEmissions').fetchEmissions.mockResolvedValue(differentDateEmissions);
-    require('../utils/fetchEnergyEntries').fetchEnergyEntries.mockResolvedValue(differentDateEnergyEntries);
+    (fetchEmissions as jest.Mock).mockResolvedValue(differentDateEmissions);
+    (fetchEnergyEntries as jest.Mock).mockResolvedValue(differentDateEnergyEntries);
     
     const { result } = renderHook(() => useFactoryEmissions('2023-01-02')); 
-
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
