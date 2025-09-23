@@ -7,7 +7,7 @@ interface EmissionsType  {
   updated_at: string;
 };
 
-const useFetchEmission = () => {
+export function useFetchEmission () {
   const [emissions, setEmissions] = useState<EmissionsType[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date >(new Date());
   const [barData, setBarData] = useState<{ month: string; value: number }[]>([]);
@@ -100,7 +100,7 @@ const useFetchEmission = () => {
   return { selectedDate, setSelectedDate, barData, lineData, error, loading, todayTotal, monthTotal, };
 };
 
-export default useFetchEmission;
+
 
 export interface EmissionType {
   emissions_id: number;
@@ -109,7 +109,7 @@ export interface EmissionType {
   mcu_device_id: string;
   updated_at: string;
 }
-export function useFetchEmissions() {
+export default function useFetchEmissions() {
   const [emissions, setEmissions] = useState<EmissionType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

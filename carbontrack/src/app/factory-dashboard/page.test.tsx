@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import DashboardPage from './page';
-import useFetchEmissions from '../hooks/useFetchEmissions';
+import {useFetchEmission} from '../hooks/useFetchEmissions';
 import { useFetchEnergyEntries } from '../hooks/useFetchEnergyEntries';
 
 jest.mock('../hooks/useFetchEmissions');
@@ -40,7 +40,7 @@ describe('DashboardPage Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (useFetchEmissions as jest.Mock).mockReturnValue({
+    (useFetchEmission as jest.Mock).mockReturnValue({
       selectedDate: mockSelectedDate,
       setSelectedDate: mockSetSelectedDate,
       barData: [{ month: 'Jan', value: 10 }, { month: 'Feb', value: 20 }],
@@ -65,8 +65,8 @@ describe('DashboardPage Component', () => {
 
 
   test('handles no data state', () => {
-    (useFetchEmissions as jest.Mock).mockReturnValue({
-      ...useFetchEmissions(),
+    (useFetchEmission as jest.Mock).mockReturnValue({
+      ...useFetchEmission(),
       todayTotal: null,
       monthTotal: null,
     });
@@ -115,8 +115,8 @@ describe('DashboardPage Component', () => {
   });
 
   test('handles empty chart data', () => {
-    (useFetchEmissions as jest.Mock).mockReturnValue({
-      ...useFetchEmissions(),
+    (useFetchEmission as jest.Mock).mockReturnValue({
+      ...useFetchEmission(),
       barData: [],
       lineData: [],
     });

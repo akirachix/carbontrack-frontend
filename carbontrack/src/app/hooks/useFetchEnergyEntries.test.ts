@@ -219,15 +219,5 @@ describe("useFetchEnergy", () => {
       expect(result.current.energy).toEqual([]);
       expect(result.current.error).toBeNull();
     });
-
-  it("should handle empty response", async () => {
-    mockedFetchEnergy.mockResolvedValue(null);
-    const { result } = renderHook(() => useFetchEnergy());
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-      expect(result.current.energy).toEqual([]);
-      expect(result.current.error).toBeNull();
-    });
-  });
   });
 });

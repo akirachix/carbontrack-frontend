@@ -1,10 +1,7 @@
+
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DashboardPage from "./page";
-import useFetchEnergyEntries from "../hooks/useFetchEnergyEntries";
-
-
-jest.mock("../components/SideBarLayout/layout", () => ({ children }: any) => <>{children}</>);
 
 jest.mock("../hooks/useFetchCompliance", () =>
   jest.fn(() => ({
@@ -38,13 +35,11 @@ jest.mock("../hooks/useFetchFactories", () =>
     loading: false,
   }))
 );
-
 jest.mock("../sharedComponents/Calendar", () => ({ setSelectedDate }: any) => (
   <button onClick={() => setSelectedDate(new Date("2025-01-01"))} data-testid="calendar">
     Mock Calendar
   </button>
 ));
-
 jest.mock("./component/HighEmissionAlerts", () => ({ alerts, onClose }: any) => (
   <div data-testid="alert-modal">
     <p>Mock Alerts: {alerts.length}</p>
@@ -59,31 +54,24 @@ jest.mock("recharts", () => {
     ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
   };
 });
-
-
-
-
 describe("DashboardPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-
-  it("renders the dashboard header", () => {
+  it("renders dashboard header", () => {
     render(<DashboardPage />);
     expect(screen.getByText("KTDA Dashboard")).toBeInTheDocument();
   });
-
-  it("displays the count of compliant factories", () => {
+  it("displays compliant factories count and percent", () => {
     render(<DashboardPage />);
     expect(screen.getByText("Compliant Factories")).toBeInTheDocument();
-    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument(); 
+    expect(screen.getByText("100.0 %")).toBeInTheDocument();
   });
-
-  it("displays the emission trend title", () => {
+  it("displays emission trend title", () => {
     render(<DashboardPage />);
     expect(screen.getByText("Emission Trend")).toBeInTheDocument();
   });
-
   it("opens and closes the alert modal", async () => {
     render(<DashboardPage />);
     const alertCard = screen.getByTitle("Click to view high emission alerts");
@@ -95,16 +83,15 @@ describe("DashboardPage", () => {
       expect(screen.queryByTestId("alert-modal")).not.toBeInTheDocument();
     });
   });
-
-  it("updates date when calendar is clicked", () => {
+  it("updates date when calendar button clicked", () => {
     render(<DashboardPage />);
     const calendarBtn = screen.getByTestId("calendar");
     fireEvent.click(calendarBtn);
-    expect(screen.getByText("KTDA Dashboard")).toBeInTheDocument(); 
+    expect(screen.getByText("KTDA Dashboard")).toBeInTheDocument();
   });
-
   it("shows loading state when any hook is loading", () => {
-    (useFetchEnergyEntries as jest.Mock).mockReturnValueOnce({
+    const useFetchEnergyEntriesMock = jest.requireMock("../hooks/useFetchEnergyEntries");
+    useFetchEnergyEntriesMock.mockReturnValueOnce({
       energy: [],
       loading: true,
     });

@@ -18,7 +18,7 @@ jest.mock('../utils/fetchMcu', () => ({
 }));
 
 jest.mock('../utils/fetchEnergyEntries', () => ({
-  fetchEnergyEntries: jest.fn(),
+  fetchEnergy: jest.fn(),
 }));
 
 const mockMath = Object.create(global.Math);
