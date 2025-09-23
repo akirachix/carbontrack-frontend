@@ -34,8 +34,8 @@ jest.mock("framer-motion", () => {
 });
 
 jest.mock("react-icons/fi", () => ({
-  FiEye: () => <span data-testid="eye-icon" aria-label="Show password">👁️</span>,
-  FiEyeOff: () => <span data-testid="eye-off-icon" aria-label="Hide password">🙈</span>,
+  FiEye: () => <span data-testid="eye-icon" aria-label="Show password"></span>,
+  FiEyeOff: () => <span data-testid="eye-off-icon" aria-label="Hide password"></span>,
 }));
 
 let mockLoadingSignup = false;
