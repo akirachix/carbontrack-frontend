@@ -18,7 +18,7 @@ jest.mock('../utils/fetchMcu', () => ({
   fetchMcus: jest.fn(),
 }));
 
-jest.mock('../utils/fetchEnergy', () => ({
+jest.mock('../utils/fetchEnergyEntries', () => ({
   fetchEnergy: jest.fn(),
 }));
 

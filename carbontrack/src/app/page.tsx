@@ -1,13 +1,12 @@
-
-"use client"
-import Sidebar from "./sharedComponents/FactorySidebar"
+"use client";
+import Teaser from "./teaser/page";
 
 export default function Home() {
   return (
-    <div>
-     <Sidebar/>
-    </div>
-
-  )}
+<div >
+  <Teaser/>
+</div>
+  );
+}
 
 

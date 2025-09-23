@@ -6,20 +6,21 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, R
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
-import useFetchEmissions from "../hooks/useFetchEmissions";
+import {useFetchEmission} from "../hooks/useFetchEmissions";
 import { useFetchEnergyEntries } from "../hooks/useFetchEnergyEntries";
 import Link from "next/link";
 import FactoryLayout from "../components/FactoryLayout";
+import Calendar from "../sharedComponents/Calendar";
 
 export default function DashboardPage() {
-  const { selectedDate, setSelectedDate, barData, lineData, loading: emissionsLoading, todayTotal, monthTotal, } = useFetchEmissions();
+  const { selectedDate, setSelectedDate, barData, lineData, loading: emissionsLoading, todayTotal, monthTotal, } = useFetchEmission();
   const { totalCO2, error: energyLoading, } = useFetchEnergyEntries(selectedDate);
 
   return (
     <FactoryLayout>
       <div className="bg-black text-white w-full md:w-full  min-h-screen flex ">
         <main className="flex-1 p-6 md:p-8 overflow-auto w-full mx-auto">
-          <div className="flex justify-end w-16 ml-270 space-x-4">
+          <div className="flex justify-end w-16 ml-350 space-x-4">
             <Link href="">
               <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
             </Link>
@@ -32,15 +33,17 @@ export default function DashboardPage() {
             Real-time monitoring for individual factory operations
           </p>
 
-          <div className="mb-6 flex items-center flex-wrap gap-2">
-            <FaRegCalendarAlt size={20} className="text-gray-400" />
-            <DatePicker
-              selected={selectedDate}
-              onChange={(selectedDate) => { if (selectedDate !== null) { setSelectedDate(selectedDate) } }}
-              dateFormat="yyyy/MM/dd"
-              maxDate={new Date()}
-            />
-          </div>
+        <Calendar
+            selectedDate={selectedDate}
+            setSelectedDate={(selectedDate) => {
+              if (selectedDate) {
+                const yyyy = selectedDate.getFullYear();
+                const mm = String(selectedDate.getMonth() + 1).padStart(2, "0");
+                const dd = String(selectedDate.getDate()).padStart(2, "0");
+                setSelectedDate(selectedDate);
+              }
+            }}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">

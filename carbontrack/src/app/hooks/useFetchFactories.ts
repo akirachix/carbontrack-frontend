@@ -29,3 +29,4 @@ const useFetchFactories = () => {
   return { factories, loading, error };
 };
 export default useFetchFactories;
+
