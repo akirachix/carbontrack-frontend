@@ -1,4 +1,4 @@
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { renderHook, waitFor} from '@testing-library/react';
 import useFactoryEmissions from './useFetchFactoryData';
 import { fetchEmissions } from '../utils/fetchEmissions';
 import { fetchFactories } from '../utils/fetchFactories';
