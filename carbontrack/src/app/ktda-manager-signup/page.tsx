@@ -82,7 +82,7 @@ export default function SignupPage() {
 
     const result = await signup(payload); 
     if (result) {
-      setSuccessMessage("Signup successful! Redirecting to dashboard...");
+      setSuccessMessage("Signup successful!");
       setFormData(defaultFormState);
       setTimeout(() => {
         router.push("/login");
