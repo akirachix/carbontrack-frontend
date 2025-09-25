@@ -9,11 +9,6 @@ jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock("next/image", () => ({
-  __esModule: true,
-  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...props} alt={props.alt || "mocked image"} />,
-}));
-
 jest.mock('framer-motion', () => ({
   motion: {
     div: (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />,
