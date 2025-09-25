@@ -1,9 +1,7 @@
 "use client";
 import React from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, } from "recharts";
-import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import {useFetchEmission} from "../hooks/useFetchEmissions";
@@ -11,10 +9,18 @@ import { useFetchEnergyEntries } from "../hooks/useFetchEnergyEntries";
 import Link from "next/link";
 import FactoryLayout from "../components/FactoryLayout";
 import Calendar from "../sharedComponents/Calendar";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
   const { selectedDate, setSelectedDate, barData, lineData, loading: emissionsLoading, todayTotal, monthTotal, } = useFetchEmission();
   const { totalCO2, error: energyLoading, } = useFetchEnergyEntries(selectedDate);
+    const [showSuccess, setShowSuccess] = useState(false);
+      useEffect(() => {
+      if (sessionStorage.getItem('loginSuccess')) {
+        setShowSuccess(true);
+        sessionStorage.removeItem('loginSuccess'); 
+      }
+    }, []);
 
   return (
     <FactoryLayout>
@@ -24,7 +30,7 @@ export default function DashboardPage() {
             <Link href="">
               <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
             </Link>
-            <Link href="/factoryprofile">
+            <Link href="/factory-profile">
               <IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
             </Link>
           </div>

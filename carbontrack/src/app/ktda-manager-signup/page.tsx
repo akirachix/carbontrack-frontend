@@ -85,7 +85,7 @@ export default function SignupPage() {
       setSuccessMessage("Signup successful! Redirecting to dashboard...");
       setFormData(defaultFormState);
       setTimeout(() => {
-        router.push("/ktda-dashboard");
+        router.push("/login");
       }, 2000);
     }
   };
