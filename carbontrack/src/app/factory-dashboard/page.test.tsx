@@ -23,25 +23,31 @@ jest.mock('../components/FactoryLayout', () => ({
 
 jest.mock('react-datepicker', () => ({
   __esModule: true,
-  default: ({ selected, onChange }: any) => (
+  default: ({
+    selected,
+    onChange,
+  }: {
+    selected: Date | null;
+    onChange: (date: Date) => void;
+  }) => (
     <input
       data-testid="date-picker"
       value={selected ? selected.toISOString().split('T')[0] : ''}
-      onChange={(e) => onChange(new Date(e.target.value))}
+      onChange={(e) => onChange(new Date((e.target as HTMLInputElement).value))}
     />
   ),
 }));
 
 jest.mock('recharts', () => ({
-  BarChart: ({ children }: any) => <div data-testid="bar-chart">{children}</div>,
+  BarChart: ({ children }: { children: React.ReactNode }) => <div data-testid="bar-chart">{children}</div>,
   Bar: () => <div data-testid="bar" />,
-  LineChart: ({ children }: any) => <div data-testid="line-chart">{children}</div>,
+  LineChart: ({ children }: { children: React.ReactNode }) => <div data-testid="line-chart">{children}</div>,
   Line: () => <div data-testid="line" />,
   XAxis: () => <div data-testid="x-axis" />,
   YAxis: () => <div data-testid="y-axis" />,
   CartesianGrid: () => <div data-testid="grid" />,
   Tooltip: () => <div data-testid="tooltip" />,
-  ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 describe('DashboardPage Component', () => {
@@ -84,6 +90,7 @@ describe('DashboardPage Component', () => {
       ...useFetchEnergyEntries(mockSelectedDate),
       totalCO2: null,
     });
+
     render(<DashboardPage />);
     expect(screen.getAllByText('No data')).toHaveLength(3);
   });

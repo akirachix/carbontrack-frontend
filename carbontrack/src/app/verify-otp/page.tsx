@@ -22,7 +22,6 @@ export default function VerifyCodePage() {
     useRef<HTMLInputElement>(null),
   ];
 
-
   useEffect(() => {
   if (success) {
     const timer = setTimeout(() => {

@@ -4,26 +4,37 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import ResetPasswordPage from "./page";
+import type { ImgHTMLAttributes } from 'react';
 
 const mockPush = jest.fn();
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-
-jest.mock("next/image", () => ({
+jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props: any) => <img {...props} alt={props.alt || "mocked image"} />,
+  default: (props: ImgHTMLAttributes<HTMLImageElement>) => <img {...props} alt={props.alt || 'mocked image'} />,
 }));
 
+jest.mock('framer-motion', () => {
+  type MotionProps<T extends keyof React.JSX.IntrinsicElements> = React.PropsWithChildren<React.JSX.IntrinsicElements[T]> & {
+    [key: string]: unknown;
+  };
 
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: (props: any) => <div {...props} />,
-    h1: (props: any) => <h1 {...props} />,
-    p: (props: any) => <p {...props} />,
-  },
-}));
+  const createMockComponent = <T extends keyof React.JSX.IntrinsicElements>(tag: T) => {
+    return ({ children, ...props }: MotionProps<T>) =>
+      React.createElement(tag, { ...props, 'data-framer-motion': tag }, children);
+  };
+
+  return {
+    motion: {
+      div: createMockComponent('div'),
+      h1: createMockComponent('h1'),
+      p: createMockComponent('p'),
+    },
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  };
+});
 
 jest.mock("react-icons/fi", () => ({
   FiEye: () => <span data-testid="eye-icon" aria-label="Show password"></span>,
@@ -55,7 +66,6 @@ describe("ResetPasswordPage", () => {
     mockHandleResetPassword.mockResolvedValue({ success: true });
 
 
-    delete (window as any).location; 
   });
 
   it("renders reset password form with logo and title", () => {

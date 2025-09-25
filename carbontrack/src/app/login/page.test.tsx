@@ -8,13 +8,29 @@ jest.mock('../hooks/useFetchLogin');
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: (props: any) => <div {...props} />,
-    h1: (props: any) => <h1 {...props} />,
-    p: (props: any) => <p {...props} />,
-  },
-}));
+import * as React from 'react';
+
+jest.mock('framer-motion', () => {
+  type MotionProps<T extends keyof React.JSX.IntrinsicElements> = React.PropsWithChildren<React.JSX.IntrinsicElements[T]> & {
+    [key: string]: unknown;
+  };
+
+  const createMockComponent = <T extends keyof React.JSX.IntrinsicElements>(tag: T) => {
+    return ({ children, ...props }: MotionProps<T>) =>
+      React.createElement(tag, { ...props, 'data-framer-motion': tag }, children);
+  };
+
+  return {
+    motion: {
+      div: createMockComponent('div'),
+      h1: createMockComponent('h1'),
+      p: createMockComponent('p'),
+      // Add more tags if needed
+    },
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  };
+});
+
 
 describe('LoginPage', () => {
   const mockLogin = jest.fn();

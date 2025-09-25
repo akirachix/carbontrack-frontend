@@ -21,18 +21,6 @@ jest.mock('../hooks/useFetchResendOTP', () => ({
   useResendOtp: jest.fn(),
 }));
 
-jest.mock('next/image', () => (props: any) => <img {...props} alt={props.alt} />);
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: (props: any) => <div {...props} />,
-    h1: (props: any) => <h1 {...props} />,
-    p: (props: any) => <p {...props} />,
-  },
-}));
-jest.mock('../sharedComponents/Button', () => ({ buttonText, type, onClick }: any) => (
-  <button type={type} onClick={onClick}>{buttonText}</button>
-));
-
 describe('VerifyCodePage — Core Functionality', () => {
   beforeEach(() => {
     jest.useFakeTimers();

@@ -11,16 +11,17 @@ jest.mock("next/navigation", () => ({
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: any) => <img {...props} alt={props.alt || "mocked image"} />,
+  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => <img {...props} alt={props.alt || "mocked image"} />,
 }));
 
 jest.mock('framer-motion', () => ({
   motion: {
-    div: (props: any) => <div {...props} />,
-    h1: (props: any) => <h1 {...props} />,
-    p: (props: any) => <p {...props} />,
+    div: (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />,
+    h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h1 {...props} />,
+    p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p {...props} />,
   },
 }));
+
 let mockLoading = false;
 let mockError: string | null = null;
 let mockSuccess: string | null = null;

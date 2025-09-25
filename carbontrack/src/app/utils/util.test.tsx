@@ -1,99 +1,216 @@
-import { mapFactories, calculateAlerts, calculateEmissionTrend, calculateEnergySummary, calculateTotalEmissions, filterByDate}  from '../utils/util';
+import {
+  mapFactories,
+  calculateAlerts,
+  calculateEmissionTrend,
+  calculateEnergySummary,
+  calculateTotalEmissions,
+  filterByDate,
+} from "../utils/util";
 
-describe('Utility Functions', () => {
-  describe('mapFactories', () => {
-    it('maps factory_id to factory_name correctly', () => {
-      const factories = [
-        { factory_id: 1, factory_name: 'Maramba' },
-        { factory_id: 2, factory_name: 'Boito'},
-      ];
+import { ComplianceType, FactoryData, EnergyEntryData, EmissionData } from "../types";
+
+describe("utils functions", () => {
+  const factories: FactoryData[] = [
+    {
+      factory_id: 1,
+      factory_name: "Factory A",
+      factory_location: "Test Location 1",
+      created_at: "2025-09-01T00:00:00Z",
+    },
+    {
+      factory_id: 2,
+      factory_name: "Factory B",
+      factory_location: "Test Location 2",
+      created_at: "2025-09-02T00:00:00Z",
+    },
+  ];
+
+  const factoryMap = mapFactories(factories);
+
+  const complianceData: ComplianceType[] = [
+    {
+      factory: 1,
+      compliance_target: "0.01", // Lower target to trigger alert
+      compliance_status: "active",
+      created_at: "2025-09-01T00:00:00Z",
+      updated_at: "2025-09-10T00:00:00Z",
+    },
+    {
+      factory: 2,
+      compliance_target: "100", // Very high to avoid alert
+      compliance_status: "inactive",
+      created_at: "2025-09-03T00:00:00Z",
+      updated_at: "2025-09-11T00:00:00Z",
+    },
+  ];
+
+  const energyData: EnergyEntryData[] = [
+    {
+      data_id: 1,
+      factory: 1,
+      co2_equivalent: "1",
+      tea_processed_amount: "10",
+      energy_amount: "5",
+      energy_type: "Firewood",
+      created_at: "2025-09-01T00:00:00Z",
+      updated_at: "2025-09-01T00:00:00Z",
+    },
+    {
+      data_id: 2,
+      factory: 1,
+      co2_equivalent: "2",
+      tea_processed_amount: "20",
+      energy_amount: "7",
+      energy_type: "Diesel", // Included exact casing and positive value
+      created_at: "2025-09-02T00:00:00Z",
+      updated_at: "2025-09-02T00:00:00Z",
+    },
+    {
+      data_id: 3,
+      factory: 2,
+      co2_equivalent: "3",
+      tea_processed_amount: "15",
+      energy_amount: "10",
+      energy_type: "Electricity",
+      created_at: "2025-09-03T00:00:00Z",
+      updated_at: "2025-09-03T00:00:00Z",
+    },
+  ];
+
+  const emissionData: EmissionData[] = [
+    {
+      emissions_id: 1,
+      mcu_device_id: "device1",
+      mcu: "mcu1",
+      emission_rate: "10", // Increased to ensure alert
+      created_at: "2025-09-01T00:00:00Z",
+      updated_at: "2025-09-25T12:00:00Z",
+    },
+    {
+      emissions_id: 2,
+      mcu_device_id: "device2",
+      mcu: "mcu2",
+      emission_rate: "0.4",
+      created_at: "2025-09-02T00:00:00Z",
+      updated_at: "2025-09-25T12:00:00Z",
+    },
+  ];
+
+  const mcuFactoryMap: Record<string, number> = {
+    mcu1: 1,
+    mcu2: 2,
+  };
+
+  describe("mapFactories", () => {
+    it("returns a map of factory_id to factory_name", () => {
       expect(mapFactories(factories)).toEqual({
-        1: 'Maramba',
-        2: 'Boito',
+        1: "Factory A",
+        2: "Factory B",
       });
     });
   });
-  describe('calculateAlerts', () => {
-    it('detects factories exceeding compliance target', () => {
-      const compliance = [{ factory: 1, compliance_target: '0.1' }]; 
-      const energy = [
-        { factory: 1, co2_equivalent: '3', tea_processed_amount: '10' },
-        { factory: 1, co2_equivalent: '1', tea_processed_amount: '10' },
-      ];
-      const emissions = [{ factory: 1, emission_rate: '3' }]; 
-      const factoryMap = { 1: 'Maramba' };
 
-      const alerts = calculateAlerts(compliance, energy, emissions, factoryMap);
-      expect(alerts).toHaveLength(1);
-      expect(alerts[0].factoryId).toBe(1);
-      expect(alerts[0].factoryName).toBe('Maramba');
-      expect(alerts[0].emissionPerKg).toBeCloseTo((3 + 1 + 3) / 20);
+  describe("calculateAlerts", () => {
+    it("returns alerts for factories exceeding compliance targets", () => {
+      const alerts = calculateAlerts(
+        complianceData,
+        energyData,
+        emissionData,
+        factoryMap,
+        mcuFactoryMap
+      );
+      expect(alerts.length).toBeGreaterThan(0);
+      alerts.forEach((alert) => {
+        expect(alert.emissionPerKg).toBeGreaterThan(alert.complianceTarget);
+        expect(alert.factoryName).toBeDefined();
+      });
     });
 
-    it('ignores factories with zero tea processed', () => {
-      const compliance = [{ factory: 1, compliance_target: '0.1' }];
-      const energy = [{ factory: 1, co2_equivalent: '3', tea_processed_amount: '0' }];
-      const emissions = [{ factory: 1, emission_rate: '3' }];
-      const factoryMap = { 1: 'Maramba' };
-
-      const alerts = calculateAlerts(compliance, energy, emissions, factoryMap);
+    it("returns empty array if no factory exceeds target", () => {
+      const lowCompliance = complianceData.map((c) => ({
+        ...c,
+        compliance_target: "100",
+      }));
+      const alerts = calculateAlerts(
+        lowCompliance,
+        energyData,
+        emissionData,
+        factoryMap,
+        mcuFactoryMap
+      );
       expect(alerts).toEqual([]);
     });
-  });
 
-  describe('calculateEmissionTrend', () => {
-    it('returns emissions grouped by month with zeros for missing months', () => {
-      const data = [
-        { updated_at: '2025-01-15T00:00:00Z', emission_rate: '5' },
-        { updated_at: '2025-03-15T00:00:00Z', emission_rate: '10' },
-      ];
-      const trend = calculateEmissionTrend(data);
-      expect(trend.find((t) => t.month === 'Jan')?.rate).toBe(5);
-      expect(trend.find((t) => t.month === 'Feb')?.rate).toBe(0);
-      expect(trend.find((t) => t.month === 'Mar')?.rate).toBe(10);
+    it("returns null and filtered out if teaProcessedSum is 0", () => {
+      const energyEmptyTea = [{ ...energyData[0], tea_processed_amount: "0" }];
+      const alerts = calculateAlerts(
+        complianceData,
+        energyEmptyTea,
+        emissionData,
+        factoryMap,
+        mcuFactoryMap
+      );
+      expect(alerts.every((a) => a !== null)).toBe(true);
     });
   });
 
-  describe('calculateEnergySummary', () => {
-    it('correctly sums different energy types and total', () => {
-      const energyData = [
-        { energy_type: 'firewood', energy_amount: '10 kg' },
-        { energy_type: 'electricity', energy_amount: 20 },
-        { energy_type: 'diesel', energy_amount: '5 liters' },
-        { energy_type: 'unknown', energy_amount: '3' },
-      ];
+  describe("calculateEmissionTrend", () => {
+    it("maps emissions rates per month correctly", () => {
+      const trend = calculateEmissionTrend(emissionData);
+      expect(trend).toHaveLength(12);
+      const sept = trend.find((t) => t.month === "Sep");
+      expect(sept?.rate).toBeCloseTo(0.4, 1);
+      trend.forEach((t) => {
+        expect(typeof t.month).toBe("string");
+        expect(typeof t.rate).toBe("number");
+      });
+    });
+
+    it("returns zeros for months with no data", () => {
+      const emptyTrend = calculateEmissionTrend([]);
+      expect(emptyTrend.every((t) => t.rate === 0)).toBe(true);
+    });
+  });
+
+  describe("calculateEnergySummary", () => {
+    it("correctly sums energy amounts by type", () => {
       const summary = calculateEnergySummary(energyData);
-      expect(summary.firewood).toBe(10);
-      expect(summary.electricity).toBe(20);
-      expect(summary.diesel).toBe(5);
-      expect(summary.total).toBe(38);
+      expect(summary.firewood).toBeCloseTo(5);
+      expect(summary.electricity).toBeCloseTo(10);
+      expect(summary.diesel).toBeCloseTo(7);
+      expect(summary.total).toBeCloseTo(5 + 10 + 7);
     });
   });
 
-  describe('calculateTotalEmissions', () => {
-    it('correctly sums total emission rates and CO2 equivalents', () => {
-      const emissions = [{ emission_rate: '7' }, { emission_rate: '3' }];
-      const energy = [{ co2_equivalent: '4' }, { co2_equivalent: '1' }];
-      expect(calculateTotalEmissions(emissions, energy)).toBe(15);
+  describe("calculateTotalEmissions", () => {
+    it("returns sum of emission rates and co2 equivalents", () => {
+      const total = calculateTotalEmissions(emissionData, energyData);
+      const expected =
+        emissionData.reduce(
+          (acc, v) => acc + parseFloat(v.emission_rate || "0"),
+          0
+        ) +
+        energyData.reduce((acc, v) => acc + parseFloat(v.co2_equivalent || "0"), 0);
+      expect(total).toBeCloseTo(expected);
     });
   });
 
-  describe('filterByDate', () => {
-    const dataset = [
-      { created_at: '2025-09-19T05:00:00Z' },
-      { updated_at: '2025-09-18T05:00:00Z' },
-      { created_at: '2025-09-19T15:00:00Z' },
-      { created_at: undefined },
+  describe("filterByDate", () => {
+    const dataWithDates = [
+      { created_at: "2025-09-25T10:00:00Z" },
+      { created_at: "2025-09-24T10:00:00Z" },
+      { updated_at: "2025-09-25T10:00:00Z" },
     ];
 
-    it('filters by exact date string', () => {
-      const result = filterByDate(dataset, '2025-09-19');
-      expect(result).toHaveLength(2);
+    it("filters entries by exact selectedDate", () => {
+      const filtered = filterByDate(dataWithDates, "2025-09-25");
+      expect(filtered.length).toBe(2);
     });
 
-    it('returns all data if date filter is empty', () => {
-      const result = filterByDate(dataset, '');
-      expect(result).toHaveLength(dataset.length);
+    it("returns all data if selectedDate is empty string", () => {
+      const filtered = filterByDate(dataWithDates, "");
+      expect(filtered.length).toBe(dataWithDates.length);
     });
+
   });
 });

@@ -9,17 +9,15 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: (props: any) => <div {...props} />,
-    h1: (props: any) => <h1 {...props} />,
-    p: (props: any) => <p {...props} />,
-  },
-}));
 
-jest.mock("framer-motion", () => {
-  const createMockComponent = (tag: string) => {
-    return ({ children, ...props }: React.PropsWithChildren<any>) =>
+
+jest.mock('framer-motion', () => {
+  type MotionProps<T extends keyof React.JSX.IntrinsicElements> = React.PropsWithChildren<React.JSX.IntrinsicElements[T]> & {
+    [key: string]: unknown;
+  };
+
+  const createMockComponent = <T extends keyof React.JSX.IntrinsicElements>(tag: T) => {
+    return ({ children, ...props }: MotionProps<T>) =>
       React.createElement(tag, { ...props, "data-framer-motion": tag }, children);
   };
 
@@ -32,6 +30,7 @@ jest.mock("framer-motion", () => {
     AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   };
 });
+
 
 jest.mock("react-icons/fi", () => ({
   FiEye: () => <span data-testid="eye-icon" aria-label="Show password"></span>,
