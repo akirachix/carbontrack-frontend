@@ -19,7 +19,7 @@ export default function LoginPage() {
     setSuccessMessage(null);
     const user = await login(email, password);
     if (user) {
-      setSuccessMessage("Signup successful! Redirecting to dashboard...");
+      setSuccessMessage("Login successful! Redirecting to dashboard...");
     if (!user) return; 
     router.push(user.user_type === "factory" ? "/factory-dashboard" : "/ktda-dashboard");
   };
