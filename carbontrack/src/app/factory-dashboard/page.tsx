@@ -9,6 +9,7 @@ import { useFetchEnergyEntries } from "../hooks/useFetchEnergyEntries";
 import Link from "next/link";
 import FactoryLayout from "../components/FactoryLayout";
 import Calendar from "../sharedComponents/Calendar";
+import MqttSubscriber from "../hivemq/mqtt_client";
 import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
@@ -25,6 +26,7 @@ export default function DashboardPage() {
   return (
     <FactoryLayout>
       <div className="bg-black text-white w-full md:w-full  min-h-screen flex ">
+        <MqttSubscriber/>
         <main className="flex-1 p-6 md:p-8 overflow-auto w-full mx-auto">
           <div className="flex justify-end w-16 ml-350 space-x-4">
             <Link href="">
