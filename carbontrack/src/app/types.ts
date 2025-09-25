@@ -46,7 +46,6 @@ export interface UserType {
   user_type: string;
   profile_image: string;
 }
-
 export interface ComplianceType{
         compliance_target: string;
         compliance_status: string;

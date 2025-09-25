@@ -10,10 +10,57 @@ import SidebarLayout from "../components/SideBarLayout";
 import AlertModal from "./component/HighEmissionAlerts";
 import { IoMdWarning } from "react-icons/io";
 import Calendar from "../sharedComponents/Calendar";
-import {mapFactories, calculateAlerts, calculateEmissionTrend,calculateEnergySummary,calculateTotalEmissions, filterByDate} from "../utils/util";
-
-const COLORS = ["#F79B72", "#2A4564", "#a5a5a5"];
-
+import {mapFactories, calculateAlerts, calculateEmissionTrend,calculateEnergySummary,calculateTotalEmissions, filterByDate, addFactoryToEmissions} from "../utils/util";
+import {
+  ComplianceType,
+  EmissionData,
+  EnergyEntryData,
+  FactoryData,
+  McuData
+} from "../types";
+const COLORS = ["#F79B72", "#2A4564", "#A5A5A5"];
+// Define hook-specific interfaces that match what the hooks return
+interface HookComplianceData {
+  compliance_target: string;
+  compliance_status: string;
+  created_at: string;
+  updated_at: string | undefined;
+  factory: number;
+}
+interface HookEmissionData {
+  emissions_id: number;
+  emission_rate: string;
+  mcu: string;
+  mcu_device_id: string;
+  updated_at: string;
+  // Missing created_at which is required in EmissionData
+}
+// Type transformation functions
+const transformComplianceData = (compliance: HookComplianceData[]): ComplianceType[] => {
+  return compliance.map(item => ({
+    ...item,
+    updated_at: item.updated_at || "" // Ensure updated_at is a string
+  }));
+};
+const transformEmissionData = (emissions: HookEmissionData[]): EmissionData[] => {
+  return emissions.map(item => ({
+    ...item,
+    created_at: item.updated_at // Add missing created_at property using updated_at as fallback
+  }));
+};
+// Function to add factory property to emissions data
+const addFactoryToEmissionsData = (emissions: EmissionData[], mcuData: McuData[]) => {
+  const mcuMap: Record<string, number> = {};
+  // Create a mapping from mcu_id to factory
+  mcuData.forEach(mcu => {
+    mcuMap[mcu.mcu_id] = mcu.factory;
+  });
+  // Add factory property to each emission
+  return emissions.map(emission => ({
+    ...emission,
+    factory: mcuMap[emission.mcu] || 0 // Default to 0 if not found
+  }));
+};
 export default function DashboardPage() {
   const { energy, loading: energyLoading } = useFetchEnergy();
   const { emissions, loading: emissionLoading } = useFetchEmissions();
@@ -21,25 +68,35 @@ export default function DashboardPage() {
   const { factories, loading: factoryLoading } = useFetchFactories();
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [showAlertModal, setShowAlertModal] = useState(false);
-
-  const filteredEnergy = filterByDate(energy, selectedDate);
-  const filteredEmissions = filterByDate(emissions, selectedDate);
-  const filteredCompliance = filterByDate(compliance, selectedDate);
-
-  const factoryMap = mapFactories(factories);
-  const alerts = calculateAlerts(filteredCompliance, filteredEnergy, filteredEmissions, factoryMap);
+  // Transform data to match expected types
+  const transformedCompliance = transformComplianceData(compliance as HookComplianceData[]);
+  const transformedEmissions = transformEmissionData(emissions as HookEmissionData[]);
+  const filteredEnergy = filterByDate(energy as EnergyEntryData[], selectedDate);
+  const filteredEmissions = transformEmissionData(filterByDate(emissions as HookEmissionData[], selectedDate));
+  const filteredCompliance = transformComplianceData(filterByDate(compliance as HookComplianceData[], selectedDate));
+  // Create a mock MCU data array since we don't have it from hooks
+  // In a real implementation, you would fetch this data
+  const mockMcuData: McuData[] = filteredEmissions.map(emission => ({
+    id: 1,
+    mcu_id: emission.mcu,
+    status: "active",
+    created_at: emission.created_at,
+    factory: 1 // Default factory ID
+  }));
+  // Add factory property to emissions
+  const emissionsWithFactory = addFactoryToEmissionsData(filteredEmissions, mockMcuData);
+  const factoryMap = mapFactories(factories as FactoryData[]);
+  const alerts = calculateAlerts(filteredCompliance, filteredEnergy, emissionsWithFactory, factoryMap);
   const fullEmissionTrend = calculateEmissionTrend(filteredEmissions);
   const energySummary = calculateEnergySummary(filteredEnergy);
-  const totalCombinedEmissions = calculateTotalEmissions(filteredEmissions, filteredEnergy);
+  const totalCombinedEmissions = calculateTotalEmissions(emissionsWithFactory, filteredEnergy);
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
   const pieData = [
     { name: "Firewood", value: energySummary.total ? parseFloat(((energySummary.firewood / energySummary.total) * 100).toFixed(2)) : 0 },
     { name: "Electricity", value: energySummary.total ? parseFloat(((energySummary.electricity / energySummary.total) * 100).toFixed(2)) : 0 },
     { name: "Diesel", value: energySummary.total ? parseFloat(((energySummary.diesel / energySummary.total) * 100).toFixed(2)) : 0 },
   ];
-
   const isLoading = energyLoading || emissionLoading || complianceLoading || factoryLoading;
-
   return (
     <SidebarLayout>
       <div className="h-screen text-white w-[85vw]">
@@ -133,7 +190,6 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   </div>
-
                   <h3 className="font-semibold text-white text-[20px]">Consumed Energy</h3>
                   <div className="bg-gray-800 p-4 rounded-lg">
                     <ResponsiveContainer width="100%" height={250}>
