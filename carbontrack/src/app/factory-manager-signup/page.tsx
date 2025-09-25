@@ -38,7 +38,9 @@ export default function SignupPage() {
   }, [error, signupError]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    let { name, value } = e.target;
+    const { name, value:originalValue } = e.target;
+
+    let value = originalValue
 
     if (name === "phone_number") {
       value = value.replace(/\D/g, "").slice(0, 15);
