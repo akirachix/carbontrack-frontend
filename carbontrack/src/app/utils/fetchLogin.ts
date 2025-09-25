@@ -1,4 +1,5 @@
 const baseUrl = "/api/login";
+
 export async function fetchLogin(credentials: { email: string; password: string }) {
   try {
     const response = await fetch(baseUrl, {
@@ -9,13 +10,17 @@ export async function fetchLogin(credentials: { email: string; password: string 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error (data.message || "Invalid password or email")
+      throw new Error(data.message || "Invalid password or email");
     }
- return data;
+    onUserSignIn(data.user);
+
+    return data;
   } catch (error) {
-    throw new Error( (error as Error).message);
+    throw new Error((error as Error).message);
   }
 }
 
-
-
+function onUserSignIn(user: { factory: number }) {
+  localStorage.setItem("factory", user.factory.toString());
+  localStorage.setItem("user", JSON.stringify(user));
+}
