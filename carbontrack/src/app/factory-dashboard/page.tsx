@@ -10,19 +10,10 @@ import Link from "next/link";
 import FactoryLayout from "../components/FactoryLayout";
 import Calendar from "../sharedComponents/Calendar";
 import MqttSubscriber from "../hivemq/mqtt_client";
-import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
   const { selectedDate, setSelectedDate, barData, lineData, loading: emissionsLoading, todayTotal, monthTotal, } = useFetchEmission();
   const { totalCO2, error: energyLoading, } = useFetchEnergyEntries(selectedDate);
-    const [showSuccess, setShowSuccess] = useState(false);
-      useEffect(() => {
-      if (sessionStorage.getItem('loginSuccess')) {
-        setShowSuccess(true);
-        sessionStorage.removeItem('loginSuccess'); 
-      }
-    }, []);
-
   return (
     <FactoryLayout>
       <div className="bg-black text-white w-full md:w-full  min-h-screen flex ">
