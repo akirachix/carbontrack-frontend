@@ -1,12 +1,10 @@
 "use client";
 import React from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, } from "recharts";
-import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
-import {useFetchEmission} from "../hooks/useFetchEmissions";
+import { useFetchEmission } from "../hooks/useFetchEmissions";
 import { useFetchEnergyEntries } from "../hooks/useFetchEnergyEntries";
 import Link from "next/link";
 import FactoryLayout from "../components/FactoryLayout";
@@ -20,7 +18,7 @@ export default function DashboardPage() {
   return (
     <FactoryLayout>
       <div className="bg-black text-white w-full md:w-full  min-h-screen flex ">
-        <MqttSubscriber/>
+        <MqttSubscriber />
         <main className="flex-1 p-6 md:p-8 overflow-auto w-full mx-auto">
           <div className="flex justify-end w-16 ml-350 space-x-4">
             <Link href="">
@@ -35,13 +33,13 @@ export default function DashboardPage() {
             Real-time monitoring for individual factory operations
           </p>
 
-        <Calendar
+          <Calendar
             selectedDate={selectedDate}
             setSelectedDate={(selectedDate) => {
               if (selectedDate) {
-                const yyyy = selectedDate.getFullYear();
-                const mm = String(selectedDate.getMonth() + 1).padStart(2, "0");
-                const dd = String(selectedDate.getDate()).padStart(2, "0");
+                selectedDate.getFullYear();
+                String(selectedDate.getMonth() + 1).padStart(2, "0");
+                String(selectedDate.getDate()).padStart(2, "0");
                 setSelectedDate(selectedDate);
               }
             }}
@@ -50,9 +48,9 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
               <p className="text-gray-300">Today’s total CO2 emissions</p>
-                <p className="text-2xl font-bold mt-2 truncate">
-                  {emissionsLoading ? "Loading..." : todayTotal !== null ? `${todayTotal.toFixed(6)} kgs` : "No data"}
-                </p>
+              <p className="text-2xl font-bold mt-2 truncate">
+                {emissionsLoading ? "Loading..." : todayTotal !== null ? `${todayTotal.toFixed(6)} kgs` : "No data"}
+              </p>
             </div>
 
             <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
@@ -65,7 +63,7 @@ export default function DashboardPage() {
             <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
               <p className="text-gray-300">Indirect Emissions</p>
               <p className="text-2xl font-bold mt-2 truncate">
-                {totalCO2 !== null ? `${totalCO2.toFixed(6)} kgs`: energyLoading ? "Loading...": "No data"}
+                {totalCO2 !== null ? `${totalCO2.toFixed(6)} kgs` : energyLoading ? "Loading..." : "No data"}
               </p>
 
             </div>
