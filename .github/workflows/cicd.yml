@@ -28,11 +28,11 @@ jobs:
 
       - name: Run tests
         run: npm test
-        working-directory: imformationalwebsite
+        working-directory: carbontrack
 
       - name: Build React app
         run: npm run build
-        working-directory: imformationalwebsite
+        working-directory: carbontrack
 
       - name: Deploy to Vercel
         if: github.ref == 'refs/heads/main'
