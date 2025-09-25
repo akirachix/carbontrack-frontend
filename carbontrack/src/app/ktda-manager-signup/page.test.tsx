@@ -9,17 +9,20 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-
-
 jest.mock('framer-motion', () => {
   type MotionProps<T extends keyof React.JSX.IntrinsicElements> = React.PropsWithChildren<React.JSX.IntrinsicElements[T]> & {
     [key: string]: unknown;
   };
 
   const createMockComponent = <T extends keyof React.JSX.IntrinsicElements>(tag: T) => {
-    return ({ children, ...props }: MotionProps<T>) =>
+    const MockComponent = ({ children, ...props }: MotionProps<T>) =>
       React.createElement(tag, { ...props, "data-framer-motion": tag }, children);
+    MockComponent.displayName = `MockFramerMotion.${tag}`;
+    return MockComponent;
   };
+
+  const AnimatePresence = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+  AnimatePresence.displayName = "MockAnimatePresence";
 
   return {
     motion: {
@@ -27,15 +30,20 @@ jest.mock('framer-motion', () => {
       h1: createMockComponent("h1"),
       p: createMockComponent("p"),
     },
-    AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    AnimatePresence,
   };
 });
 
-
-jest.mock("react-icons/fi", () => ({
-  FiEye: () => <span data-testid="eye-icon" aria-label="Show password"></span>,
-  FiEyeOff: () => <span data-testid="eye-off-icon" aria-label="Hide password"></span>,
-}));
+jest.mock("react-icons/fi", () => {
+  const FiEye = () => <span data-testid="eye-icon" aria-label="Show password"></span>;
+  FiEye.displayName = "MockFiEye";
+  const FiEyeOff = () => <span data-testid="eye-off-icon" aria-label="Hide password"></span>;
+  FiEyeOff.displayName = "MockFiEyeOff";
+  return {
+    FiEye,
+    FiEyeOff,
+  };
+});
 
 let mockLoadingSignup = false;
 let mockSignupError: string | null = null;
@@ -81,8 +89,8 @@ describe("SignupPage", () => {
     const emailInput = screen.getByPlaceholderText("eg, mark@gmail.com");
     const phoneInput = screen.getByPlaceholderText("eg, 0747839864");
     const passwordInputs = screen.getAllByPlaceholderText("eg, 0@HGY4");
-    const passwordInput = passwordInputs[0]; 
-    const confirmPasswordInput = passwordInputs[1]; 
+    const passwordInput = passwordInputs[0];
+    const confirmPasswordInput = passwordInputs[1];
 
     await user.type(firstNameInput, "Emebet");
     await user.type(lastNameInput, "Girmay");
@@ -94,7 +102,7 @@ describe("SignupPage", () => {
     expect(firstNameInput).toHaveValue("Emebet");
     expect(lastNameInput).toHaveValue("Girmay");
     expect(emailInput).toHaveValue("girmaayemebet@gmail.com");
-    expect(phoneInput).toHaveValue("254709090909"); 
+    expect(phoneInput).toHaveValue("254709090909");
     expect(passwordInput).toHaveValue("girmaayemebet");
     expect(confirmPasswordInput).toHaveValue("girmaayemebet");
   });
@@ -121,7 +129,7 @@ describe("SignupPage", () => {
     render(<SignupPage />);
 
     const passwordInput = screen.getAllByPlaceholderText("eg, 0@HGY4")[0];
-    await user.type(passwordInput, "girmaay"); 
+    await user.type(passwordInput, "girmaay");
 
     const errorMessage = await screen.findByText("Password has to be at least 8 characters");
     expect(errorMessage).toBeInTheDocument();
@@ -181,7 +189,7 @@ describe("SignupPage", () => {
       first_name: "Emebet",
       last_name: "Girmay",
       email: "girmaayemebet@gmail.com",
-      phone_number: "254709090909", 
+      phone_number: "254709090909",
       password: "girmaayemebet",
       user_type: "manager",
     });
@@ -219,6 +227,6 @@ describe("SignupPage", () => {
     const phoneInput = screen.getByPlaceholderText("eg, 0747839864");
     await user.type(phoneInput, "+254709090909abc");
 
-    expect(phoneInput).toHaveValue("254709090909"); 
+    expect(phoneInput).toHaveValue("254709090909");
   });
 });

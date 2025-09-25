@@ -67,7 +67,7 @@ describe('EmissionsHeatmapPage', () => {
     { factoryName: 'Factory E', totalEmission: 3.1 },
   ];
 
-  let mockUseEmissionsData = {
+  const mockUseEmissionsData = {
     factoryEmissions: mockFactoryEmissions,
     loading: false,
     error: null,

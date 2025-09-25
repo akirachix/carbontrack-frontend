@@ -58,31 +58,39 @@ jest.mock("../hooks/useFetchFactories", () =>
   }))
 );
 
-jest.mock("../sharedComponents/Calendar", () => ({
-  setSelectedDate,
-}: {
-  setSelectedDate: (date: Date) => void;
-}) => (
-  <button
-    onClick={() => setSelectedDate(new Date("2025-01-01"))}
-    data-testid="calendar"
-  >
-    Mock Calendar
-  </button>
-));
+jest.mock("../sharedComponents/Calendar", () => {
+  const MockCalendar = ({
+    setSelectedDate,
+  }: {
+    setSelectedDate: (date: Date) => void;
+  }) => (
+    <button
+      onClick={() => setSelectedDate(new Date("2025-01-01"))}
+      data-testid="calendar"
+    >
+      Mock Calendar
+    </button>
+  );
+  MockCalendar.displayName = "MockCalendar";
+  return MockCalendar;
+});
 
-jest.mock("./component/HighEmissionAlerts", () => ({
-  alerts,
-  onClose,
-}: {
-  alerts: string[]; 
-  onClose: () => void;
-}) => (
-  <div data-testid="alert-modal">
-    <p>Mock Alerts: {alerts.length}</p>
-    <button onClick={onClose}>Close</button>
-  </div>
-));
+jest.mock("./component/HighEmissionAlerts", () => {
+  const MockHighEmissionAlerts = ({
+    alerts,
+    onClose,
+  }: {
+    alerts: string[];
+    onClose: () => void;
+  }) => (
+    <div data-testid="alert-modal">
+      <p>Mock Alerts: {alerts.length}</p>
+      <button onClick={onClose}>Close</button>
+    </div>
+  );
+  MockHighEmissionAlerts.displayName = "MockHighEmissionAlerts";
+  return MockHighEmissionAlerts;
+});
 
 jest.mock("recharts", () => {
   const Original = jest.requireActual("recharts");

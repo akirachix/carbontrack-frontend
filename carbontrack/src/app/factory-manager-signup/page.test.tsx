@@ -13,7 +13,7 @@ const mockSignup = jest.fn().mockResolvedValue(true);
 
 let mockLoadingFactories = false;
 let mockFactoryError: string | null = null;
-let mockFactories = [
+const mockFactories = [
   { factory_id: "1", factory_name: "Factory A" },
   { factory_id: "2", factory_name: "Factory B" },
 ];
