@@ -3,17 +3,22 @@ import { fetchLogin } from './fetchLogin';
 describe('fetchLogin utility', () => {
   beforeEach(() => {
     global.fetch = jest.fn();
+    localStorage.clear();
   });
 
-  it('resolves with data on successful login', async () => {
-    const mockData = { access: 'token', user: { user_type: 'factory' } };
+  it('resolves with data on successful login and stores factory and user', async () => {
+    const mockUser = { user_type: 'factory', factory: 10 };
+    const mockData = { access: 'token', user: mockUser };
     (fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: async () => mockData,
     });
 
     const result = await fetchLogin({ email: 'girmaayemebet@gmail.com', password: 'girmaayemebet' });
+
     expect(result).toEqual(mockData);
+    expect(localStorage.getItem('factory')).toBe(mockUser.factory.toString());
+    expect(localStorage.getItem('user')).toBe(JSON.stringify(mockUser));
   });
 
   it('throws error on failed login response', async () => {

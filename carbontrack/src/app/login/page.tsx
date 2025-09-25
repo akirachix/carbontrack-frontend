@@ -1,3 +1,4 @@
+// pages/login.tsx
 "use client";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -13,12 +14,14 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const user = await login(email, password);
-    if (!user) return; 
+    if (!user) return;
     router.push(user.user_type === "factory" ? "/factory-dashboard" : "/ktda-dashboard");
   };
+
   return (
     <div className="flex h-screen w-screen bg-[#D9D9D9]">
       <div className="flex flex-col items-center flex-1 bg-gray-200 text-center 2xl:p-10 2xl:pt-40">
@@ -29,7 +32,7 @@ export default function LoginPage() {
           Carbon Track
         </motion.h1>
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1, ease: "easeOut" }} className="text-base md:text-lg lg:text-xl 2xl:text-[35px] 2xl:py-2 font-semibold text-[#F79B72]">
-        Welcome Back
+          Welcome Back
         </motion.p>
       </div>
       <div className="flex-1 flex items-center justify-center bg-[#234052]">

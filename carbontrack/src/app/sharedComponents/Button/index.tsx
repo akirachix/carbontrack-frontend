@@ -15,7 +15,7 @@ const Button = ({buttonText, variant, onclickHandler, icon, type="button"}: Butt
             case "secondary":
                 return 'w-full p-3 bg-[#F79B72] text-white rounded-md font-bold text-[1.4rem] mt-2 hover:bg-[#f8b88f] transition disabled:opacity-60 drop-shadow-lg '
             case "create":
-                return 'bg-[#2A4759]  p-4 w-50 h-17 text-white  font-bold text-[20px] hover:bg-[#F79B72] transition-colors duration-400 ease-in-out '
+                return 'bg-[#F79B72]  p-2 w-40 h-15 text-white  font-bold text-[20px] hover:bg-[#F79B72] transition-colors duration-400 ease-in-out '
             case "save":
                 return 'bg-[#F79B72] text-white font-bold  p-2 w-50 h-15 hover:bg-[#2A4759] transition-colors duration-400 ease-in-out';
             default:
