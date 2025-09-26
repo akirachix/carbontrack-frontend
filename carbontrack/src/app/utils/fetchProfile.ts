@@ -42,13 +42,13 @@ export async function fetchProfile() {
     }
     return await response.json(); 
   } catch (error) {
-    throw new Error((error as Error).message || "Network or parsing error");
+    throw new Error((error as Error).message);
   }
 }
 
 export async function updateUser(data: FormData | ProfileUpdatePayload) {
   if (typeof window === "undefined") {
-    throw new Error("updateUser can only run in the browser");
+    throw new Error("Failed to update user");
   }
   const token = localStorage.getItem("accessToken");
   const userString = localStorage.getItem("user");
@@ -64,10 +64,10 @@ export async function updateUser(data: FormData | ProfileUpdatePayload) {
   }
 
   if (!token) {
-    throw new Error("No token found in localStorage. Please set it.");
+    throw new Error("No token found in localStorage.");
   }
   if (!userId) {
-    throw new Error("No user ID found in localStorage. Please set it.");
+    throw new Error("No user ID found in localStorage.");
   }
 
   try {
