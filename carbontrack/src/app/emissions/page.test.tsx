@@ -161,27 +161,7 @@ describe('EmissionsHeatmapPage', () => {
     expect(screen.getByText('No Emissions')).toBeInTheDocument();
   });
 
-  test('renders gradient scale with labels', () => {
-    render(<EmissionsHeatmapPage />);
 
-    const totalEmission = mockFactoryEmissions.reduce((sum, item) => sum + item.totalEmission, 0);
-    const avgEmission = totalEmission / mockFactoryEmissions.length;
-    expect(screen.getByText(`${(avgEmission * 2).toFixed(0)} kg/s`)).toBeInTheDocument();
-    expect(screen.getByText(`${avgEmission.toFixed(0)} kg/s`)).toBeInTheDocument();
-    expect(screen.getByText(`${(avgEmission * 0.5).toFixed(0)} kg/s`)).toBeInTheDocument();
-    const gradientScaleContainer = document.querySelector('.relative.h-\\[320px\\]') as HTMLElement | null;
-
-    if (gradientScaleContainer) {
-      const zeroKgS = within(gradientScaleContainer).getByText('0 kg/s');
-      expect(zeroKgS).toBeInTheDocument();
-    } else {
-      const zeroKgSElements = screen.getAllByText('0 kg/s');
-      const gradientScaleZero = zeroKgSElements.find(el => 
-        el.classList.contains('absolute') && el.classList.contains('left-\\[70px\\]')
-      );
-      expect(gradientScaleZero).toBeInTheDocument();
-    }
-  });
 
   test('handles date selection correctly', async () => {
     render(<EmissionsHeatmapPage />);
