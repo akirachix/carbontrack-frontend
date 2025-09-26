@@ -149,7 +149,7 @@ export default function DashboardPage() {
               </div>
               <h1 className="mb-4 font-semibold text-white 2xl:text-[1.5rem] 2xl:mt-5 xl:text-[1.3rem] xl:mt-3">Emission Trend</h1>
               <div className="grid grid-cols-3 2xl:gap-6 xl:gap-0">
-                <div className="col-span-2 bg-gray-800 p-4 rounded-lg 2xl:w-[100%] 2xl:h-[100%] xl:w-[95%] xl:h-[99%]">
+                <div className="col-span-2 bg-gray-800 p-4 rounded-lg 2xl:w-[100%] 2xl:h-[100%] xl:w-[95%] xl:h-[90%]">
                   <ResponsiveContainer width="100%" height={460}>
                     <LineChart data={fullEmissionTrend}>
                       <XAxis dataKey="month" stroke="#ccc" label={{ value: "Months", position: "insideBottom", offset: -5, fill: "#ccc" }} />
@@ -184,7 +184,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <h3 className="font-semibold text-white text-[20px] xl:mt-4 xl:text-[25px]">Consumed Energy</h3>
-                  <div className="bg-gray-800 p-4 rounded-lg  xl:mt-2 xl:h-[72%]">
+                  <div className="bg-gray-800 p-4 rounded-lg  xl:mt-2 xl:h-[67%]">
                     <ResponsiveContainer width="100%" height={250}>
                       <PieChart>
                         <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90} fill="#8884D8" label>
