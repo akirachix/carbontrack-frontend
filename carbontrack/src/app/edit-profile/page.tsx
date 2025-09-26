@@ -1,11 +1,13 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import useFetchUsers, { User } from "../hooks/useFetchProfile";
+import useFetchUsers from "../hooks/useFetchProfile";
 import { updateUser } from "../utils/fetchProfile";
 import { CameraIcon, Eye, EyeOff } from "lucide-react";
 import Button from "../sharedComponents/Button";
 import FactoryLayout from "../components/FactoryLayout";
+import Image from "next/image";
 
 interface ProfileFormData {
   email: string;
@@ -27,7 +29,7 @@ type ProfileUpdatePayload = {
 
 export default function EditProfilePage() {
   const router = useRouter();
-  const { user: profile, error, } = useFetchUsers();
+  const { user: profile, error } = useFetchUsers();
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
@@ -123,7 +125,7 @@ export default function EditProfilePage() {
 
       setTimeout(() => {
         router.push("/profile");
-      }, 2000); 
+      }, 2000);
     } catch (error) {
       setUpdateError((error as Error).message || "Error updating profile.");
       setIsSubmitting(false);
@@ -132,72 +134,70 @@ export default function EditProfilePage() {
 
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
   if (!profile) return null;
+
   return (
-  <FactoryLayout>
-<main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-20">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-10">
-          <h1 className="text-4xl font-bold mb-2">Edit Profile</h1>
-          <div className="w-32 h-1 bg-[#F79B72] rounded" />
-        </div>
-        <div className="bg-gray-800 rounded-2xl shadow-xl p-8 flex flex-col md:flex-row gap-8">
-          <div className="md:w-1/3 flex flex-col items-center">
-            <div className="relative mb-6">
-              <div className="w-64 h-64 rounded-full border-4 border-[#F79B72] flex items-center justify-center overflow-hidden bg-gray-700 mx-auto">
-                {profileImage ? (
-                  <img
-                    src={URL.createObjectURL(profileImage)}
-                    alt="Preview"
-                    className="object-cover w-full h-full"
-                  />
-                ) : profile.profile_image ? (
-                  <img
-                    src={
-                     profile.profile_image
-                        
-                    }
-                    alt="Current Profile"
-                    className="object-cover w-full h-full"
-                  />
-                ) : (
-                  <img
-                    src="/Images/image 4.png"
-                    alt="profile"
-                    className="object-cover w-full h-full"
-                  />
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => document.getElementById("profileInput")?.click()}
-                className="absolute bottom-4 right-4 bg-[#F79B72] text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-[#F3FBFD] transition-all"
-                aria-label="Upload profile picture"
-              >
-                <CameraIcon className="w-6 h-6" />
-              </button>
-              <input
-                id="profileInput"
-                type="file"
-                accept="image/*"
-                onChange={handleChange}
-                className="hidden"
-              />
+    <FactoryLayout>
+      <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-10">
+            <h1 className="text-4xl font-bold mb-2">Edit Profile</h1>
+            <div className="w-32 h-1 bg-[#F79B72] rounded" />
+          </div>
+          <div className="md:w-1/3 flex flex-col items-center relative">
+            <div className="w-64 h-64 rounded-full border-4 border-[#F79B72] flex items-center justify-center overflow-hidden bg-gray-700 mx-auto">
+              {profileImage ? (
+                <Image
+                  src={URL.createObjectURL(profileImage)}
+                  alt="Preview"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  priority
+                />
+              ) : profile.profile_image ? (
+                <Image
+                  src={profile.profile_image}
+                  alt="Current Profile"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  priority
+                />
+              ) : (
+                <Image
+                  src="/Images/image 4.png"
+                  alt="profile"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  priority
+                />
+              )}
             </div>
 
-          
-            
-
-            {formData.first_name && (
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-[#F79B72] mb-1">
-                  {formData.first_name} {formData.last_name}
-                </h2>
-                <p className="text-gray-400">{formData.user_type}</p>
-              </div>
-            )}
+            <button
+              type="button"
+              onClick={() => document.getElementById("profileInput")?.click()}
+              className="absolute bottom-4 right-4 bg-[#F79B72] text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-[#F3FBFD] transition-all"
+              aria-label="Upload profile picture"
+            >
+              <CameraIcon className="w-6 h-6" />
+            </button>
+            <input
+              id="profileInput"
+              type="file"
+              accept="image/*"
+              onChange={handleChange}
+              className="hidden"
+            />
           </div>
 
-          <div className="md:w-2/3">
+          {formData.first_name && (
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-[#F79B72] mb-1">
+                {formData.first_name} {formData.last_name}
+              </h2>
+              <p className="text-gray-400">{formData.user_type}</p>
+            </div>
+          )}
+          <div className="md:w-2/3 mt-10">
             {updateError && (
               <div className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-200">
                 {updateError}
@@ -307,16 +307,14 @@ export default function EditProfilePage() {
                 />
               </div>
               {updateSuccess && (
-              <div className="mt-2 flex justify-end text-white font-semibold ">
-                Profile updated successfully
-              </div>
-            )}
+                <div className="mt-2 flex justify-end text-white font-semibold ">
+                  Profile updated successfully
+                </div>
+              )}
             </form>
           </div>
         </div>
-      </div>
-    </main>
-  </FactoryLayout>
-
+      </main>
+    </FactoryLayout>
   );
 }

@@ -13,7 +13,7 @@ jest.mock('../hooks/useFetchProfile');
 jest.mock('../utils/fetchProfile');
 jest.mock('../sharedComponents/Button', () => ({
   __esModule: true,
-  default: ({ variant, type, buttonText, onClick }: any) => (
+  default: ({ variant, type, buttonText, onClick }: { variant: string; type: 'button' | 'submit' | 'reset' | undefined; buttonText: string; onClick: () => void; }) => (
     <button type={type} onClick={onClick} data-variant={variant}>
       {buttonText}
     </button>
@@ -22,11 +22,37 @@ jest.mock('../sharedComponents/Button', () => ({
 
 jest.mock('../components/FactoryLayout', () => ({
   __esModule: true,
-  default: ({ children }: any) => <div>{children}</div>,
+  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 
 global.URL.createObjectURL = jest.fn(() => 'mocked-url');
+
+
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: React.ComponentProps<'img'> & { priority?: boolean; fill?: boolean }) => {
+   
+    const { priority, fill, ...rest } = props;
+    return <img {...rest} />;
+  },
+}));
+
+
+jest.mock('lucide-react', () => ({
+  CameraIcon: () => <div data-testid="camera-icon">CameraIcon</div>,
+  Eye: () => <div data-testid="eye-icon">Eye</div>,
+  EyeOff: () => <div data-testid="eye-off-icon">EyeOff</div>,
+}));
+
+
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  (console.error as jest.Mock).mockRestore();
+});
 
 describe('EditProfilePage', () => {
   const mockPush = jest.fn();
@@ -73,7 +99,7 @@ describe('EditProfilePage', () => {
   test('updates form fields on change', () => {
     (useFetchUsers as jest.Mock).mockReturnValue({ user: mockProfile, error: null });
     render(<EditProfilePage />);
- 
+    
     const firstNameInput = screen.getByPlaceholderText('First Name');
     fireEvent.change(firstNameInput, { target: { name: 'first_name', value: 'Mercy' } });
     expect(firstNameInput).toHaveValue('Mercy');
@@ -92,13 +118,14 @@ describe('EditProfilePage', () => {
     
     fireEvent.change(input, { target: { files: [file] } });
     
- 
+   
     const profileImage = screen.getByAltText('Preview');
     expect(profileImage).toBeInTheDocument();
     expect(profileImage).toHaveAttribute('src', 'mocked-url');
   });
 
-  
+ 
+
   test('submits form successfully and redirects', async () => {
     (useFetchUsers as jest.Mock).mockReturnValue({ user: mockProfile, error: null });
     render(<EditProfilePage />);
@@ -122,6 +149,29 @@ describe('EditProfilePage', () => {
       expect(mockPush).toHaveBeenCalledWith('/profile');
     }, { timeout: 3000 });
   });
+
+  test('submits form with password when provided', async () => {
+    (useFetchUsers as jest.Mock).mockReturnValue({ user: mockProfile, error: null });
+    render(<EditProfilePage />);
+    
+   
+    const passwordInput = screen.getByPlaceholderText('Enter new password');
+    fireEvent.change(passwordInput, { target: { name: 'password', value: 'newpassword123' } });
+    
+    fireEvent.click(screen.getByText('Update Profile'));
+    
+    await waitFor(() => {
+      expect(updateUser).toHaveBeenCalledWith({
+        email: 'mercy.jude@example.com',
+        first_name: 'Mercy',
+        last_name: 'Jude',
+        password: 'newpassword123',
+        role: 'manager',
+      });
+    });
+  });
+
+  
 
   test('handles update error', async () => {
     (useFetchUsers as jest.Mock).mockReturnValue({ user: mockProfile, error: null });
@@ -156,5 +206,13 @@ describe('EditProfilePage', () => {
     
     fireEvent.click(screen.getByText('Cancel'));
     expect(mockPush).toHaveBeenCalledWith('/profile');
+  });
+
+  test('displays user name and role when available', () => {
+    (useFetchUsers as jest.Mock).mockReturnValue({ user: mockProfile, error: null });
+    render(<EditProfilePage />);
+    
+    expect(screen.getByText('Mercy Jude')).toBeInTheDocument();
+    expect(screen.getByText('manager')).toBeInTheDocument();
   });
 });
