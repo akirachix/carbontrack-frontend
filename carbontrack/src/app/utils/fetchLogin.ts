@@ -25,8 +25,6 @@ export async function fetchLogin(credentials: { email: string; password: string 
       const errorMessage = (data as LoginErrorResponse).message || "Invalid email or password";
       throw new Error(errorMessage);
     }
-
-    console.log("API response:", data);
     onUserSignIn(data.user);
 
     return data as LoginSuccessResponse; 
