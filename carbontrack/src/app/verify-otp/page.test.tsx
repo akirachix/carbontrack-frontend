@@ -1,14 +1,19 @@
 import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useVerifyOtp } from '../hooks/useFetchVerifyOTP';
 import { useResendOtp } from '../hooks/useFetchResendOTP';
 import VerifyCodePage from './page';
 
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-}));
+
+jest.mock('next/navigation', () => {
+  const mockSearchParams = new URLSearchParams();
+  return {
+    useRouter: jest.fn(),
+    useSearchParams: jest.fn(() => mockSearchParams),
+  };
+});
 
 jest.mock('../hooks/useFetchVerifyOTP', () => ({
   useVerifyOtp: jest.fn(),
@@ -19,8 +24,12 @@ jest.mock('../hooks/useFetchResendOTP', () => ({
 }));
 
 describe('VerifyCodePage — Core Functionality', () => {
+  const mockPush = jest.fn();
+
   beforeEach(() => {
     jest.useFakeTimers();
+    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
+    (useSearchParams as jest.Mock).mockReturnValue(new URLSearchParams('email=girmaayemebet@gmail.com'));
   });
 
   afterEach(() => {
@@ -30,9 +39,8 @@ describe('VerifyCodePage — Core Functionality', () => {
 
   const setupComponent = async () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-    const searchParams = new URLSearchParams('email=girmaayemebet@gmail.com');
-    render(<VerifyCodePage searchParams={searchParams} />);
-    const inputs = await screen.findAllByRole('textbox');
+    render(<VerifyCodePage />);
+    const inputs = await screen.findAllByRole('textbox', { hidden: false });
     return { inputs, user };
   };
 
@@ -100,6 +108,9 @@ describe('VerifyCodePage — Core Functionality', () => {
 
     await act(async () => {
       await user.type(inputs[1], '3');
+    });
+
+    await act(async () => {
       await user.clear(inputs[1]);
       await user.keyboard('{Backspace}');
     });
@@ -142,8 +153,6 @@ describe('VerifyCodePage — Core Functionality', () => {
   }, 10000);
 
   it('on success, redirects to reset-password after 2s', async () => {
-    const mockPush = jest.fn();
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
     (useVerifyOtp as jest.Mock).mockReturnValue({
       handleVerifyOtp: jest.fn().mockResolvedValue(undefined),
       loading: false,
@@ -157,8 +166,7 @@ describe('VerifyCodePage — Core Functionality', () => {
       success: null,
     });
 
-    const searchParams = new URLSearchParams('email=girmaayemebet@gmail.com');
-    render(<VerifyCodePage searchParams={searchParams} />);
+    render(<VerifyCodePage />);
 
     await waitFor(() => {
       expect(screen.getByText('Verification successful!')).toBeInTheDocument();
@@ -188,16 +196,20 @@ describe('VerifyCodePage — Core Functionality', () => {
 
     const { inputs, user } = await setupComponent();
 
+    // Fill OTP
     await act(async () => {
       for (let i = 0; i < 4; i++) {
         await user.type(inputs[i], (i + 1).toString());
       }
+    });
+
+    await act(async () => {
       await user.click(screen.getByRole('button', { name: 'Resend' }));
     });
 
     await waitFor(() => {
       expect(mockResendOtp).toHaveBeenCalledWith('girmaayemebet@gmail.com');
-      inputs.forEach((input) => expect(input).toHaveValue(''));
+      inputs.forEach((input) => expect((input as HTMLInputElement).value).toBe(''));
       expect(screen.getByText('10:00')).toBeInTheDocument();
       expect(screen.getByText('OTP resent successfully')).toBeInTheDocument();
     }, { timeout: 5000 });
