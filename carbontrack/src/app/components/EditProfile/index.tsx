@@ -28,7 +28,7 @@ type ProfileUpdatePayload = {
 
 export default function EditProfilePage() {
   const router = useRouter();
-  const { user: profile, error } = useFetchUsers();
+  const { user: profile, error, loading } = useFetchUsers();
   
  
   const getProfileRoute = () => {
@@ -142,6 +142,7 @@ export default function EditProfilePage() {
 
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
   if (!profile) return null;
+  if (loading) return <div className="mt-32 text-center text-white">Loading...</div>;
 
   return (
       <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-20">

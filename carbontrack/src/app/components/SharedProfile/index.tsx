@@ -8,10 +8,11 @@ import Image from "next/image";
 
 export default function ProfileDisplay() {
   const router = useRouter();
-  const { user: profile, error } = useFetchUsers();
+  const { user: profile, error, loading } = useFetchUsers();
 
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
 if (!profile) return null;
+if (loading) return <div className="mt-32 text-center text-white">Loading...</div>;
 
 const getProfileRoute = () => {
   return profile.user_type === "factory" ? "/edit-factory-profile" : "/ktda-edit-profile";
