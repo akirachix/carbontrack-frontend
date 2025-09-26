@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import useFetchUsers from "../hooks/useFetchProfile";
-import { updateUser } from "../utils/fetchProfile";
+import useFetchUsers from "@/app/hooks/useFetchProfile";
+import { updateUser } from "@/app/utils/fetchProfile";
 import { CameraIcon, Eye, EyeOff } from "lucide-react";
-import Button from "../sharedComponents/Button";
-import FactoryLayout from "../components/FactoryLayout";
+import Button from "@/app/sharedComponents/Button";
 import Image from "next/image";
 
 interface ProfileFormData {
@@ -31,6 +30,10 @@ export default function EditProfilePage() {
   const router = useRouter();
   const { user: profile, error } = useFetchUsers();
   
+ 
+  const getProfileRoute = () => {
+    return formData.user_type === "factory" ? "/factory-profile" : "/ktda-profile";
+  };
   
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -128,10 +131,8 @@ export default function EditProfilePage() {
       await updateUser(dataToSend);
       setUpdateSuccess(true);
       setIsSubmitting(false);
-
-      
       setTimeout(() => {
-        router.push("/profile");
+        router.push(getProfileRoute());
       }, 2000);
     } catch (error) {
       setUpdateError((error as Error).message || "Error updating profile.");
@@ -139,12 +140,10 @@ export default function EditProfilePage() {
     }
   };
 
-  
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
   if (!profile) return null;
 
   return (
-    <FactoryLayout>
       <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-20">
         <div className="max-w-6xl mx-auto">
           
@@ -171,10 +170,8 @@ export default function EditProfilePage() {
                       src={profile.profile_image}
                       alt="Current Profile"
                       fill
-                      
                       style={{ objectFit: "cover", borderRadius: "50%" }}
                       priority
-                    
                     />
                   ) : (
                     <Image
@@ -183,12 +180,9 @@ export default function EditProfilePage() {
                       fill
                       style={{ objectFit: "cover" }}
                       priority
-                      
                     />
                   )}
                 </div>
-
-                
                 <button
                   type="button"
                   onClick={() => document.getElementById("profileInput")?.click()}
@@ -205,8 +199,6 @@ export default function EditProfilePage() {
                   className="hidden"
                 />
               </div>
-
-            
               {formData.first_name && (
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-[#F79B72] mb-1">
@@ -240,8 +232,6 @@ export default function EditProfilePage() {
                       placeholder="First Name"
                     />
                   </div>
-                  
-                  
                   <div>
                     <label className="block text-gray-300 mb-2">Last Name *</label>
                     <input
@@ -329,8 +319,8 @@ export default function EditProfilePage() {
                 <div className="flex justify-end gap-4 pt-4">
                   <button
                     type="button"
-                    onClick={() => router.push("/profile")}
-                    className="px-6 py-2 border border-[#F79B72] text-[#F79B72] rounded-lg font-medium hover:bg-gray-700 transition"
+                    onClick={() => router.push(getProfileRoute())}
+                    className="px-6 py-2 border border-[#F79B72] text-[#F79B72] rounded-lg font-medium hover:bg-gray-700 transition cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -352,6 +342,5 @@ export default function EditProfilePage() {
           </div>
         </div>
       </main>
-    </FactoryLayout>
   );
 }

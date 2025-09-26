@@ -13,6 +13,7 @@ import Calendar from "../sharedComponents/Calendar";
 import {mapFactories, calculateAlerts, calculateEmissionTrend,calculateEnergySummary,calculateTotalEmissions, filterByDate} from "../utils/util";
 import { ComplianceType, EmissionData, EnergyEntryData, FactoryData, McuData } from "../types";
 const COLORS = ["#F79B72", "#2A4564", "#A5A5A5"];
+import Link from "next/link";
 
 interface HookComplianceData {
   compliance_target: string;
@@ -90,7 +91,7 @@ export default function DashboardPage() {
   const isLoading = energyLoading || emissionLoading || complianceLoading || factoryLoading;
   return (
     <SidebarLayout>
-      <div className="h-screen text-white 2xl:w-[83vw] 2xl:ml-5 xl:w-[80vw] xl:ml-0">
+      <div className="h-screen text-white 2xl:w-[83vw] 2xl:ml-5 xl:w-[0vw] xl:ml-0">
         <main className="flex-1 2xl:p-6 xl:p-5 lg:p-3 ">
           {isLoading ? (
             <div className="text-center text-white text-lg mt-20">Loading data...</div>
@@ -113,7 +114,9 @@ export default function DashboardPage() {
                     }}
                   />
                   <div className="flex justify-end w-16 space-x-4">
+                    <Link href="/ktda-profile">
                     <IoPersonOutline className="text-[#F79B72] 2xl:w-7 2xl:h-7 xl:w-7 xl:h-7 lg:w-5 lg:h-5 cursor-pointer hover:text-[#2A4759]" />
+                  </Link>
                   </div>
                 </div>
               </header>
@@ -181,7 +184,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <h3 className="font-semibold text-white text-[20px] xl:mt-4 xl:text-[25px]">Consumed Energy</h3>
-                  <div className="bg-gray-800 p-4 rounded-lg 2xl:w-40 xl:mt-2">
+                  <div className="bg-gray-800 p-4 rounded-lg  xl:mt-2">
                     <ResponsiveContainer width="100%" height={250}>
                       <PieChart>
                         <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90} fill="#8884D8" label>
