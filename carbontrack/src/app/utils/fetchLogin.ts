@@ -1,5 +1,16 @@
-const baseUrl = "/api/login";
 
+const baseUrl = "/api/login";
+interface User {
+  factory: number | null;
+  user_type: string;
+}
+interface LoginSuccessResponse {
+  access: string;
+  user: User;
+}
+interface LoginErrorResponse {
+  message: string;
+}
 export async function fetchLogin(credentials: { email: string; password: string }) {
   try {
     const response = await fetch(baseUrl, {
@@ -8,19 +19,19 @@ export async function fetchLogin(credentials: { email: string; password: string 
       body: JSON.stringify(credentials),
     });
     const data = await response.json();
-
     if (!response.ok) {
-      throw new Error(data.message || "Invalid password or email");
+      const errorMessage = (data as LoginErrorResponse).message || "Invalid email or password";
+      throw new Error(errorMessage);
     }
+    console.log("API response:", data);
     onUserSignIn(data.user);
-
-    return data;
+    return data as LoginSuccessResponse;
   } catch (error) {
     throw new Error((error as Error).message);
   }
 }
-
-function onUserSignIn(user: { factory: number }) {
-  localStorage.setItem("factory", user.factory.toString());
+function onUserSignIn(user: User) {
+  const factoryId = user.factory != null ? user.factory.toString() : "";
+  localStorage.setItem("factory", factoryId);
   localStorage.setItem("user", JSON.stringify(user));
 }

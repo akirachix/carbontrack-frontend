@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import useFetchUsers from '../hooks/useFetchProfile';
+import useFetchUsers from '@/app/hooks/useFetchProfile';
 import { useRouter } from 'next/navigation';
 
 
