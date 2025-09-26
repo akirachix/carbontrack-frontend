@@ -8,9 +8,6 @@ import VerifyCodePage from './page';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
-  useSearchParams: jest.fn(() => ({
-    get: jest.fn((key) => (key === 'email' ? 'girmaayemebet@gmail.com' : null)),
-  })),
 }));
 
 jest.mock('../hooks/useFetchVerifyOTP', () => ({
@@ -20,18 +17,6 @@ jest.mock('../hooks/useFetchVerifyOTP', () => ({
 jest.mock('../hooks/useFetchResendOTP', () => ({
   useResendOtp: jest.fn(),
 }));
-
-jest.mock('next/image', () => (props: any) => <img {...props} alt={props.alt} />);
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: (props: any) => <div {...props} />,
-    h1: (props: any) => <h1 {...props} />,
-    p: (props: any) => <p {...props} />,
-  },
-}));
-jest.mock('../sharedComponents/Button', () => ({ buttonText, type, onClick }: any) => (
-  <button type={type} onClick={onClick}>{buttonText}</button>
-));
 
 describe('VerifyCodePage — Core Functionality', () => {
   beforeEach(() => {
@@ -45,7 +30,8 @@ describe('VerifyCodePage — Core Functionality', () => {
 
   const setupComponent = async () => {
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-    render(<VerifyCodePage />);
+    const searchParams = new URLSearchParams('email=girmaayemebet@gmail.com');
+    render(<VerifyCodePage searchParams={searchParams} />);
     const inputs = await screen.findAllByRole('textbox');
     return { inputs, user };
   };
@@ -171,7 +157,8 @@ describe('VerifyCodePage — Core Functionality', () => {
       success: null,
     });
 
-    render(<VerifyCodePage />);
+    const searchParams = new URLSearchParams('email=girmaayemebet@gmail.com');
+    render(<VerifyCodePage searchParams={searchParams} />);
 
     await waitFor(() => {
       expect(screen.getByText('Verification successful!')).toBeInTheDocument();

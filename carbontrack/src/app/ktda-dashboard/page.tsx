@@ -11,9 +11,49 @@ import AlertModal from "./component/HighEmissionAlerts";
 import { IoMdWarning } from "react-icons/io";
 import Calendar from "../sharedComponents/Calendar";
 import {mapFactories, calculateAlerts, calculateEmissionTrend,calculateEnergySummary,calculateTotalEmissions, filterByDate} from "../utils/util";
+import { ComplianceType, EmissionData, EnergyEntryData, FactoryData, McuData } from "../types";
+const COLORS = ["#F79B72", "#2A4564", "#A5A5A5"];
 
-const COLORS = ["#F79B72", "#2A4564", "#a5a5a5"];
+interface HookComplianceData {
+  compliance_target: string;
+  compliance_status: string;
+  created_at: string;
+  updated_at: string | undefined;
+  factory: number;
+}
+interface HookEmissionData {
+  emissions_id: number;
+  emission_rate: string;
+  mcu: string;
+  mcu_device_id: string;
+  updated_at: string;
+  
+}
 
+const transformComplianceData = (compliance: HookComplianceData[]): ComplianceType[] => {
+  return compliance.map(item => ({
+    ...item,
+    updated_at: item.updated_at || "" 
+  }));
+};
+const transformEmissionData = (emissions: HookEmissionData[]): EmissionData[] => {
+  return emissions.map(item => ({
+    ...item,
+    created_at: item.updated_at
+  }));
+};
+
+const addFactoryToEmissionsData = (emissions: EmissionData[], mcuData: McuData[]) => {
+  const mcuMap: Record<string, number> = {};
+  mcuData.forEach(mcu => {
+    mcuMap[mcu.mcu_id] = mcu.factory;
+  });
+
+  return emissions.map(emission => ({
+    ...emission,
+    factory: mcuMap[emission.mcu] || 0 
+  }));
+};
 export default function DashboardPage() {
   const { energy, loading: energyLoading } = useFetchEnergy();
   const { emissions, loading: emissionLoading } = useFetchEmissions();
@@ -22,24 +62,32 @@ export default function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [showAlertModal, setShowAlertModal] = useState(false);
 
-  const filteredEnergy = filterByDate(energy, selectedDate);
-  const filteredEmissions = filterByDate(emissions, selectedDate);
-  const filteredCompliance = filterByDate(compliance, selectedDate);
+  transformComplianceData(compliance as HookComplianceData[]);
+ transformEmissionData(emissions as HookEmissionData[]);
+  const filteredEnergy = filterByDate(energy as EnergyEntryData[], selectedDate);
+  const filteredEmissions = transformEmissionData(filterByDate(emissions as HookEmissionData[], selectedDate));
+  const filteredCompliance = transformComplianceData(filterByDate(compliance as HookComplianceData[], selectedDate));
+  const mockMcuData: McuData[] = filteredEmissions.map(emission => ({
+    id: 1,
+    mcu_id: emission.mcu,
+    status: "active",
+    created_at: emission.created_at,
+    factory: 1 
+  }));
 
-  const factoryMap = mapFactories(factories);
-  const alerts = calculateAlerts(filteredCompliance, filteredEnergy, filteredEmissions, factoryMap);
+  const emissionsWithFactory = addFactoryToEmissionsData(filteredEmissions, mockMcuData);
+  const factoryMap = mapFactories(factories as FactoryData[]);
+  const alerts = calculateAlerts(filteredCompliance, filteredEnergy, emissionsWithFactory, factoryMap);
   const fullEmissionTrend = calculateEmissionTrend(filteredEmissions);
   const energySummary = calculateEnergySummary(filteredEnergy);
-  const totalCombinedEmissions = calculateTotalEmissions(filteredEmissions, filteredEnergy);
+  const totalCombinedEmissions = calculateTotalEmissions(emissionsWithFactory, filteredEnergy);
   const selectedDateObj = selectedDate ? new Date(selectedDate) : new Date();
   const pieData = [
     { name: "Firewood", value: energySummary.total ? parseFloat(((energySummary.firewood / energySummary.total) * 100).toFixed(2)) : 0 },
     { name: "Electricity", value: energySummary.total ? parseFloat(((energySummary.electricity / energySummary.total) * 100).toFixed(2)) : 0 },
     { name: "Diesel", value: energySummary.total ? parseFloat(((energySummary.diesel / energySummary.total) * 100).toFixed(2)) : 0 },
   ];
-
   const isLoading = energyLoading || emissionLoading || complianceLoading || factoryLoading;
-
   return (
     <SidebarLayout>
       <div className="h-screen text-white w-[85vw]">
@@ -133,7 +181,6 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   </div>
-
                   <h3 className="font-semibold text-white text-[20px]">Consumed Energy</h3>
                   <div className="bg-gray-800 p-4 rounded-lg">
                     <ResponsiveContainer width="100%" height={250}>
