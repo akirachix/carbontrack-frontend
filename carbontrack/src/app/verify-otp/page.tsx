@@ -8,6 +8,7 @@ import Button from "../sharedComponents/Button";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
+
 export default function VerifyCodePage() {
   const { handleVerifyOtp, loading, error, success } = useVerifyOtp();
   const { resendOtp, loading: resendLoading, error: resendError, success: resendSuccess } = useResendOtp();
@@ -96,9 +97,11 @@ export default function VerifyCodePage() {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="h-screen w-screen flex">
         <div className="flex flex-col items-center justify-center flex-1 bg-[#E7E7E7]">
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}>
-            <Image src="/images/logo.png" alt="carbon-track logo" width={0} height={0} sizes="100vw" className="w-100 h-100 mx-auto object-contain 2xl:w-[400px] 2xl:h-[400px]" />
-          </motion.div>
+          <Suspense fallback={<div>Loading Logo...</div>}>
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}>
+              <Image src="/images/logo.png" alt="carbon-track logo" width={0} height={0} sizes="100vw" className="w-100 h-100 mx-auto object-contain 2xl:w-[400px] 2xl:h-[400px]" />
+            </motion.div>
+          </Suspense>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.5, ease: "easeOut" }} className="text-5xl md:text-3xl lg:text-4xl font-black text-[#2A4759] 2xl:text-[60px]">
             Carbon Track
           </motion.h1>
@@ -154,11 +157,13 @@ export default function VerifyCodePage() {
                   Resend
                 </button>
               </div>
-              <Button
-                type="submit"
-                buttonText={loading ? "Verifying..." : "Verify"}
-                variant="secondary"
-              />
+              <Suspense fallback={<div>Loading button...</div>}>
+                <Button
+                  type="submit"
+                  buttonText={loading ? "Verifying..." : "Verify"}
+                  variant="secondary"
+                />
+              </Suspense>
             </form>
           </div>
         </div>
