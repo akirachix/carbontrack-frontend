@@ -1,5 +1,5 @@
 'use client';
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { RxDashboard } from "react-icons/rx";
@@ -19,11 +19,11 @@ const Sidebar = () => {
     { href: "/factory", Icon: TbBuildingFactory, label: "Factories" },
     { href: "/compliance_page", Icon: GoVerified, label: "Compliance" },
   ];
-   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const router = useRouter();
 
   const handleLogout = () => {
-  performLogout()
+    performLogout()
     router.push('/login');
     setShowLogoutModal(false);
   };
@@ -40,16 +40,16 @@ const Sidebar = () => {
           />
         </div>
         <nav className="flex flex-col flex-grow px-8 pt-7">
-          {navItems.map((item,index) => {
-            const { href, label, Icon } = item;  
+          {navItems.map((item, index) => {
+            const { href, label, Icon } = item;
             const isActive = pathname === href;
             return (
               <Link
                 key={index}
                 href={href}
-                className={`flex items-center space-x-3 mb-5 group p-2 rounded-md transition-all ${isActive ? "bg-[#F79B72] mr-5" : "hover:bg-[#F79B72] hover:mr-5" }`}>
+                className={`flex items-center space-x-3 mb-5 group p-2 rounded-md transition-all ${isActive ? "bg-[#F79B72] mr-5" : "hover:bg-[#F79B72] hover:mr-5"}`}>
                 <Icon
-                  className={`h-8 w-8 ${isActive ? "text-[#2A4759]" : "text-[#F79B72] group-hover:text-[#2A4759]"}`}/>
+                  className={`h-8 w-8 ${isActive ? "text-[#2A4759]" : "text-[#F79B72] group-hover:text-[#2A4759]"}`} />
                 <h1
                   className={`text-[22px] ${isActive ? "text-white" : "text-white"}`}
                 >
@@ -58,21 +58,21 @@ const Sidebar = () => {
               </Link>
             );
           })}
-          <div className="flex-grow"/>
-            <button
-                                  onClick={() => setShowLogoutModal(true)}
-                                  className="flex items-center space-x-3 mb-8 group p-2 rounded-md hover:bg-[#F79B72] hover:mr-5 transition-all w-full text-left"
-                              >
-                                  <CiLogout className="h-8 w-8 text-[#F79B72] group-hover:text-[#2A4759]" />
-                                  <h1 className="text-[22px] cursor-pointer text-white">Log Out</h1>
-                              </button>
+          <div className="flex-grow" />
+          <button
+            onClick={() => setShowLogoutModal(true)}
+            className="flex items-center space-x-3 mb-8 group p-2 rounded-md hover:bg-[#F79B72] hover:mr-5 transition-all w-full text-left"
+          >
+            <CiLogout className="h-8 w-8 text-[#F79B72] group-hover:text-[#2A4759]" />
+            <h1 className="text-[22px] cursor-pointer text-white">Log Out</h1>
+          </button>
           <ConfirmationModal
-        isOpen={showLogoutModal}
-        onClose={() => setShowLogoutModal(false)}
-        onConfirm={handleLogout}
-        title="Log out from Ktda Dashboard?"
-        message="Your session will end."
-      />
+            isOpen={showLogoutModal}
+            onClose={() => setShowLogoutModal(false)}
+            onConfirm={handleLogout}
+            title="Log out from Ktda Dashboard?"
+            message="Your session will end."
+          />
         </nav>
       </div>
     </div>

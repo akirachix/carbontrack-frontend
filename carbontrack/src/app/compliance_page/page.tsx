@@ -143,7 +143,7 @@ export default function ComplianceDashboard() {
         </div>
       ) : (
         <div className="p-4 mx-auto min-h-screen text-white w-[80vw] ml-15 xl:w-[72vw]">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 space-y-4 md:space-y-0 lg:mb-1">
             <div>
               <h2 className="text-[2rem] font-bold">Compliance</h2>
             </div>
@@ -162,18 +162,18 @@ export default function ComplianceDashboard() {
             </div>
           )}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div className="p-4 bg-gray-800 rounded h-30 text-center">
-              <p className="text-[1.5em] mb-1">Compliance Target</p>
-              <p className="font-bold text-[2em]">{complianceTarget}</p>
+            <div className="p-4 bg-gray-800 rounded h-30 text-center lg:h-22">
+              <p className="text-[1.5em] mb-1 lg:text-[18px]">Compliance Target</p>
+              <p className="font-bold text-[2em] lg:text-[20px]">{complianceTarget}</p>
             </div>
-            <div className="p-4 bg-gray-800 rounded text-center xl:h-30">
-              <p className="text-sm mb-1 text-[1.5em]">
+            <div className="p-4 bg-gray-800 rounded text-center xl:h-22 lg:h-22">
+              <p className="text-sm mb-1 text-[1.5em] lg:text-[18px]">
                 Total compliance breach
               </p>
-              <p className="font-bold text-[2em]">{totalBreach} total</p>
+              <p className="font-bold text-[2em] lg:text-[20px]">{totalBreach} total</p>
             </div>
-            <div className="p-4 bg-gray-800 rounded text-center xl:h-30">
-              <p className="text-sm mb-1 text-[1.5em] xl:text-[1em]">
+            <div className="p-4 bg-gray-800 rounded text-center xl:h-22 lg:h-22">
+              <p className="text-sm mb-1 text-[1.5em] xl:text-[1em] lg:text-[20px]">
                 Compliant Factories In Percent
               </p>
               <p className="font-bold text-[2em]">{compliantPercent}%</p>
@@ -198,7 +198,7 @@ export default function ComplianceDashboard() {
             </button>
           </div>
           <div className="overflow-x-auto border border-gray-700 rounded">
-            <table className="min-w-full text-left border-collapse border border-gray-700">
+            <table className="min-w-full text-left border-collapse border border-gray-700 lg:h-[60vh]">
               <thead className="bg-[#2A4759] text-white">
                 <tr>
                   <th className="p-3 border border-gray-700 w-1/3">Factory</th>
