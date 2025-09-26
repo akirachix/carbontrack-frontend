@@ -2,6 +2,19 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DashboardPage from "./page";
 
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock("../sharedComponents/KtdaSideBar", () => {
+  return {
+    __esModule: true,
+    default: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="sidebar">{children}</div>
+    ),
+  };
+});
+
 jest.mock("../hooks/useFetchCompliance", () =>
   jest.fn(() => ({
     compliance: [
@@ -105,6 +118,16 @@ jest.mock("recharts", () => {
 describe("DashboardPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+ 
+    const useRouter = jest.requireMock("next/navigation").useRouter;
+    useRouter.mockReturnValue({
+      push: jest.fn(),
+      replace: jest.fn(),
+      prefetch: jest.fn(),
+      back: jest.fn(),
+      forward: jest.fn(),
+      refresh: jest.fn(),
+    });
   });
 
   it("renders dashboard header", () => {

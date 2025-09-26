@@ -5,51 +5,78 @@ import useFetchCompliance from "../hooks/useFetchCompliance";
 import useFetchFactories from "../hooks/useFetchFactories";
 import { updateCompliance } from "../utils/fetchCompliance";
 
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock("../sharedComponents/KtdaSideBar", () => {
+  return {
+    __esModule: true,
+    default: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="sidebar">{children}</div>
+    ),
+  };
+});
+
 jest.mock("./component/AddTarget", () => {
   return {
-  __esModule: true,
-  default: ({
-    onSave,
-    onClose,
-    complianceId,
-    factoryId,
-  }: {
-    onSave?: (id: number, newTarget: string, factory: number) => void;
-    onClose?: () => void;
-    complianceId: number;
-    factoryId: number;
-  }) =>
-    React.createElement(
-      "div",
-      { "data-testid": "mock-modal" },
+    __esModule: true,
+    default: ({
+      onSave,
+      onClose,
+      complianceId,
+      factoryId,
+    }: {
+      onSave?: (id: number, newTarget: string, factory: number) => void;
+      onClose?: () => void;
+      complianceId: number;
+      factoryId: number;
+    }) =>
       React.createElement(
-        "button",
-        {
-          type: "button",
-          onClick: () => onSave?.(complianceId, "2.00", factoryId),
-        },
-        "Save"
+        "div",
+        { "data-testid": "mock-modal" },
+        React.createElement(
+          "button",
+          {
+            type: "button",
+            onClick: () => onSave?.(complianceId, "2.00", factoryId),
+          },
+          "Save"
+        ),
+        React.createElement(
+          "button",
+          { type: "button", onClick: onClose },
+          "Close"
+        )
       ),
-      React.createElement(
-        "button",
-        { type: "button", onClick: onClose },
-        "Close"
-      )
-    ),
-};
-
+  };
 });
+
 jest.mock("../hooks/useFetchCompliance");
 jest.mock("../hooks/useFetchFactories");
 jest.mock("../utils/fetchCompliance", () => ({
   updateCompliance: jest.fn(),
 }));
+
 const mockUseFetchCompliance = useFetchCompliance as jest.Mock;
 const mockUseFetchFactories = useFetchFactories as jest.Mock;
+
 describe("ComplianceDashboard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    
+    // Setup the mock router implementation
+    const useRouter = jest.requireMock("next/navigation").useRouter;
+    useRouter.mockReturnValue({
+      push: jest.fn(),
+      replace: jest.fn(),
+      prefetch: jest.fn(),
+      back: jest.fn(),
+      forward: jest.fn(),
+      refresh: jest.fn(),
+    });
   });
+
   test("renders loading state", () => {
     mockUseFetchCompliance.mockReturnValue({
       compliance: [],
@@ -64,6 +91,7 @@ describe("ComplianceDashboard", () => {
     render(<ComplianceDashboard />);
     expect(screen.getByText(/Loading compliance data/i)).toBeInTheDocument();
   });
+
   test("renders compliance error", () => {
     mockUseFetchCompliance.mockReturnValue({
       compliance: [],
@@ -80,6 +108,7 @@ describe("ComplianceDashboard", () => {
       screen.getByText(/Compliance Error: Failed to fetch compliance/i)
     ).toBeInTheDocument();
   });
+
   test("renders factories error", () => {
     mockUseFetchCompliance.mockReturnValue({
       compliance: [],
@@ -96,6 +125,7 @@ describe("ComplianceDashboard", () => {
       screen.getByText(/Factories Error: Failed to fetch factories/i)
     ).toBeInTheDocument();
   });
+
   test("renders summary cards and table", () => {
     mockUseFetchCompliance.mockReturnValue({
       compliance: [
@@ -125,6 +155,7 @@ describe("ComplianceDashboard", () => {
     expect(screen.getByText("Compliant status")).toBeInTheDocument();
     expect(screen.getByRole("cell", { name: "Compliant" })).toBeInTheDocument();
   });
+
   test("filters compliance data by search term", () => {
     mockUseFetchCompliance.mockReturnValue({
       compliance: [
@@ -160,7 +191,7 @@ describe("ComplianceDashboard", () => {
     expect(screen.getByText("Tombe")).toBeInTheDocument();
     expect(screen.queryByText("Maramba")).not.toBeInTheDocument();
   });
- 
+
   test("shows error message when updateCompliance fails", async () => {
     mockUseFetchCompliance.mockReturnValue({
       compliance: [
@@ -195,9 +226,3 @@ describe("ComplianceDashboard", () => {
     });
   });
 });
-
-
-
-
-
-
