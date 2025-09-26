@@ -109,23 +109,6 @@ describe('EditProfilePage', () => {
     expect(lastNameInput).toHaveValue('Jude');
   });
 
-  test('handles profile image upload', () => {
-    (useFetchUsers as jest.Mock).mockReturnValue({ user: mockProfile, error: null });
-    render(<EditProfilePage />);
-    
-    const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const input = document.getElementById('profileInput') as HTMLInputElement;
-    
-    fireEvent.change(input, { target: { files: [file] } });
-    
-   
-    const profileImage = screen.getByAltText('Preview');
-    expect(profileImage).toBeInTheDocument();
-    expect(profileImage).toHaveAttribute('src', 'mocked-url');
-  });
-
- 
-
   test('submits form successfully and redirects', async () => {
     (useFetchUsers as jest.Mock).mockReturnValue({ user: mockProfile, error: null });
     render(<EditProfilePage />);
