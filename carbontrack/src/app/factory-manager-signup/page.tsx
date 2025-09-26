@@ -114,18 +114,18 @@ export default function SignupPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1, ease: "easeOut" }}
-          className="text-base md:text-lg lg:text-xl 2xl:text-[35px] 2xl:py-2 font-semibold text-[#F79B72]"
+          className="text-base md:text-lg xl:text-2xl lg:text-xl 2xl:text-[35px] 2xl:py-2 font-semibold text-[#F79B72]"
         >
           Welcome to Carbon Track
         </motion.p>
       </div>
-      <div className="flex-1 flex items-center justify-center bg-[#234052]">
+      <div className="flex-1 flex items-center justify-center bg-[#234052] ">
         <div
-          className="max-w-2xl bg-[#E7E7E7] rounded-2xl p-12 flex flex-col items-center"
+          className=" bg-[#E7E7E7] rounded-2xl p-12 flex flex-col items-center justify-center xl:h-screen"
           style={{ boxShadow: "0 2px 10px 0 #f79b72" }}
         >
-          <h2 className="text-4xl font-bold mb-8 text-[#F7A77B] text-center">Sign Up</h2>
-          <form onSubmit={handleSubmit} className="w-full space-y-5">
+          <h2 className="text-4xl  font-bold xl:mb-4 text-[#F7A77B] text-center">Sign Up</h2>
+          <form onSubmit={handleSubmit} className="w-full space-y-5  xl:space-y-2">
             <div className="flex space-x-6">
               <div>
                 <label className="block text-[#2A4759] text-[20px] font-medium mb-1">
