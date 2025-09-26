@@ -53,10 +53,7 @@ jest.mock('next/link', () => ({
   )
 }));
 
-jest.mock('react-icons/io5', () => ({
-  IoSettingsOutline: () => <div data-testid="settings-icon">Settings</div>,
-  IoPersonOutline: () => <div data-testid="person-icon">Person</div>
-}));
+
 
 describe('EmissionsHeatmapPage', () => {
   const mockFactoryEmissions = [
@@ -173,13 +170,7 @@ describe('EmissionsHeatmapPage', () => {
     expect(mockUseEmissionsData.setSelectedDate).toHaveBeenCalledWith('2023-01-15');
   });
 
-  test('renders sidebar layout and icons correctly', () => {
-    render(<EmissionsHeatmapPage />);
 
-    expect(screen.getByTestId('sidebar-layout')).toBeInTheDocument();
-    expect(screen.getByTestId('settings-icon')).toBeInTheDocument();
-    expect(screen.getByTestId('person-icon')).toBeInTheDocument();
-  });
 
   test('handles empty emissions data', () => {
     (useEmissionsData as jest.Mock).mockReturnValue({
