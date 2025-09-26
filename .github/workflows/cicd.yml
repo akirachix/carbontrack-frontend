@@ -30,16 +30,15 @@ jobs:
         run: npm test
         working-directory: carbontrack
 
-      - name: Build React app
+      - name: Build Next app
         run: npm run build
         working-directory: carbontrack
         env:
-          BASE_URL: ${{ secrets.BASE_URL }}
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Deploy to Vercel
         if: github.ref == 'refs/heads/main'
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          BASE_URL: ${{ secrets.BASE_URL }}
         run: npx vercel --prod --confirm --token $VERCEL_TOKEN
         working-directory: carbontrack
