@@ -1,21 +1,17 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import { User as UserIcon, Mail, PhoneCallIcon, Edit2 } from "lucide-react";
 import useFetchUsers from "../hooks/useFetchProfile";
 import FactoryLayout from "../components/FactoryLayout";
 import Image from "next/image";
-
 export default function ProfilePage() {
   const router = useRouter();
   const { user: profile, error } = useFetchUsers();
-
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
   if (!profile) return null;
-
   return (
     <FactoryLayout>
-      <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-40">
+      <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-20 xl:p-10">
         <div className="max-w-6xl mx-auto">
           <div className="mb-10">
             <h1 className="text-4xl font-bold mb-2">Profile</h1>
@@ -47,7 +43,6 @@ export default function ProfilePage() {
                 <Edit2 className="w-6 h-6 t-10" />
               </button>
             </div>
-
             <div className="md:w-2/3">
               <div className="bg-gray-700 rounded-xl p-6 space-y-6">
                 <div className="flex items-center gap-4">
@@ -59,7 +54,6 @@ export default function ProfilePage() {
                     <p className="text-xl font-medium">{profile.first_name} {profile.last_name}</p>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-4">
                   <div className="bg-gray-800 p-3 rounded-full">
                     <Mail className="w-6 h-6 text-[#F79B72]" />
@@ -69,7 +63,6 @@ export default function ProfilePage() {
                     <p className="text-xl font-medium break-words">{profile.email}</p>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-4">
                   <div className="bg-gray-800 p-3 rounded-full">
                     <PhoneCallIcon className="w-6 h-6 text-[#F79B72]" />
@@ -79,7 +72,6 @@ export default function ProfilePage() {
                     <p className="text-xl font-medium break-words">{profile.phone_number}</p>
                   </div>
                 </div>
-
                 <div className="pt-4 flex justify-end">
                   <button
                     onClick={() => router.push("/edit-profile")}
@@ -91,7 +83,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-          </div> 
+          </div>
         </div>
       </main>
     </FactoryLayout>
