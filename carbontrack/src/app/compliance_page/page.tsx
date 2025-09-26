@@ -7,6 +7,7 @@ import ComplianceTargetModal from "./component/AddTarget";
 import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import { updateCompliance } from "../utils/fetchCompliance";
 import SidebarLayout from "../components/SideBarLayout";
+import Link from "next/link";
 
 interface Factory {
   factory_id: number;
@@ -85,12 +86,12 @@ export default function ComplianceDashboard() {
 
   const compliantPercent = filteredCompliance.length
     ? Math.round(
-        (filteredCompliance.filter(
-          (c) => c.compliance_status?.toLowerCase() === "compliant"
-        ).length /
-          filteredCompliance.length) *
-          100
-      )
+      (filteredCompliance.filter(
+        (c) => c.compliance_status?.toLowerCase() === "compliant"
+      ).length /
+        filteredCompliance.length) *
+      100
+    )
     : 0;
 
   const formatDate = (dateString?: string | null) =>
@@ -148,15 +149,18 @@ export default function ComplianceDashboard() {
               <h2 className="text-[2rem] font-bold">Compliance</h2>
             </div>
             <div className="flex space-x-4 items-center">
-              <IoSettingsOutline className="w-7 h-7 text-[#F79B72] hover:text-[#2A4759] cursor-pointer" />
-              <IoPersonOutline className="w-7 h-7 text-[#F79B72] hover:text-[#2A4759] cursor-pointer" />
+              <Link href="">
+                <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
+              </Link>
+              <Link href="/ktda-profile">
+                <IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
+              </Link>
             </div>
           </div>
           {message && (
             <div
-              className={`mb-4 p-3 rounded text-center max-w-lg mx-auto ${
-                messageType === "success" ? "text-green-600" : "bg-red-600"
-              }`}
+              className={`mb-4 p-3 rounded text-center max-w-lg mx-auto ${messageType === "success" ? "text-green-600" : "bg-red-600"
+                }`}
             >
               {message}
             </div>
@@ -227,11 +231,10 @@ export default function ComplianceDashboard() {
                         {factoryMap[item.factory] || `Factory ${item.factory}`}
                       </td>
                       <td
-                        className={`p-3 border border-gray-700 ${
-                          item.compliance_status?.toLowerCase() === "compliant"
+                        className={`p-3 border border-gray-700 ${item.compliance_status?.toLowerCase() === "compliant"
                             ? "text-white"
                             : "text-orange-600"
-                        }`}
+                          }`}
                       >
                         {item.compliance_status}
                       </td>
