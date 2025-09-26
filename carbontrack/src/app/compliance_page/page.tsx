@@ -142,7 +142,7 @@ export default function ComplianceDashboard() {
           Factories Error: {factoriesError}
         </div>
       ) : (
-        <div className="p-4 mx-auto min-h-screen text-white w-[80vw] ml-15">
+        <div className="p-4 mx-auto min-h-screen text-white w-[80vw] ml-15 xl:w-[72vw]">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 space-y-4 md:space-y-0">
             <div>
               <h2 className="text-[2rem] font-bold">Compliance</h2>
@@ -166,14 +166,14 @@ export default function ComplianceDashboard() {
               <p className="text-[1.5em] mb-1">Compliance Target</p>
               <p className="font-bold text-[2em]">{complianceTarget}</p>
             </div>
-            <div className="p-4 bg-gray-800 rounded text-center">
+            <div className="p-4 bg-gray-800 rounded text-center xl:h-30">
               <p className="text-sm mb-1 text-[1.5em]">
                 Total compliance breach
               </p>
               <p className="font-bold text-[2em]">{totalBreach} total</p>
             </div>
-            <div className="p-4 bg-gray-800 rounded text-center">
-              <p className="text-sm mb-1 text-[1.5em]">
+            <div className="p-4 bg-gray-800 rounded text-center xl:h-30">
+              <p className="text-sm mb-1 text-[1.5em] xl:text-[1em]">
                 Compliant Factories In Percent
               </p>
               <p className="font-bold text-[2em]">{compliantPercent}%</p>

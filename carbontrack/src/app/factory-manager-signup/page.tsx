@@ -71,7 +71,7 @@ export default function SignupPage() {
       setErrors((prev) => ({ ...prev, confirmPassword: "Passwords do not match" }));
       return;
     }
-    // :white_check_mark: omit confirmPassword without causing lint errors
+ 
     const { confirmPassword: _omit, ...payload } = formData;
     const result = await signup(payload);
     if (result) {
@@ -87,7 +87,7 @@ export default function SignupPage() {
   };
   return (
     <div className="flex h-screen w-screen bg-[#D9D9D9]">
-      <div className="flex flex-col items-center flex-1 bg-gray-200 text-center 2xl:p-10 2xl:pt-40">
+      <div className="flex flex-col justify-center items-center flex-1 bg-gray-200 text-center 2xl:p-10 2xl:pt-40">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
