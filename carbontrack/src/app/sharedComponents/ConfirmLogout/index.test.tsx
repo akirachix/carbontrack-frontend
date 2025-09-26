@@ -1,5 +1,11 @@
 import { performLogout } from ".";
 
+declare global {
+  interface Window {
+    localStorage: Storage;
+  }
+}
+
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
 
@@ -23,7 +29,12 @@ const localStorageMock = (() => {
 })();
 
 beforeEach(() => {
-  (global as any).localStorage = localStorageMock;
+  const mockStorage = localStorageMock as unknown as Storage;
+  Object.defineProperty(window, 'localStorage', {
+    value: mockStorage,
+    writable: true,
+  });
+
   localStorageMock.clear();
   localStorage.setItem('accessToken', 'fake-token');
   localStorage.setItem('factoryId', '123');
@@ -38,6 +49,4 @@ describe('performLogout', () => {
     expect(localStorage.getItem('factoryId')).toBeNull();
     expect(localStorage.getItem('user')).toBeNull();
   });
-
-  
 });

@@ -7,12 +7,10 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import Button from "../sharedComponents/Button";
 import useFetchFactories from "../hooks/useFetchFactories";
 import { useFetchSignup } from "../hooks/useFetchSignup";
-
 export default function SignupPage() {
   const router = useRouter();
-  const { factories, loading, error } = useFetchFactories(); 
+  const { factories, loading, error } = useFetchFactories();
   const { signup, loading: loadingSignup, error: signupError } = useFetchSignup();
-
   const defaultFormState = {
     first_name: "",
     last_name: "",
@@ -21,9 +19,8 @@ export default function SignupPage() {
     password: "",
     confirmPassword: "",
     user_type: "factory" as const,
-    factory: "", 
+    factory: "",
   };
-
   const [formData, setFormData] = useState(defaultFormState);
   const [errors, setErrors] = useState<Partial<Record<keyof typeof defaultFormState, string>>>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
@@ -32,23 +29,18 @@ export default function SignupPage() {
     password: false,
     confirmPassword: false,
   });
-
   useEffect(() => {
     if (error || signupError) setGeneralError(error || signupError);
   }, [error, signupError]);
-
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    let { name, value } = e.target;
-
+    const { name, value: originalValue } = e.target;
+    let value = originalValue;
     if (name === "phone_number") {
       value = value.replace(/\D/g, "").slice(0, 15);
     }
-
     setFormData((prev) => ({ ...prev, [name]: value }));
-
     if (name === "password" || name === "confirmPassword") {
       const updatedFormData = { ...formData, [name]: value };
-
       if (updatedFormData.password.length > 0 && updatedFormData.password.length < 8) {
         setErrors((prev) => ({ ...prev, password: "Password has to be at least 8 characters" }));
       } else {
@@ -57,7 +49,6 @@ export default function SignupPage() {
           return rest;
         });
       }
-
       if (
         updatedFormData.confirmPassword &&
         updatedFormData.confirmPassword !== updatedFormData.password
@@ -71,23 +62,18 @@ export default function SignupPage() {
       }
     }
   };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrors({});
     setGeneralError(null);
     setSuccessMessage(null);
-
-
     if (formData.password !== formData.confirmPassword) {
       setErrors((prev) => ({ ...prev, confirmPassword: "Passwords do not match" }));
       return;
     }
-
-    const { confirmPassword, ...payload } = formData;
-
+    // :white_check_mark: omit confirmPassword without causing lint errors
+    const { confirmPassword: _omit, ...payload } = formData;
     const result = await signup(payload);
-
     if (result) {
       setSuccessMessage("Signup successful!");
       setFormData(defaultFormState);
@@ -96,16 +82,40 @@ export default function SignupPage() {
       }, 2000);
     }
   };
-
   return (
     <div className="flex h-screen w-screen bg-[#D9D9D9]">
-    <div className="flex flex-col items-center flex-1 bg-gray-200 text-center 2xl:p-10 2xl:pt-40">
-                  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}>
-                    <Image src="/images/logo.png" alt="carbon-track logo" width={0} height={0} sizes="100vw" className="w-100 h-100 mx-auto object-contain 2xl:w-[400px] 2xl:h-[400px]" />
-                  </motion.div>
-                  <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.5, ease: "easeOut" }} className="text-5xl md:text-3xl lg:text-4xl font-black text-[#2A4759] 2xl:text-[60px]"> Carbon Track  </motion.h1>
-                  <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1, ease: "easeOut" }} className="text-base md:text-lg lg:text-xl 2xl:text-[35px] 2xl:py-2 font-semibold text-[#F79B72]">  Welcome to Carbon Track</motion.p>
-                </div>
+      <div className="flex flex-col items-center flex-1 bg-gray-200 text-center 2xl:p-10 2xl:pt-40">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Image
+            src="/images/logo.png"
+            alt="carbon-track logo"
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="w-100 h-100 mx-auto object-contain 2xl:w-[400px] 2xl:h-[400px]"
+          />
+        </motion.div>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+          className="text-5xl md:text-3xl lg:text-4xl font-black text-[#2A4759] 2xl:text-[60px]"
+        >
+          Carbon Track
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1, ease: "easeOut" }}
+          className="text-base md:text-lg lg:text-xl 2xl:text-[35px] 2xl:py-2 font-semibold text-[#F79B72]"
+        >
+          Welcome to Carbon Track
+        </motion.p>
+      </div>
       <div className="flex-1 flex items-center justify-center bg-[#234052]">
         <div
           className="max-w-2xl bg-[#E7E7E7] rounded-2xl p-12 flex flex-col items-center"
@@ -145,11 +155,8 @@ export default function SignupPage() {
                 {errors.last_name && <p className="text-red-500 text-sm">{errors.last_name}</p>}
               </div>
             </div>
-
             <div>
-              <label className="block text-[#2A4759] text-[20px] font-medium mb-1">
-                Email
-              </label>
+              <label className="block text-[#2A4759] text-[20px] font-medium mb-1">Email</label>
               <input
                 type="email"
                 name="email"
@@ -161,7 +168,6 @@ export default function SignupPage() {
               />
               {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             </div>
-
             <div>
               <label className="block text-[#2A4759] text-[20px] font-medium mb-1">
                 Phone Number
@@ -181,7 +187,6 @@ export default function SignupPage() {
                 <p className="text-red-500 text-sm">{errors.phone_number}</p>
               )}
             </div>
-
             {formData.user_type === "factory" && (
               <div>
                 <label className="block text-[#2A4759] text-[20px] font-medium mb-1">
@@ -207,11 +212,8 @@ export default function SignupPage() {
                 {errors.factory && <p className="text-red-500 text-sm">{errors.factory}</p>}
               </div>
             )}
-
             <div className="relative">
-              <label className="block text-[#2A4759] text-[20px] font-medium mb-1">
-                Password
-              </label>
+              <label className="block text-[#2A4759] text-[20px] font-medium mb-1">Password</label>
               <input
                 type={show.password ? "text" : "password"}
                 name="password"
@@ -230,7 +232,6 @@ export default function SignupPage() {
               </button>
               {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
             </div>
-
             <div className="relative">
               <label className="block text-[#2A4759] text-[20px] font-medium mb-1">
                 Confirm Password
@@ -257,24 +258,18 @@ export default function SignupPage() {
                 <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
               )}
             </div>
-
             {generalError && <p className="text-red-500 text-sm">{generalError}</p>}
             {successMessage && (
               <p className="text-green-600 text-sm text-center">{successMessage}</p>
             )}
-
             <Button
               type="submit"
               variant="secondary"
               buttonText={loadingSignup ? "Signing Up..." : "Sign Up"}
             />
-
             <p className="text-[#2A4759] text-[20px] text-center">
               Already have an account?
-              <a
-                href="/login"
-                className="ml-1 text-[#F7A77B] font-semibold hover:underline"
-              >
+              <a href="/login" className="ml-1 text-[#F7A77B] font-semibold hover:underline">
                 Sign In
               </a>
             </p>

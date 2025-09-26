@@ -1,4 +1,5 @@
-const baseUrl = "/api/verify-otp";
+
+
 export const verifyOtp = async (payload: { email: string; otp: string }) => {
   try {
     const response = await fetch("/api/verify-otp", {

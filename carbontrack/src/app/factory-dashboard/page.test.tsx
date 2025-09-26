@@ -1,8 +1,18 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import DashboardPage from './page';
-import {useFetchEmission} from '../hooks/useFetchEmissions';
+import { useFetchEmission } from '../hooks/useFetchEmissions';
 import { useFetchEnergyEntries } from '../hooks/useFetchEnergyEntries';
+
+// Mock mqtt client to avoid errors during tests
+jest.mock('mqtt', () => ({
+  connect: jest.fn(() => ({
+    on: jest.fn(),
+    subscribe: jest.fn(),
+    publish: jest.fn(),
+    end: jest.fn(),
+  })),
+}));
 
 jest.mock('../hooks/useFetchEmissions');
 jest.mock('../hooks/useFetchEnergyEntries');
@@ -13,25 +23,31 @@ jest.mock('../components/FactoryLayout', () => ({
 
 jest.mock('react-datepicker', () => ({
   __esModule: true,
-  default: ({ selected, onChange }: any) => (
+  default: ({
+    selected,
+    onChange,
+  }: {
+    selected: Date | null;
+    onChange: (date: Date) => void;
+  }) => (
     <input
       data-testid="date-picker"
       value={selected ? selected.toISOString().split('T')[0] : ''}
-      onChange={(e) => onChange(new Date(e.target.value))}
+      onChange={(e) => onChange(new Date((e.target as HTMLInputElement).value))}
     />
   ),
 }));
 
 jest.mock('recharts', () => ({
-  BarChart: ({ children }: any) => <div data-testid="bar-chart">{children}</div>,
+  BarChart: ({ children }: { children: React.ReactNode }) => <div data-testid="bar-chart">{children}</div>,
   Bar: () => <div data-testid="bar" />,
-  LineChart: ({ children }: any) => <div data-testid="line-chart">{children}</div>,
+  LineChart: ({ children }: { children: React.ReactNode }) => <div data-testid="line-chart">{children}</div>,
   Line: () => <div data-testid="line" />,
   XAxis: () => <div data-testid="x-axis" />,
   YAxis: () => <div data-testid="y-axis" />,
   CartesianGrid: () => <div data-testid="grid" />,
   Tooltip: () => <div data-testid="tooltip" />,
-  ResponsiveContainer: ({ children }: any) => <div>{children}</div>,
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 describe('DashboardPage Component', () => {
@@ -63,7 +79,6 @@ describe('DashboardPage Component', () => {
     expect(screen.getByText('2.345678 kgs')).toBeInTheDocument();
   });
 
-
   test('handles no data state', () => {
     (useFetchEmission as jest.Mock).mockReturnValue({
       ...useFetchEmission(),
@@ -75,6 +90,7 @@ describe('DashboardPage Component', () => {
       ...useFetchEnergyEntries(mockSelectedDate),
       totalCO2: null,
     });
+
     render(<DashboardPage />);
     expect(screen.getAllByText('No data')).toHaveLength(3);
   });
@@ -95,7 +111,6 @@ describe('DashboardPage Component', () => {
     fireEvent.change(datePicker, { target: { value: '2023-06-20' } });
     expect(mockSetSelectedDate).toHaveBeenCalledWith(new Date('2023-06-20'));
   });
-
 
   test('renders charts with data', () => {
     render(<DashboardPage />);
