@@ -1,15 +1,12 @@
 
-const BASE_URL=process.env.BASE_URL;
-if (!BASE_URL) {
-  throw new Error("BASE_URL environment variable is not defined");
-}
+const base_Url=process.env.BASE_URL;
+
 
 export async function POST(request: Request) {
-  const BASE_URL=process.env.BASE_URL;
   try {
     const body = await request.json();
 
-    const response = await fetch(`${BASE_URL}/verify-otp/`, {
+    const response = await fetch(`${base_Url}/verify-otp/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
