@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Button from "../sharedComponents/Button";
 import { useSearchParams, useRouter } from "next/navigation";
 
+export const dynamic = "force-dynamic";
 export default function VerifyCodePage() {
   const { handleVerifyOtp, loading, error, success } = useVerifyOtp();
   const { resendOtp, loading: resendLoading, error: resendError, success: resendSuccess } = useResendOtp();
