@@ -91,7 +91,7 @@ export default function DashboardPage() {
   const isLoading = energyLoading || emissionLoading || complianceLoading || factoryLoading;
   return (
     <SidebarLayout>
-      <div className="h-screen text-white 2xl:w-[83vw] 2xl:ml-5 xl:w-[0vw] xl:ml-0">
+      <div className="h-screen text-white 2xl:w-[83vw] 2xl:ml-5 xl:w-[80vw] xl:ml-0">
         <main className="flex-1 2xl:p-6 xl:p-5 lg:p-3 ">
           {isLoading ? (
             <div className="text-center text-white text-lg mt-20">Loading data...</div>
@@ -149,8 +149,8 @@ export default function DashboardPage() {
               </div>
               <h1 className="mb-4 font-semibold text-white 2xl:text-[1.5rem] 2xl:mt-5 xl:text-[1.3rem] xl:mt-3">Emission Trend</h1>
               <div className="grid grid-cols-3 2xl:gap-6 xl:gap-0">
-                <div className="col-span-2 bg-gray-800 p-4 rounded-lg 2xl:w-[100%] 2xl:h-[100%] xl:w-[95%] xl:h-[102%]">
-                  <ResponsiveContainer width="100%" height={500}>
+                <div className="col-span-2 bg-gray-800 p-4 rounded-lg 2xl:w-[100%] 2xl:h-[100%] xl:w-[95%] xl:h-[99%]">
+                  <ResponsiveContainer width="100%" height={460}>
                     <LineChart data={fullEmissionTrend}>
                       <XAxis dataKey="month" stroke="#ccc" label={{ value: "Months", position: "insideBottom", offset: -5, fill: "#ccc" }} />
                       <YAxis
@@ -184,7 +184,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <h3 className="font-semibold text-white text-[20px] xl:mt-4 xl:text-[25px]">Consumed Energy</h3>
-                  <div className="bg-gray-800 p-4 rounded-lg  xl:mt-2">
+                  <div className="bg-gray-800 p-4 rounded-lg  xl:mt-2 xl:h-[72%]">
                     <ResponsiveContainer width="100%" height={250}>
                       <PieChart>
                         <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90} fill="#8884D8" label>
@@ -194,18 +194,18 @@ export default function DashboardPage() {
                         </Pie>
                       </PieChart>
                     </ResponsiveContainer>
-                    <div className="ml-10 text-[15px]">
-                      <div>
-                        <span className="text-[#F79B72] text-[30px]">■</span>
-                        <span className="text-[20px]"> Firewood</span>
+                    <div className="ml-10 xl:mb-6">
+                      <div className="xl:text-[15px]">
+                        <span className="text-[#F79B72] text-[30px] xl:text-[18px]">■</span>
+                        <span className="text-[20px] xl:text-[20px]"> Firewood</span>
                       </div>
                       <div>
-                        <span className="text-[#2A4759] text-[30px]">■</span>
-                        <span className="text-[20px]">Electricity</span>
+                        <span className="text-[#2A4759] text-[30px] xl:text-[18px]">■</span>
+                        <span className="text-[20px] xl:text-[20px]">Electricity</span>
                       </div>
                       <div>
-                        <span className="text-gray-400 text-[30px]">■ </span>
-                        <span className="text-[20px]">Diesel</span>
+                        <span className="text-gray-400 text-[30px] xl:text-[18px]">■ </span>
+                        <span className="text-[20px] xl:text-[20px]">Diesel</span>
                       </div>
                     </div>
                   </div>

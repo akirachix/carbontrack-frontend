@@ -10,7 +10,6 @@ import { CiLogout } from "react-icons/ci";
 import { useRouter } from 'next/navigation';
 import ConfirmationModal, { performLogout } from '../ConfirmLogout';
 import Link from "next/link";
-
 const Sidebar = () => {
   const pathname = usePathname();
   const navItems = [
@@ -21,16 +20,14 @@ const Sidebar = () => {
   ];
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const router = useRouter();
-
   const handleLogout = () => {
     performLogout()
     router.push('/login');
     setShowLogoutModal(false);
   };
-
   return (
     <div className="flex h-screen bg-black">
-      <div className="bg-[#2A4759] w-64 min-h-full flex flex-col">
+      <div className="bg-[#2A4759] 2xl:w-64 xl:w-60 lg:w-43 min-h-full flex flex-col">
         <div className="flex justify-center">
           <Image
             src="/Images/carbon-logo.svg"
@@ -39,7 +36,7 @@ const Sidebar = () => {
             alt="carbon logo"
           />
         </div>
-        <nav className="flex flex-col flex-grow px-8 pt-7">
+        <nav className="2xl:flex 2xl:flex-col 2xl:flex-grow 2xl:px-8 2xl:pt-7 xl:flex-col xl:flex-grow xl:px-8 xl:pt-7  lg:flex lg:flex-col lg:flex-grow lg:px-6 lg:pt-4">
           {navItems.map((item, index) => {
             const { href, label, Icon } = item;
             const isActive = pathname === href;
@@ -49,9 +46,9 @@ const Sidebar = () => {
                 href={href}
                 className={`flex items-center space-x-3 mb-5 group p-2 rounded-md transition-all ${isActive ? "bg-[#F79B72] mr-5" : "hover:bg-[#F79B72] hover:mr-5"}`}>
                 <Icon
-                  className={`h-8 w-8 ${isActive ? "text-[#2A4759]" : "text-[#F79B72] group-hover:text-[#2A4759]"}`} />
+                  className={`2xl:h-8 2xl:w-8 xl:h-8 xl:w-8 lg:h-7 lg:w-7 ${isActive ? "text-[#2A4759]" : "text-[#F79B72] group-hover:text-[#2A4759]"}`} />
                 <h1
-                  className={`text-[22px] ${isActive ? "text-white" : "text-white"}`}
+                  className={`2xl:text-[22px] xl:text-[22px] lg:text-[13px] ${isActive ? "text-white" : "text-white"}`}
                 >
                   {label}
                 </h1>
@@ -63,8 +60,8 @@ const Sidebar = () => {
             onClick={() => setShowLogoutModal(true)}
             className="flex items-center space-x-3 mb-8 group p-2 rounded-md hover:bg-[#F79B72] hover:mr-5 transition-all w-full text-left"
           >
-            <CiLogout className="h-8 w-8 text-[#F79B72] group-hover:text-[#2A4759]" />
-            <h1 className="text-[22px] cursor-pointer text-white">Log Out</h1>
+            <CiLogout className="2xl:h-8 2xl:w-8 xl:h-8 xl:w-8 lg:h-7 lg:w-7 text-[#F79B72] group-hover:text-[#2A4759]" />
+            <h1 className="2xl:text-[22px] xl:text-[22px] lg:text-[13px] cursor-pointer text-white">Log Out</h1>
           </button>
           <ConfirmationModal
             isOpen={showLogoutModal}
@@ -78,7 +75,4 @@ const Sidebar = () => {
     </div>
   );
 };
-
 export default Sidebar;
-
-

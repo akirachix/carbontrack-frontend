@@ -45,7 +45,7 @@ export default function ComplianceDashboard() {
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 11;
+  const itemsPerPage = 8;
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedCompliance, setSelectedCompliance] = useState<Compliance | null>(null);
   const [message, setMessage] = useState<string | null>(null);
