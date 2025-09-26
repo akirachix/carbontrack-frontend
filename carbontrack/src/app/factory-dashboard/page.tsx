@@ -23,7 +23,10 @@ export default function DashboardPage() {
             <Link href="">
               <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
             </Link>
+
+
             <Link href="/profile">
+
               <IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
             </Link>
           </div>

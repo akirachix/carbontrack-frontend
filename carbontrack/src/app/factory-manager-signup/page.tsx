@@ -78,7 +78,10 @@ export default function SignupPage() {
       setSuccessMessage("Signup successful!");
       setFormData(defaultFormState);
       setTimeout(() => {
+
         router.push("/login"); 
+
+
       }, 2000);
     }
   };
