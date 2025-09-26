@@ -40,11 +40,11 @@ export default function ProfilePage() {
               </div>
               <button
                 onClick={() => router.push("/edit-profile")}
-                className="absolute bottom-4 right-4 bg-[#F79B72] text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-[#F3FBFD] transition-all"
+                className="absolute bottom-23 right-5 bg-[#F79B72] text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-[#F3FBFD] transition-all"
                 aria-label="Edit Profile"
                 type="button"
               >
-                <Edit2 className="w-6 h-6" />
+                <Edit2 className="w-6 h-6 t-10" />
               </button>
             </div>
 
@@ -85,7 +85,7 @@ export default function ProfilePage() {
                     onClick={() => router.push("/edit-profile")}
                     className="px-6 py-3 bg-[#F79B72] text-black rounded-lg font-medium hover:bg-[#F3FBFD] transition flex items-center gap-2"
                   >
-                    <Edit2 className="w-5 h-5" />
+                    <Edit2 className="w-5 h-9" />
                     Edit Profile
                   </button>
                 </div>
