@@ -94,6 +94,6 @@ export async function updateUser(data: FormData | ProfileUpdatePayload) {
     }
     return await response.json(); 
   } catch (error) {
-    throw new Error((error as Error).message || "Network or parsing error");
+    throw new Error((error as Error).message);
   }
 }

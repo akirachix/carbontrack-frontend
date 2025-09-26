@@ -1,4 +1,3 @@
-// useFetchUsers.test.ts
 import * as fetchProfileModule from "../utils/fetchProfile";
 import { renderHook, waitFor } from "@testing-library/react";
 import useFetchUsers from "./useFetchProfile";
