@@ -7,26 +7,37 @@ import { updateCompliance } from "../utils/fetchCompliance";
 
 jest.mock("./component/AddTarget", () => {
   return {
-    __esModule: true,
-    default: ({ onSave, onClose, complianceId, factoryId }: any) =>
+  __esModule: true,
+  default: ({
+    onSave,
+    onClose,
+    complianceId,
+    factoryId,
+  }: {
+    onSave?: (id: number, newTarget: string, factory: number) => void;
+    onClose?: () => void;
+    complianceId: number;
+    factoryId: number;
+  }) =>
+    React.createElement(
+      "div",
+      { "data-testid": "mock-modal" },
       React.createElement(
-        "div",
-        { "data-testid": "mock-modal" },
-        React.createElement(
-          "button",
-          {
-            type: "button",
-            onClick: () => onSave?.(complianceId, "2.00", factoryId),
-          },
-          "Save"
-        ),
-        React.createElement(
-          "button",
-          { type: "button", onClick: onClose },
-          "Close"
-        )
+        "button",
+        {
+          type: "button",
+          onClick: () => onSave?.(complianceId, "2.00", factoryId),
+        },
+        "Save"
       ),
-  };
+      React.createElement(
+        "button",
+        { type: "button", onClick: onClose },
+        "Close"
+      )
+    ),
+};
+
 });
 jest.mock("../hooks/useFetchCompliance");
 jest.mock("../hooks/useFetchFactories");

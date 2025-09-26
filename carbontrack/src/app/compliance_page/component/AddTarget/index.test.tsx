@@ -1,15 +1,19 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import ComplianceTargetModal from ".";
+
 const factories = [
   { factory_id: 1, factory_name: "Factory A" },
   { factory_id: 2, factory_name: "Factory B" },
 ];
+
 describe("ComplianceTargetModal", () => {
   const mockOnClose = jest.fn();
   const mockOnSave = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   it("renders modal with current target and factories", () => {
     render(
       <ComplianceTargetModal
@@ -26,6 +30,7 @@ describe("ComplianceTargetModal", () => {
     expect(screen.getByText("Factory A")).toBeInTheDocument();
     expect(screen.getByText("Factory B")).toBeInTheDocument();
   });
+
   it("closes modal when close button clicked", () => {
     render(
       <ComplianceTargetModal
@@ -40,6 +45,7 @@ describe("ComplianceTargetModal", () => {
     fireEvent.click(screen.getByLabelText(/Close modal/i));
     expect(mockOnClose).toHaveBeenCalled();
   });
+
   it("updates target input value", () => {
     render(
       <ComplianceTargetModal
@@ -55,6 +61,7 @@ describe("ComplianceTargetModal", () => {
     fireEvent.change(input, { target: { value: "2.5" } });
     expect(input).toHaveValue("2.5");
   });
+
   it("changes selected factory", () => {
     render(
       <ComplianceTargetModal
@@ -70,6 +77,7 @@ describe("ComplianceTargetModal", () => {
     fireEvent.change(select, { target: { value: "2" } });
     expect(select).toHaveValue("2");
   });
+
   it("calls onSave with correct values when valid target entered", async () => {
     render(
       <ComplianceTargetModal
@@ -88,6 +96,7 @@ describe("ComplianceTargetModal", () => {
       expect(mockOnSave).toHaveBeenCalledWith(101, "2.5", 1);
     });
   });
+
   it("shows alert when invalid target is entered", () => {
     window.alert = jest.fn();
     render(
@@ -107,6 +116,7 @@ describe("ComplianceTargetModal", () => {
       "Please enter a valid numeric target."
     );
   });
+
   it("shows alert when onSave throws error", async () => {
     window.alert = jest.fn();
     mockOnSave.mockRejectedValueOnce(new Error("Save failed"));

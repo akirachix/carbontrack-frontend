@@ -1,10 +1,11 @@
 import { fetchCompliance, updateCompliance } from "./fetchCompliance";
 const mockFetch = jest.fn();
-global.fetch = mockFetch as any;
+global.fetch = mockFetch as unknown as typeof fetch;
 describe("fetchCompliance util", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   it("fetches compliance successfully", async () => {
     const mockData = [{ id: 1, compliance_target: "1.0", factory: 101 }];
     mockFetch.mockResolvedValueOnce({

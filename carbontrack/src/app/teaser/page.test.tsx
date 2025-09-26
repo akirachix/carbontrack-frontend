@@ -6,14 +6,6 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: (props: any) => <div {...props} />,
-    h1: (props: any) => <h1 {...props} />,
-    p: (props: any) => <p {...props} />,
-  },
-}));;
-
 describe('Teaser', () => {
   const mockPush = jest.fn();
 

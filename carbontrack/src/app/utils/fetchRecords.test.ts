@@ -50,7 +50,7 @@ describe('API Functions', () => {
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue(mockRecords),
-      } as any;
+      } ;
       
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
@@ -72,7 +72,7 @@ describe('API Functions', () => {
       const mockResponse = {
         ok: false,
         statusText: 'Not Found',
-      } as any;
+      } ;
       
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
@@ -107,7 +107,7 @@ describe('API Functions', () => {
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue(mockSavedRecord),
-      } as any;
+      } ;
       
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
@@ -135,7 +135,7 @@ describe('API Functions', () => {
         ok: false,
         status: 400,
         text: jest.fn().mockResolvedValue(errorText),
-      } as any;
+      } ;
       
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 

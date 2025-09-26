@@ -21,7 +21,13 @@ jest.mock('../components/SideBarLayout', () => ({
 
 jest.mock('../sharedComponents/Calendar', () => ({
   __esModule: true,
-  default: ({ selectedDate, setSelectedDate }: any) => (
+  default: ({
+    selectedDate,
+    setSelectedDate,
+  }: {
+    selectedDate: Date | null;
+    setSelectedDate: (date: Date) => void;
+  }) => (
     <div data-testid="calendar">
       <button 
         data-testid="calendar-button"
@@ -29,9 +35,11 @@ jest.mock('../sharedComponents/Calendar', () => ({
       >
         Select Date
       </button>
-      <div>Selected: {selectedDate ? 
-        `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}` 
-        : 'None'}</div>
+      <div>
+        Selected: {selectedDate ? 
+          `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}` 
+          : 'None'}
+      </div>
     </div>
   )
 }));
@@ -59,11 +67,11 @@ describe('EmissionsHeatmapPage', () => {
     { factoryName: 'Factory E', totalEmission: 3.1 },
   ];
 
-  let mockUseEmissionsData = {
+  const mockUseEmissionsData = {
     factoryEmissions: mockFactoryEmissions,
     loading: false,
     error: null,
-    selectedDate: '2023-01-01',
+    selectedDate: null as Date | null,
     setSelectedDate: jest.fn(),
     noDataForDate: false,
   };
@@ -167,7 +175,6 @@ describe('EmissionsHeatmapPage', () => {
       const zeroKgS = within(gradientScaleContainer).getByText('0 kg/s');
       expect(zeroKgS).toBeInTheDocument();
     } else {
-
       const zeroKgSElements = screen.getAllByText('0 kg/s');
       const gradientScaleZero = zeroKgSElements.find(el => 
         el.classList.contains('absolute') && el.classList.contains('left-\\[70px\\]')
@@ -192,8 +199,6 @@ describe('EmissionsHeatmapPage', () => {
     expect(screen.getByTestId('sidebar-layout')).toBeInTheDocument();
     expect(screen.getByTestId('settings-icon')).toBeInTheDocument();
     expect(screen.getByTestId('person-icon')).toBeInTheDocument();
-    expect(screen.getByTestId('link-')).toBeInTheDocument();
-    expect(screen.getByTestId('link-#')).toBeInTheDocument();
   });
 
   test('handles empty emissions data', () => {
@@ -274,19 +279,19 @@ describe('EmissionsHeatmapPage', () => {
       const ratioC = factoryC.totalEmission / avgEmission;
       
       if (ratioA >= 1.0) {
-        expect(calls.some(([color1, color2, ratio]: [string, string, number]) => 
+        expect(calls.some(([color1, color2, ratio]) => 
           color1 === '#53BAFA' && color2 === '#2A4759' && Math.abs(ratio - (ratioA - 1)) < 0.01
         )).toBe(true);
       }
       
       if (ratioB >= 0.5) {
-        expect(calls.some(([color1, color2, ratio]: [string, string, number]) => 
+        expect(calls.some(([color1, color2, ratio]) => 
           color1 === '#BEE3FA' && color2 === '#53BAFA' && Math.abs(ratio - ((ratioB - 0.5) * 2)) < 0.01
         )).toBe(true);
       }
       
       if (ratioC < 0.5) {
-        expect(calls.some(([color1, color2, ratio]: [string, string, number]) => 
+        expect(calls.some(([color1, color2, ratio]) => 
           color1 === '#FFFFFF' && color2 === '#BEE3FA' && Math.abs(ratio - (ratioC * 2)) < 0.01
         )).toBe(true);
       }

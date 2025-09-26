@@ -17,7 +17,7 @@ export default function RecordsPage() {
   const pageSize = 10;
   const [modalOpen, setModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<EnergyEntryData[]>([]);
   const [userFactoryId, setUserFactoryId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -50,7 +50,6 @@ export default function RecordsPage() {
     );
     return matchesSearch;
   });
-
   const totalPages = Math.ceil(filteredRecords.length / pageSize);
   const paginatedRecords = filteredRecords.slice(
     (page - 1) * pageSize,
