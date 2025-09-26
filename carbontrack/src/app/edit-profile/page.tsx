@@ -162,7 +162,7 @@ export default function EditProfilePage() {
                     <Image
                       src={URL.createObjectURL(profileImage)}
                       alt="Profile"
-                      style={{ objectFit: "cover" }}
+                      style={{ objectFit: "cover" , borderRadius: "50%" }}
                       priority
                       fill
                     />
@@ -172,7 +172,7 @@ export default function EditProfilePage() {
                       alt="Current Profile"
                       fill
                       
-                      style={{ objectFit: "cover" }}
+                      style={{ objectFit: "cover", borderRadius: "50%" }}
                       priority
                     
                     />
