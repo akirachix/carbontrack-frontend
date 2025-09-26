@@ -75,10 +75,13 @@ export default function SignupPage() {
     const { confirmPassword: _omit, ...payload } = formData;
     const result = await signup(payload);
     if (result) {
-      setSuccessMessage("Signup successful! Redirecting to dashboard...");
+      setSuccessMessage("Signup successful!");
       setFormData(defaultFormState);
       setTimeout(() => {
-        router.push("/factory-dashboard");
+
+        router.push("/login"); 
+
+
       }, 2000);
     }
   };

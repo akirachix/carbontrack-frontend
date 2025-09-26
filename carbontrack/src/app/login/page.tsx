@@ -14,13 +14,18 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setSuccessMessage(null);
     const user = await login(email, password);
+    if (user) {
+      setSuccessMessage("Login successful! Redirecting to dashboard...");
     if (!user) return;
     router.push(user.user_type === "factory" ? "/factory-dashboard" : "/ktda-dashboard");
   };
 
+}
   return (
     <div className="flex h-screen w-screen bg-[#D9D9D9]">
       <div className="flex flex-col items-center flex-1 bg-gray-200 text-center 2xl:p-10 2xl:pt-40">
@@ -67,6 +72,10 @@ export default function LoginPage() {
               <a href="/forgot-password" className="text-[#234052] font-medium hover:underline text-[20px]">Forgot Password?</a>
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
+            {successMessage && (
+              <p className="text-green-600 text-sm text-center">{successMessage}</p>
+            )}
+
             <Button type="submit" variant="secondary" buttonText={loading ? "Logging in..." : "Sign In"} />
             <p className="text-[#2A4759] text-[20px] text-center mt-2">
               Don’t have an account?

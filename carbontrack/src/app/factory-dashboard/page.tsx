@@ -14,7 +14,6 @@ import MqttSubscriber from "../hivemq/mqtt_client";
 export default function DashboardPage() {
   const { selectedDate, setSelectedDate, barData, lineData, loading: emissionsLoading, todayTotal, monthTotal, } = useFetchEmission();
   const { totalCO2, error: energyLoading, } = useFetchEnergyEntries(selectedDate);
-
   return (
     <FactoryLayout>
       <div className="bg-black text-white w-full md:w-full  min-h-screen flex ">
@@ -24,7 +23,10 @@ export default function DashboardPage() {
             <Link href="">
               <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
             </Link>
+
+
             <Link href="/profile">
+
               <IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
             </Link>
           </div>

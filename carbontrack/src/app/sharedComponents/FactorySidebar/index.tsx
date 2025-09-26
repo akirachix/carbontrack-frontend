@@ -1,10 +1,12 @@
 'use client';
-import React from "react";
+import React, {useState} from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { RxDashboard } from "react-icons/rx";
 import { GoDatabase } from "react-icons/go";
 import { CiLogout } from "react-icons/ci";
+import { useRouter } from "next/navigation";
+import ConfirmationModal, { performLogout } from "../ConfirmLogout";
 import Link from "next/link";
 
 
@@ -14,6 +16,13 @@ const FactorySidebar = () => {
         { href: "/factory-dashboard", Icon: RxDashboard, label: "Dashboard" },
         { href: "/records", Icon: GoDatabase, label: "Records" },
     ];
+       const router = useRouter();
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const handleLogout = () => {
+     performLogout()
+        router.push("/login");
+        setShowLogoutModal(false);
+    };
     return (
         <div className="flex h-screen bg-black">
             <div className="bg-[#2A4759] w-64 min-h-full flex flex-col">
@@ -48,12 +57,20 @@ const FactorySidebar = () => {
                         );
                     })}
                     <div className="flex-grow" />
-                    <Link
-                        href="#"
-                        className="flex items-center space-x-3 mb-8 group p-2 rounded-md hover:bg-[#F79B72] hover:mr-5 transition-all">
-                        <CiLogout className="h-8 w-8 text-[#F79B72] group-hover:text-[#2A4759]" />
-                        <h1 className="text-[22px] text-white">Log Out</h1>
-                    </Link>
+                        <button
+                            onClick={() => setShowLogoutModal(true)}
+                            className="flex items-center space-x-3 mb-8 group p-2 rounded-md hover:bg-[#F79B72] hover:mr-5 transition-all w-full text-left"
+                        >
+                            <CiLogout className="h-8 w-8  text-[#F79B72] group-hover:text-[#2A4759]" />
+                            <h1 className="text-[22px] cursor-pointer text-white">Log Out</h1>
+                        </button>
+                          <ConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+        title="Log out from Factory Dashboard?"
+        message="Your session will end."
+      />
                 </nav>
             </div>
         </div>
