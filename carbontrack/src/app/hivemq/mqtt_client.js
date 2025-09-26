@@ -14,11 +14,7 @@ const MqttSubscriber = () => {
 
     client.on('connect', () => {
       client.subscribe('esp32/hello', (err) => {
-        if (err) {
-          console.error('Subscription error:', err);
-        } else {
-          console.log('Subscribed to topic esp32/hello');
-        }
+        
       });
     });
 
