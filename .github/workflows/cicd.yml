@@ -33,6 +33,8 @@ jobs:
       - name: Build React app
         run: npm run build
         working-directory: carbontrack
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
 
       - name: Deploy to Vercel
         if: github.ref == 'refs/heads/main'
