@@ -1,9 +1,11 @@
-const BASE_URL = process.env.BASE_URL;
+
+const BASE_URL=process.env.BASE_URL;
 if (!BASE_URL) {
   throw new Error("BASE_URL environment variable is not defined");
 }
 
 export async function POST(request: Request) {
+  const BASE_URL=process.env.BASE_URL;
   try {
     const body = await request.json();
 

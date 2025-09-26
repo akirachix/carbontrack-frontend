@@ -35,7 +35,9 @@ export default function SignupPage() {
   }, [signupError]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let { name, value } = e.target;
+   const { name, value:originalValue  } = e.target;
+
+   let value= originalValue
 
     if (name === "phone_number") {
       value = value.replace(/\D/g, "").slice(0, 15);
@@ -232,15 +234,13 @@ export default function SignupPage() {
             <Button
               type="submit"
               variant="secondary"
-              buttonText={loadingSignup ? "Signing Up..." : "Sign Up"}
-            />
+              buttonText={loadingSignup ? "Signing Up..." : "Sign Up"}/>
 
             <p className="text-[#2A4759] text-[20px] text-center">
               Already have an account?
               <a
                 href="/login"
-                className="ml-1 text-[#F7A77B] font-semibold hover:underline"
-              >
+                className="ml-1 text-[#F7A77B] font-semibold hover:underline">
                 Sign In
               </a>
             </p>

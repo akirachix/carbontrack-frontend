@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import useFetchCompliance from "../hooks/useFetchCompliance";
 import useFetchFactories from "../hooks/useFetchFactories";
@@ -9,30 +8,58 @@ import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import { updateCompliance } from "../utils/fetchCompliance";
 import SidebarLayout from "../components/SideBarLayout";
 
+interface Factory {
+  factory_id: number;
+  factory_name: string;
+}
+
+interface Compliance {
+  compliance_id: number;
+  compliance_target: string;
+  compliance_status?: string | null;
+  factory: number;
+  updated_at?: string | null;
+  created_at?: string | null;
+}
+
 export default function ComplianceDashboard() {
   const {
     compliance,
     loading: complianceLoading,
     error: complianceError,
-  } = useFetchCompliance();
+  } = useFetchCompliance() as {
+    compliance: Compliance[];
+    loading: boolean;
+    error: string | null;
+  };
+
   const {
     factories,
     loading: factoriesLoading,
     error: factoriesError,
-  } = useFetchFactories();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  } = useFetchFactories() as {
+    factories: Factory[];
+    loading: boolean;
+    error: string | null;
+  };
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 11;
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedCompliance, setSelectedCompliance] = useState<any | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [selectedCompliance, setSelectedCompliance] = useState<Compliance | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
+
   const isLoading = complianceLoading || factoriesLoading;
+
   const factoryMap: Record<number, string> = {};
   factories.forEach((f) => {
     factoryMap[f.factory_id] = f.factory_name;
   });
+
   let filteredCompliance = compliance;
+
   if (searchTerm) {
     const lowerTerm = searchTerm.toLowerCase();
     filteredCompliance = filteredCompliance.filter((item) => {
@@ -44,14 +71,18 @@ export default function ComplianceDashboard() {
       );
     });
   }
+
   const totalPages = Math.ceil(filteredCompliance.length / itemsPerPage);
   const start = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredCompliance.slice(start, start + itemsPerPage);
+
   const complianceTarget =
     compliance.length > 0 ? compliance[0].compliance_target : "1.08";
+
   const totalBreach = filteredCompliance.filter(
     (c) => c.compliance_status?.toLowerCase() !== "compliant"
   ).length;
+
   const compliantPercent = filteredCompliance.length
     ? Math.round(
         (filteredCompliance.filter(
@@ -61,15 +92,19 @@ export default function ComplianceDashboard() {
           100
       )
     : 0;
-  const formatDate = (dateString?: string) =>
+
+  const formatDate = (dateString?: string | null) =>
     dateString ? dateString.slice(0, 10) : "";
+
   const openModal = () => {
     if (compliance.length > 0) {
       setSelectedCompliance(compliance[0]);
     }
     setModalOpen(true);
   };
+
   const closeModal = () => setModalOpen(false);
+
   const handleSaveTarget = async (
     complianceId: number,
     newTarget: string,
@@ -91,6 +126,7 @@ export default function ComplianceDashboard() {
       setMessageType("error");
     }
   };
+
   return (
     <SidebarLayout>
       {isLoading ? (

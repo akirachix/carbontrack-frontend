@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import GetStarted from './page';
@@ -9,9 +10,9 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('framer-motion', () => ({
   motion: {
-    div: (props: any) => <div {...props} />,
-    h1: (props: any) => <h1 {...props} />,
-    p: (props: any) => <p {...props} />,
+    div: (props: React.HTMLAttributes<HTMLDivElement>) => <div {...props} />,
+    h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h1 {...props} />,
+    p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p {...props} />,
   },
 }));
 
