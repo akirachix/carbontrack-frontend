@@ -119,7 +119,7 @@ export default function DashboardPage() {
               </header>
               <div className="flex justify-between">
                 <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58">
-                  <p className="2xl:text-[20px] xl:text-[15px]">Compliant Factories</p>
+                  <p className="2xl:text-[20px] xl:text-[19px]">Compliant Factories</p>
                   <h2 className="text-xl font-bold 2xl:mt-5 xl:mt-2">{filteredCompliance.length}</h2>
                 </div>
                 <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58">
