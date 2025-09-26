@@ -83,7 +83,7 @@ export default function RecordsPage() {
       <div className="flex min-h-screen overflow-hidden bg-black text-[#FCFCFC] relative">
         <main className="flex-1 flex flex-col min-h-screen overflow-hidden ">
           <div className="flex justify-end w-16 2xl:ml-350 xl:ml-230 lg:ml-160 space-x-4 2xl:mt-15 xl:mt-10 lg:mt-3">
-            <Link href="/profile">
+            <Link href="/factory-profile">
               <IoPersonOutline className="text-[#F79B72] 2xl:w-7 2xl:h-7 xl:w-7 xl:h-7 lg:w-5 lg:h-5 cursor-pointer hover:text-[#2A4759]" />
             </Link>
           </div>
