@@ -166,7 +166,7 @@ describe('FactoryEmissionLeaderboard', () => {
     render(<FactoryEmissionLeaderboard />);
     expect(screen.getByTestId('sidebar-layout')).toBeInTheDocument();
     expect(screen.getByTestId('person-icon')).toBeInTheDocument();
-    expect(screen.getByTestId('link-#')).toBeInTheDocument();
+    
   });
   test('handles empty emissions data', () => {
     (useFactoryEmissions as jest.Mock).mockReturnValue({

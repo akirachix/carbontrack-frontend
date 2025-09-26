@@ -72,9 +72,10 @@ export default function EmissionsHeatmapPage() {
     const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
     return (
         <SidebarLayout>
-            <div className="flex flex-col items-center min-h-[calc(100vh-60px)] 2xl:p-10 xl:p-5 lg:p-3">
-                <div className="flex justify-end w-16 2xl:ml-350 xl:ml-185 lg:ml-135 space-x-4">
-                    <Link href="#"><IoPersonOutline className="text-[#F79B72] 2xl:w-7 2xl:h-7 xl:w-7 xl:h-7 lg:w-4 lg:h-5 cursor-pointer hover:text-[#2A4759]" /></Link>
+            <div className="flex flex-col items-center min-h-[calc(100vh-60px)] p-10">
+                <div className="flex justify-end w-16 ml-350 space-x-4">
+                    <Link href=""><IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" /></Link>
+                    <Link href="/ktda-profile"><IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" /></Link>
                 </div>
                 <div className="font-bold 2xl:text-[48px] xl:text-[40px] lg:text-[19px] 2xl:ml-0 xl:ml-0 lg:ml-12 2xl:mb-[15px] xl:mb-[10px] lg:mb-[0px] tracking-wide w-full">Factory Emissions</div>
                 <div className="bg-[#161C22] text-white rounded-[18px] shadow-[0_2px_24px_#0003] 2xl:p-[36px_40px] xl:p-[36px_40px] lg:p-[0px_0px] flex flex-col w-full 2xl:max-w-screen-2xl xl:max-w-screen-xl lg:max-w-screen-0.5xl 2xl:mt-10 xl:mt-1 lg:mt-0">
