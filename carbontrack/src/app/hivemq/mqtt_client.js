@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import mqtt from 'mqtt';
 
-const base_Url = process.env.BASE_URL
+const base_Url = process.env.NEXT_PUBLIC_BASE_URL
 const MqttSubscriber = () => {
   useEffect(() => {
     const broker = process.env.NEXT_PUBLIC_MQTT_BROKER;
@@ -29,7 +29,8 @@ const MqttSubscriber = () => {
           device_id: mqttData.device_id,
           emission_rate: mqttData.co2_emission_kgs,
         };
-        fetch(base_Url, {
+        
+        fetch(`${base_Url}/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -49,12 +50,12 @@ const MqttSubscriber = () => {
     });
 
     client.on('error', (err) => {
-      console.error('MQTT Client Error:', err);
+      setError(`MQTT Client Error: ${err.message}`);
       client.end();
     });
 
     client.on('reconnect', () => {
-      console.log('MQTT reconnecting...');
+      setStatus('MQTT reconnecting...');
     });
 
     return () => {
