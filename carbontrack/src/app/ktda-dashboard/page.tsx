@@ -90,15 +90,15 @@ export default function DashboardPage() {
   const isLoading = energyLoading || emissionLoading || complianceLoading || factoryLoading;
   return (
     <SidebarLayout>
-      <div className="h-screen text-white w-[85vw]">
-        <main className="flex-1 p-6 ">
+      <div className="h-screen text-white 2xl:w-[83vw] 2xl:ml-5 xl:w-[80vw] xl:ml-0">
+        <main className="flex-1 2xl:p-6 xl:p-5 lg:p-3 ">
           {isLoading ? (
             <div className="text-center text-white text-lg mt-20">Loading data...</div>
           ) : (
             <>
-              <header className="items-center mb-6">
-                <h1 className="text-[30px] font-bold">KTDA Dashboard</h1>
-                <div className="flex justify-between mt-4">
+              <header className="items-center 2xl:mb-6 xl:mb-0">
+                <h1 className="2xl:text-[30px] xl:text-[20px] lg:text-[15px] font-bold">KTDA Dashboard</h1>
+                <div className="flex justify-between 2xl:mt-4 xl:mt-3">
                   <Calendar
                     selectedDate={selectedDateObj}
                     setSelectedDate={(date) => {
@@ -113,41 +113,40 @@ export default function DashboardPage() {
                     }}
                   />
                   <div className="flex justify-end w-16 space-x-4">
-                    <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
-                    <IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
+                    <IoPersonOutline className="text-[#F79B72] 2xl:w-7 2xl:h-7 xl:w-7 xl:h-7 lg:w-5 lg:h-5 cursor-pointer hover:text-[#2A4759]" />
                   </div>
                 </div>
               </header>
               <div className="flex justify-between">
-                <div className="bg-gray-800 p-4 rounded-lg w-90">
-                  <p className="text-[20px]">Compliant Factories</p>
-                  <h2 className="text-xl font-bold mt-5">{filteredCompliance.length}</h2>
+                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58">
+                  <p className="2xl:text-[20px] xl:text-[19px]">Compliant Factories</p>
+                  <h2 className="text-xl font-bold 2xl:mt-5 xl:mt-2">{filteredCompliance.length}</h2>
                 </div>
-                <div className="bg-gray-800 p-4 rounded-lg w-90">
-                  <p className="text-[20px]">Compliant Factories In Percent</p>
-                  <h2 className="text-xl font-bold mt-5">
+                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58">
+                  <p className="2xl:text-[20px] xl:text-[15px]">Compliant Factories In Percent</p>
+                  <h2 className="text-xl font-bold 2xl:mt-5 xl:mt-2">
                     {filteredCompliance.length > 0
                       ? ((filteredCompliance.filter((c) => c.compliance_status === "compliant").length / filteredCompliance.length) * 100).toFixed(1)
                       : 0}{" "}%
                   </h2>
                 </div>
-                <div className="bg-gray-800 p-4 rounded-lg h-30 w-90">
-                  <p className="text-[20px]">Average Emission per Year</p>
-                  <h2 className="text-xl font-bold mt-5">
+                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-68 xl:h-30">
+                  <p className="2xl:text-[20px] xl:text-[19px]">Average Emission per Year</p>
+                  <h2 className="text-xl font-bold 2xl:mt-5 xl:mt-2">
                     {filteredEmissions.length > 0
                       ? (filteredEmissions.reduce((acc, item) => acc + parseFloat(item.emission_rate || "0"), 0) / filteredEmissions.length).toFixed(2)
                       : 0}{" "}
                     kg CO₂e
                   </h2>
                 </div>
-                <div className="bg-gray-800 p-4 rounded-lg w-90">
-                  <p className="text-[20px]">Total Emissions</p>
-                  <h2 className="text-xl font-bold mt-5">{totalCombinedEmissions.toFixed(2)} kg CO₂e</h2>
+                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58">
+                  <p className="2xl:text-[20px] xl:text-[15px]">Total Emissions</p>
+                  <h2 className="text-xl font-bold 2xl:mt-5 xl:mt-2">{totalCombinedEmissions.toFixed(2)} kg CO₂e</h2>
                 </div>
               </div>
-              <h1 className="mb-4 font-semibold text-white text-[1.5rem] mt-7">Emission Trend</h1>
-              <div className="grid grid-cols-3 gap-6">
-                <div className="col-span-2 bg-gray-800 p-4 rounded-lg">
+              <h1 className="mb-4 font-semibold text-white 2xl:text-[1.5rem] 2xl:mt-5 xl:text-[1.3rem] xl:mt-3">Emission Trend</h1>
+              <div className="grid grid-cols-3 2xl:gap-6 xl:gap-0">
+                <div className="col-span-2 bg-gray-800 p-4 rounded-lg 2xl:w-[100%] 2xl:h-[100%] xl:w-[95%] xl:h-[102%]">
                   <ResponsiveContainer width="100%" height={500}>
                     <LineChart data={fullEmissionTrend}>
                       <XAxis dataKey="month" stroke="#ccc" label={{ value: "Months", position: "insideBottom", offset: -5, fill: "#ccc" }} />
@@ -161,28 +160,28 @@ export default function DashboardPage() {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="space-y-4">
+                <div className="2xl:space-y-4">
                   <div
-                    className="bg-[#444444] rounded-xl p-4 cursor-pointer"
+                    className="bg-[#444444] rounded-xl 2xl:p-4 xl:p-2 cursor-pointer"
                     onClick={() => setShowAlertModal(true)}
                     title="Click to view high emission alerts">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-[#293038] rounded-md h-10 w-10 flex items-center justify-center">
-                        <IoMdWarning className="text-red-700 text-[30px]" />
+                    <div className="flex items-center 2xl:gap-3 xl:gap-3">
+                      <div className="bg-[#293038] rounded-md 2xl:h-10 2xl:w-10 xl:h-8 xl:w-8 flex items-center justify-center">
+                        <IoMdWarning className="text-red-700 2xl:text-[30px] xl:text-[20px]" />
                       </div>
-                      <div className="flex gap-10">
+                      <div className="flex 2xl:gap-5">
                         <div>
-                          <div className="font-bold text-white">High Emission Alert</div>
-                          <div className="text-sm text-red-200">Emission exceeded threshold</div>
+                          <div className="font-bold text-white xl:text-[20px]">High Emission Alert</div>
+                          <div className="2xl:text-sm text-red-200 xl:text-[18px]">Emission exceeded threshold</div>
                         </div>
-                        <div className="text-xl font-bold mt-1 text-red-600">
+                        <div className="2xl:text-xl xl:text-lg font-bold mt-1 text-red-600">
                           {alerts.length} Alert{alerts.length !== 1 && "s"}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <h3 className="font-semibold text-white text-[20px]">Consumed Energy</h3>
-                  <div className="bg-gray-800 p-4 rounded-lg">
+                  <h3 className="font-semibold text-white text-[20px] xl:mt-4 xl:text-[25px]">Consumed Energy</h3>
+                  <div className="bg-gray-800 p-4 rounded-lg 2xl:w-40 xl:mt-2">
                     <ResponsiveContainer width="100%" height={250}>
                       <PieChart>
                         <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90} fill="#8884D8" label>
