@@ -11,18 +11,18 @@ export default function ProfileDisplay() {
   const { user: profile, error } = useFetchUsers();
 
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
-  if (!profile) return null;
+if (!profile) return null;
 
+const getProfileRoute = () => {
+  return profile.user_type === "factory" ? "/edit-factory-profile" : "/ktda-edit-profile";
+};
 
-//   const getEditProfileRoute = () => {
-//     return profile.user_type === "factory" ? "/edit-factory-profile" : "/edit-ktda-profile";
-//   };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-20 xl:p-10">
       <div className="max-w-6xl mx-auto">
         <div className="mb-10">
-          <h1 className="text-4xl font-bold mb-2">Profile</h1>
+          <h1 className="text-4xl mt-15 font-bold mb-2">Profile</h1>
           <div className="w-32 h-1 bg-[#F79B72] rounded" />
         </div>
         <div className="bg-gray-800 rounded-2xl shadow-xl p-8 flex flex-col md:flex-row gap-8 relative">
@@ -44,8 +44,8 @@ export default function ProfileDisplay() {
               )}
             </div>
             <button
-              onClick={() => router.push('/edit-factory-profile')}
-              className="absolute bottom-23 right-5 bg-[#F79B72] text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-[#F3FBFD] transition-all"
+              onClick={() => router.push(getProfileRoute())}
+              className="absolute bottom-20 right-18 lg:right-10 bg-[#F79B72] text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-[#F3FBFD] transition-all"
               aria-label="Edit Profile"
               type="button"
             >
@@ -85,7 +85,7 @@ export default function ProfileDisplay() {
               </div>
               <div className="pt-4 flex justify-end">
                 <button
-                  onClick={() => router.push('edit-factory-profile')}
+                  onClick={() => router.push(getProfileRoute())}
                   className="px-6 py-3 bg-[#F79B72] text-black rounded-lg font-medium hover:bg-[#F3FBFD] transition flex items-center gap-2 cursor-pointer">
                   <Edit2 className="w-5 h-5" />
                   Edit Profile

@@ -77,7 +77,7 @@ export default function EmissionsHeatmapPage() {
             <div className="flex flex-col items-center min-h-[calc(100vh-60px)] p-10">
                 <div className="flex justify-end w-16 ml-350 space-x-4">
                     <Link href=""><IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" /></Link>
-                    <Link href="#"><IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" /></Link>
+                    <Link href="/ktda-profile"><IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" /></Link>
                 </div>
                 <div className="font-bold text-[48px] mb-[15px] tracking-wide w-full">Factory Emissions</div>
                 <div className="bg-[#161C22] text-white rounded-[18px] shadow-[0_2px_24px_#0003] p-[36px_40px] flex flex-col w-full max-w-screen-2xl mt-10">
