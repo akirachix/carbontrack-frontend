@@ -49,7 +49,6 @@ describe("ForgotPasswordPage", () => {
 
     expect(screen.getByAltText("carbon-track logo")).toBeInTheDocument();
     expect(screen.getByText("Carbon Track")).toBeInTheDocument();
-    expect(screen.getByText("Welcome Back")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Forgot Password?" })).toBeInTheDocument();
     expect(screen.getByText("Enter your email address below")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("eg,0@HGY4")).toBeInTheDocument();

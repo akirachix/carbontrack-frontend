@@ -14,7 +14,7 @@ function Teaser() {
   }, [router]);
 
   return (
-    <main className="2xl:pt-20 w-screen  flex flex-col justify-center items-center bg-gray-100 h-screen">
+    <main className="2xl:pt-20 w-screen  flex flex-col justify-center items-center bg-gray-100 h-screen ">
       <div>
         <Image
           src={"/images/Ellipse 11.png"}

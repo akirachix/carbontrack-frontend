@@ -4,10 +4,9 @@ import useFetchCompliance from "../hooks/useFetchCompliance";
 import useFetchFactories from "../hooks/useFetchFactories";
 import Pagination from "../sharedComponents/Pagination";
 import ComplianceTargetModal from "./component/AddTarget";
-import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import { updateCompliance } from "../utils/fetchCompliance";
 import SidebarLayout from "../components/SideBarLayout";
-import Link from "next/link";
+
 
 interface Factory {
   factory_id: number;
@@ -148,14 +147,6 @@ export default function ComplianceDashboard() {
             <div>
               <h2 className="text-[2rem] font-bold">Compliance</h2>
             </div>
-            <div className="flex space-x-4 items-center">
-              <Link href="">
-                <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
-              </Link>
-              <Link href="/ktda-profile">
-                <IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
-              </Link>
-            </div>
           </div>
           {message && (
             <div
@@ -205,7 +196,7 @@ export default function ComplianceDashboard() {
             <table className="min-w-full text-left border-collapse border border-gray-700 lg:h-[60vh]">
               <thead className="bg-[#2A4759] text-white">
                 <tr>
-                  <th className="p-3 border border-gray-700 w-1/3">Factory</th>
+                  <th className="p-3 border border-gray-700 w-1/3 xl:pb-2">Factory</th>
                   <th className="p-3 border border-gray-700 w-1/3">
                     Compliant status
                   </th>
@@ -217,7 +208,7 @@ export default function ComplianceDashboard() {
               <tbody>
                 {paginatedData.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="p-4 text-center">
+                    <td colSpan={3} className="p-4 text-center ">
                       No data found
                     </td>
                   </tr>
@@ -238,7 +229,7 @@ export default function ComplianceDashboard() {
                       >
                         {item.compliance_status}
                       </td>
-                      <td className="p-3 border border-gray-700 italic text-gray-400">
+                      <td className="p-3 border border-gray-700 italic text-gray-400 ">
                         {formatDate(item.updated_at) ||
                           formatDate(item.created_at)}
                       </td>

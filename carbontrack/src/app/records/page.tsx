@@ -8,8 +8,7 @@ import { saveRecord } from "../utils/fetchRecords";
 import Button from "../sharedComponents/Button";
 import Pagination from "../sharedComponents/Pagination";
 import Calendar from "../sharedComponents/Calendar";
-import Link from "next/link";
-import { IoSettingsOutline, IoPersonOutline } from "react-icons/io5";
+
 import type { EnergyEntryData } from "../types";
 export default function RecordsPage() {
   const [page, setPage] = useState(1);
@@ -82,13 +81,8 @@ export default function RecordsPage() {
     <FactoryLayout>
       <div className="flex min-h-screen overflow-hidden bg-black text-[#FCFCFC] relative">
         <main className="flex-1 flex flex-col min-h-screen overflow-hidden ">
-          <div className="flex justify-end w-16 2xl:ml-350 xl:ml-230 lg:ml-160 space-x-4 2xl:mt-15 xl:mt-10 lg:mt-3">
-            <Link href="/factory-profile">
-              <IoPersonOutline className="text-[#F79B72] 2xl:w-7 2xl:h-7 xl:w-7 xl:h-7 lg:w-5 lg:h-5 cursor-pointer hover:text-[#2A4759]" />
-            </Link>
-          </div>
           <div className="2xl:mb-6 xl:mb-6 lg:mb-2 px-4 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
-            <h2 className="text-xl 2xl:text-5xl xl:text-5xl lg:text-2xl font-500">Records</h2>
+            <h2 className="text-xl 2xl:text-5xl xl:text-5xl lg:text-2xl font-500 2xl:pt-15 xl:pt-10">Records</h2>
             <p className="2xl:text-lg xl:text-lg lg:text-sm  text-white mt-1">
               Data on energy consumption and production.
             </p>

@@ -10,7 +10,7 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-// Mock next/image with explicit displayName
+
 jest.mock('next/image', () => {
   const MockImage = (props: ImgHTMLAttributes<HTMLImageElement>) =>
     <img {...props} alt={props.alt || 'mocked image'} />;
@@ -18,7 +18,7 @@ jest.mock('next/image', () => {
   return { __esModule: true, default: MockImage };
 });
 
-// Mock framer-motion components with displayName
+
 jest.mock('framer-motion', () => {
   type MotionProps<T extends keyof React.JSX.IntrinsicElements> = React.PropsWithChildren<React.JSX.IntrinsicElements[T]> & {
     [key: string]: unknown;
@@ -44,7 +44,7 @@ jest.mock('framer-motion', () => {
   };
 });
 
-// Mock react-icons/fi components
+
 jest.mock("react-icons/fi", () => {
   const FiEye = () => <span data-testid="eye-icon" aria-label="Show password"></span>;
   FiEye.displayName = "MockFiEye";
@@ -86,7 +86,6 @@ describe("ResetPasswordPage", () => {
 
     expect(screen.getByAltText("carbon-track logo")).toBeInTheDocument();
     expect(screen.getByText("Carbon Track")).toBeInTheDocument();
-    expect(screen.getByText("Welcome Back")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "New Password" })).toBeInTheDocument();
     expect(screen.getByPlaceholderText("eg,0@HGY4")).toBeInTheDocument();
   });

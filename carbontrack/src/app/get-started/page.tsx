@@ -13,7 +13,7 @@ function GetStarted() {
     }
   };
   return (
-    <main className="w-screen items-center justify-center bg-gray-100 h-screen  ">
+    <main className="w-screen items-center justify-center bg-gray-100 h-screen ">
       <div>
         <Image
           src={"/images/Ellipse 11.png"}
@@ -21,7 +21,7 @@ function GetStarted() {
           width={0}
           height={0}
           sizes="100vw"
-          className="absolute top-0 left-0 w-[40%] h-auto md:w-[30%] lg:w-[14.95%] xl:w-[15.97%] 2xl:w-[13.35%] 2xl:h-[100%] object-contain "
+          className="absolute top-0 left-0 w-[40%]  md:w-[30%] lg:w-[14.95%] xl:w-[15.97%] 2xl:w-[13.35%] 2xl:h-[100%] object-contain  xl:h-[100vh] xl:ml-[-23] "
         />
       </div>
       <div className="flex flex-col text-center items-center justify-center lg:pt-20 xl:pt-50">
