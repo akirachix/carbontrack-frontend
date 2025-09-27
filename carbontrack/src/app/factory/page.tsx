@@ -51,7 +51,7 @@ export default function FactoryEmissionLeaderboard() {
                         />
                     </div>
                 </div>
-                <table className="2xl:w-[80vw] xl:w-[75vw] lg:w-[75vw] table-fixed border-collapse border border-gray-700 text-left rounded-[10px]">
+                <table className="2xl:w-[80vw] xl:w-[65vw] lg:w-[75vw] table-fixed border-collapse border border-gray-700 text-left rounded-[10px]">
                     <thead>
                         <tr className="bg-[#2A4759] text-white border border-gray-700 2xl:text-[16px] xl:text-[16px] lg:text-[13px]">
                             <th className="2xl:p-5 xl:p-4 lg:p-3 w-1/3 border border-gray-700 ">Factory</th>
