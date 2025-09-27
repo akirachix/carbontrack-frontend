@@ -38,12 +38,7 @@ export default function FactoryEmissionLeaderboard() {
     return (
         <SidebarLayout>
             <div className="p-2 min-h-screen text-white mx-auto ml-10 pt-9">
-                <div className="flex justify-end w-16 ml-350 space-x-4">
-                   
-                    <Link href="/ktda-profile">
-                        <IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
-                    </Link>
-                </div>
+                
                 <h1 className='font-500 2xl:text-[48px] xl:text-[35px] lg:text-[25px] 2xl:mb-6 xl:mb-2 lg:mb-2'>Factory Emission Leaderboard</h1>
                 <div className='flex space-x-20 2xl:mb-8 xl:mb-5 lg:mb-5'>
                     <div>

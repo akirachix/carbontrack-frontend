@@ -1,8 +1,18 @@
 "use client";
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid,Tooltip, LineChart, Line, ResponsiveContainer,} from "recharts";
-import { IoSettingsOutline, IoPersonOutline } from "react-icons/io5";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  LineChart,
+  Line,
+  ResponsiveContainer,
+} from "recharts";
+import { IoPersonOutline } from "react-icons/io5";
 import { useFetchEmission } from "../hooks/useFetchEmissions";
 import { useFetchEnergyEntries } from "../hooks/useFetchEnergyEntries";
 import Link from "next/link";
@@ -24,13 +34,10 @@ export default function DashboardPage() {
     <FactoryLayout>
       <div className="bg-black text-white w-full min-h-screen flex flex-col">
         <MqttSubscriber />
-        <main className="flex-1 p-4 md:p-8 overflow-auto w-full max-w-7xl mx-auto">
+        <main className="flex-1 p-4 md:p-8 overflow-auto w-full max-w-9xl mx-auto">
           <div className="flex justify-end space-x-4 mb-4">
-            <Link href="">
-              <IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
-            </Link>
             <Link href="/factory-profile">
-              <IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" />
+              <IoPersonOutline className="text-[#F79B72] 2xl:w-7 2xl:h-7 xl:w-7 xl:h-7 lg:w-5 lg:h-5 cursor-pointer hover:text-[#2A4759]" />
             </Link>
           </div>
           <h2 className="text-2xl font-bold mb-2 truncate">Factory Dashboard</h2>
@@ -48,8 +55,8 @@ export default function DashboardPage() {
               }
             }}
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 2xl:mb-8 xl:mb-8 lg:mb-4">
+            <div className="bg-slate-700 xl:p-6 lg:p-3 p-6 2xl:p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
               <p className="text-gray-300">Today’s total CO2 emissions</p>
               <p className="text-2xl font-bold mt-2 truncate">
                 {emissionsLoading
@@ -59,7 +66,7 @@ export default function DashboardPage() {
                   : "No data"}
               </p>
             </div>
-            <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+            <div className="bg-slate-700 xl:p-6 lg:p-3 p-6 2xl:p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
               <p className="text-gray-300">This month total CO2 emissions</p>
               <p className="text-2xl font-bold mt-2 truncate">
                 {monthTotal !== null
@@ -69,7 +76,7 @@ export default function DashboardPage() {
                   : "No data"}
               </p>
             </div>
-            <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
+            <div className="bg-slate-700 xl:p-6 lg:p-3 p-6 2xl:p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
               <p className="text-gray-300">Indirect Emissions</p>
               <p className="text-2xl font-bold mt-2 truncate">
                 {totalCO2 !== null
@@ -81,7 +88,9 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 w-full h-56 sm:h-72 md:h-96">
+            <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 w-full
+              h-56 sm:h-72 2xl:h-126 xl:h-94
+              lg:h-60 md:h-54">
               <h3 className="text-xl font-semibold mb-4 text-white truncate">
                 CO2 Levels Over Time
               </h3>
@@ -104,7 +113,9 @@ export default function DashboardPage() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 w-full h-56 sm:h-72 md:h-96">
+            <div className="bg-slate-700 p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 w-full
+              h-56 sm:h-72 2xl:h-126 xl:h-94
+              lg:h-60 md:h-54">
               <h3 className="text-xl font-semibold mb-4 text-white truncate">
                 Current CO2 Emissions
               </h3>
