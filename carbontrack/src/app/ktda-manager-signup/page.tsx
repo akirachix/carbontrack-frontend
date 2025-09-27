@@ -92,14 +92,14 @@ export default function SignupPage() {
             alt="carbon-track logo"
             width={200}
             height={200}
-            className="mx-auto object-contain w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48"
+            className="mx-auto object-contain w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 xl:w-90"
           />
         </motion.div>
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-          className="text-2xl sm:text-3xl md:text-4xl font-black text-[#2A4759]"
+          className="text-2xl sm:text-3xl md:text-4xl font-black text-[#2A4759] xl:text-5xl"
         >
           Carbon Track
         </motion.h1>
@@ -107,21 +107,21 @@ export default function SignupPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1, ease: "easeOut" }}
-          className="text-sm sm:text-base md:text-lg font-semibold text-[#F79B72] mt-2 px-4"
+          className="text-sm sm:text-base md:text-lg font-semibold text-[#F79B72] mt-2 px-4 xl:text-2xl"
         >
           Welcome to Carbon Track
         </motion.p>
       </div>
       <div className="flex items-center justify-center p-4 lg:w-1/2 bg-[#234052]">
         <div
-          className="w-full max-w-md bg-[#E7E7E7] rounded-2xl p-6 shadow-lg"
+          className="w-full max-w-md bg-[#E7E7E7] rounded-2xl p-6 shadow-lg "
           style={{ boxShadow: "0 2px 10px 0 #F79B72" }}
         >
-          <h2 className="text-xl sm:text-2xl font-bold mb-6 text-[#F7A77B] text-center">Sign Up</h2>
-          <form onSubmit={handleSubmit} className="w-full space-y-4">
+          <h2 className="text-xl sm:text-2xl md:mb-2 font-bold mb-6 text-[#F7A77B] text-center">Sign Up</h2>
+          <form onSubmit={handleSubmit} className="w-full space-y-4 md:space-y-1 md:h-[80vh] xl:space-y-4">
             <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
               <div className="flex-1">
-                <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1">
+                <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1  xl:text-[20px]">
                   First Name
                 </label>
                 <input
@@ -130,13 +130,13 @@ export default function SignupPage() {
                   placeholder="eg, Mark"
                   value={formData.first_name}
                   onChange={handleChange}
-                  className="w-full p-3 text-sm sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
+                  className="w-full p-3 md:h-10 xl:py-6  text-sm sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
                   required
                 />
                 {errors.first_name && <p className="text-red-500 text-xs sm:text-sm">{errors.first_name}</p>}
               </div>
               <div className="flex-1">
-                <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1">
+                <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1  xl:text-[20px]">
                   Last Name
                 </label>
                 <input
@@ -145,14 +145,14 @@ export default function SignupPage() {
                   placeholder="eg, Mathew"
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="w-full p-3 text-sm sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
+                  className="w-full p-3 text-sm xl:py-6 sm:text-base md:h-10 border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
                   required
                 />
                 {errors.last_name && <p className="text-red-500 text-xs sm:text-sm">{errors.last_name}</p>}
               </div>
             </div>
             <div>
-              <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1">
+              <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1  xl:text-[20px]">
                 Email
               </label>
               <input
@@ -161,13 +161,13 @@ export default function SignupPage() {
                 placeholder="eg, mark@gmail.com"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full p-3 text-sm sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
+                className="w-full p-3 text-sm  xl:py-6 md:h-10 sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
                 required
               />
               {errors.email && <p className="text-red-500 text-xs sm:text-sm">{errors.email}</p>}
             </div>
             <div>
-              <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1">
+              <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1 xl:text-[20px]">
                 Phone Number
               </label>
               <input
@@ -178,13 +178,13 @@ export default function SignupPage() {
                 onChange={handleChange}
                 maxLength={15}
                 inputMode="numeric"
-                className="w-full p-3 text-sm sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
+                className="w-full p-3 text-sm md:h-10 xl:py-6 sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
                 required
               />
               {errors.phone_number && <p className="text-red-500 text-xs sm:text-sm">{errors.phone_number}</p>}
             </div>
             <div className="relative">
-              <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1">
+              <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1 xl:text-[20px]">
                 Password
               </label>
               <input
@@ -193,20 +193,20 @@ export default function SignupPage() {
                 placeholder="eg, 0@HGY4"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full p-3 text-sm sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
+                className="w-full p-3  xl:py-6 text-sm  md:h-10 sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShow((prev) => ({ ...prev, password: !prev.password }))}
-                className="absolute right-3 bottom-3 text-[#2A4759]"
+                className="absolute right-3 -translate-y-2 top-15 md:top-12  xl:top-15 text-[#2A4759]"
               >
                 {show.password ? <FiEye /> : <FiEyeOff />}
               </button>
               {errors.password && <p className="text-red-500 text-xs sm:text-sm">{errors.password}</p>}
             </div>
             <div className="relative">
-              <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1">
+              <label className="block text-[#2A4759] text-sm sm:text-base font-medium mb-1 xl:text-[20px]">
                 Confirm Password
               </label>
               <input
@@ -215,7 +215,7 @@ export default function SignupPage() {
                 placeholder="eg, 0@HGY4"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full p-3 text-sm sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
+                className="w-full p-3 text-sm md:h-10 xl:py-6   sm:text-base border border-[#2A4759] bg-transparent rounded-md text-[#234052]"
                 required
               />
               <button
@@ -223,7 +223,7 @@ export default function SignupPage() {
                 onClick={() =>
                   setShow((prev) => ({ ...prev, confirmPassword: !prev.confirmPassword }))
                 }
-                className="absolute right-3 bottom-3 text-[#2A4759]"
+                className="absolute right-3 -translate-y-2 top-15 md:top-12 xl:top-15 text-[#2A4759] "
               >
                 {show.confirmPassword ? <FiEye /> : <FiEyeOff />}
               </button>
@@ -240,9 +240,9 @@ export default function SignupPage() {
               variant="secondary"
               buttonText={loadingSignup ? "Signing Up..." : "Sign Up"}
             />
-            <p className="text-[#2A4759] text-sm sm:text-base text-center mt-4">
+            <p className="text-[#2A4759] text-sm sm:text-base text-center mt-4 xl:text-[20px] xl:mt-2">
               Already have an account?
-              <a href="/login" className="ml-1 text-[#F7A77B] font-semibold hover:underline">
+              <a href="/login" className="ml-1 text-[#F7A77B] font-semibold hover:underline ">
                 Sign In
               </a>
             </p>

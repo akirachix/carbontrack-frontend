@@ -73,10 +73,7 @@ export default function EmissionsHeatmapPage() {
     return (
         <SidebarLayout>
             <div className="flex flex-col items-center min-h-[calc(100vh-60px)] p-10">
-                <div className="flex justify-end w-16 ml-350 space-x-4">
-                    <Link href=""><IoSettingsOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" /></Link>
-                    <Link href="/ktda-profile"><IoPersonOutline className="text-[#F79B72] w-7 h-7 cursor-pointer hover:text-[#2A4759]" /></Link>
-                </div>
+               
                 <div className="font-bold 2xl:text-[48px] xl:text-[40px] lg:text-[19px] 2xl:ml-0 xl:ml-0 lg:ml-12 2xl:mb-[15px] xl:mb-[10px] lg:mb-[0px] tracking-wide w-full">Factory Emissions</div>
                 <div className="bg-[#161C22] text-white rounded-[18px] shadow-[0_2px_24px_#0003] 2xl:p-[36px_40px] xl:p-[36px_40px] lg:p-[0px_0px] flex flex-col w-full 2xl:max-w-screen-2xl xl:max-w-screen-xl lg:max-w-screen-0.5xl 2xl:mt-10 xl:mt-1 lg:mt-0">
                     <div className="2xl:mb-6 xl:mb-1 lg:mb-0 2xl:ml-0 xl:ml-0 lg:ml-5 2xl:pt-0 xl:pt-0 lg:pt-0.5  flex items-center">
@@ -114,7 +111,7 @@ export default function EmissionsHeatmapPage() {
                                 {boxes}
                             </div>
                             <div className="2xl:flex 2xl:flex-row xl:flex xl:flex-row lg:flex lg:flex-row items-start 2xl:ml-[2px] xl:ml-[px] lg:ml-[0px] flex-grow">
-                                <div className="relative 2xl:h-[320px] xl:h-[120px] lg:h-[120px] 2xl:ml-20 xl:ml-1 lg:ml-0 ">
+                                <div className="relative 2xl:h-[320px] xl:h-[120px] lg:h-[120px] 2xl:ml-20 xl:ml-10 lg:ml-0 ">
                                     <div
                                         className="rounded-[6px] border border-white block mt-[12px] 2xl:mr-[28px] xl:mr-[2px] lg:mr-[0px]"
                                         style={{

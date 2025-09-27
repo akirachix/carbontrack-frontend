@@ -31,7 +31,7 @@ const Pagination: React.FC<PaginationProps> = ({ page, totalPages, onPageChange,
     if (e.key === "Escape") setEdit(false);
   };
   return (
-    <div className="flex items-center justify-center 2xl:mt-7 2xl:gap-6 xl:mt-7 xl:gap-6 lg:mt-5 lg:gap-2">
+    <div className="flex items-center justify-center 2xl:mt-7 2xl:gap-6 xl:mt-3 xl:gap-6 lg:mt-5 lg:gap-2">
       <button
         className={`rounded-full p-2 ${page === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
         onClick={() => page > 1 && onPageChange(page - 1)}

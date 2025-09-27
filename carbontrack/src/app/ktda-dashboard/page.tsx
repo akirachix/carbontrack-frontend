@@ -91,7 +91,7 @@ export default function DashboardPage() {
   const isLoading = energyLoading || emissionLoading || complianceLoading || factoryLoading;
   return (
     <SidebarLayout>
-      <div className="h-screen text-white 2xl:w-[83vw] 2xl:ml-5 xl:w-[80vw] xl:ml-0">
+      <div className="h-screen text-white 2xl:w-[83vw] 2xl:ml-5 xl:w-[80vw] xl:ml-0 overflow-hidden">
         <main className="flex-1 2xl:p-6 xl:p-5 lg:p-3 ">
           {isLoading ? (
             <div className="text-center text-white text-lg mt-20">Loading data...</div>
@@ -121,11 +121,11 @@ export default function DashboardPage() {
                 </div>
               </header>
               <div className="flex justify-between">
-                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58">
+                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58 xl:h-[13vh]">
                   <p className="2xl:text-[20px] xl:text-[19px]">Compliant Factories</p>
                   <h2 className="text-xl font-bold 2xl:mt-5 xl:mt-2">{filteredCompliance.length}</h2>
                 </div>
-                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58">
+                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-58 xl:h-[13vh]">
                   <p className="2xl:text-[20px] xl:text-[15px]">Compliant Factories In Percent</p>
                   <h2 className="text-xl font-bold 2xl:mt-5 xl:mt-2">
                     {filteredCompliance.length > 0
@@ -133,7 +133,7 @@ export default function DashboardPage() {
                       : 0}{" "}%
                   </h2>
                 </div>
-                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-68 xl:h-30">
+                <div className="bg-gray-800 2xl:p-4 xl:p-2 rounded-lg 2xl:w-90 xl:w-68  xl:h-[13vh] ">
                   <p className="2xl:text-[20px] xl:text-[19px]">Average Emission per Year</p>
                   <h2 className="text-xl font-bold 2xl:mt-5 xl:mt-2">
                     {filteredEmissions.length > 0
@@ -163,9 +163,9 @@ export default function DashboardPage() {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="2xl:space-y-4">
+                <div className="2xl:space-y-4 lg:h-[70vh]">
                   <div
-                    className="bg-[#444444] rounded-xl 2xl:p-4 xl:p-2 cursor-pointer"
+                    className="bg-[#444444] rounded-xl 2xl:p-4 xl:p-2 cursor-pointer lg:h-[10vh]"
                     onClick={() => setShowAlertModal(true)}
                     title="Click to view high emission alerts">
                     <div className="flex items-center 2xl:gap-3 xl:gap-3">
@@ -174,8 +174,8 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex 2xl:gap-5">
                         <div>
-                          <div className="font-bold text-white xl:text-[20px]">High Emission Alert</div>
-                          <div className="2xl:text-sm text-red-200 xl:text-[18px]">Emission exceeded threshold</div>
+                          <div className="font-bold text-white xl:text-[20px] ">High Emission Alert</div>
+                          <div className="2xl:text-sm text-red-200 xl:text-[15px] " >Emission exceeded threshold</div>
                         </div>
                         <div className="2xl:text-xl xl:text-lg font-bold mt-1 text-red-600">
                           {alerts.length} Alert{alerts.length !== 1 && "s"}
@@ -184,7 +184,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <h3 className="font-semibold text-white text-[20px] xl:mt-4 xl:text-[25px]">Consumed Energy</h3>
-                  <div className="bg-gray-800 p-4 rounded-lg  xl:mt-2 xl:h-[67%]">
+                  <div className="bg-gray-800 p-4 rounded-lg  xl:mt-2 xl:h-[65%] ">
                     <ResponsiveContainer width="100%" height={250}>
                       <PieChart>
                         <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={90} fill="#8884D8" label>
@@ -194,7 +194,7 @@ export default function DashboardPage() {
                         </Pie>
                       </PieChart>
                     </ResponsiveContainer>
-                    <div className="ml-10 xl:mb-6">
+                    <div className="ml-10 xl:mb-10">
                       <div className="xl:text-[15px]">
                         <span className="text-[#F79B72] text-[30px] xl:text-[18px]">■</span>
                         <span className="text-[20px] xl:text-[20px]"> Firewood</span>
