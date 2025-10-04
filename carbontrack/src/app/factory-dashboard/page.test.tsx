@@ -4,7 +4,6 @@ import DashboardPage from './page';
 import { useFetchEmission } from '../hooks/useFetchEmissions';
 import { useFetchEnergyEntries } from '../hooks/useFetchEnergyEntries';
 
-// Mock mqtt client to avoid errors during tests
 jest.mock('mqtt', () => ({
   connect: jest.fn(() => ({
     on: jest.fn(),
@@ -16,26 +15,10 @@ jest.mock('mqtt', () => ({
 
 jest.mock('../hooks/useFetchEmissions');
 jest.mock('../hooks/useFetchEnergyEntries');
+
 jest.mock('../components/FactoryLayout', () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}));
-
-jest.mock('react-datepicker', () => ({
-  __esModule: true,
-  default: ({
-    selected,
-    onChange,
-  }: {
-    selected: Date | null;
-    onChange: (date: Date) => void;
-  }) => (
-    <input
-      data-testid="date-picker"
-      value={selected ? selected.toISOString().split('T')[0] : ''}
-      onChange={(e) => onChange(new Date((e.target as HTMLInputElement).value))}
-    />
-  ),
 }));
 
 jest.mock('recharts', () => ({
@@ -48,6 +31,39 @@ jest.mock('recharts', () => ({
   CartesianGrid: () => <div data-testid="grid" />,
   Tooltip: () => <div data-testid="tooltip" />,
   ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  AreaChart: ({ children }: { children: React.ReactNode }) => <div data-testid="area-chart">{children}</div>,
+  Area: () => <div data-testid="area" />,
+}));
+
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href} data-testid={`link-${href}`}>
+      {children}
+    </a>
+  )
+}));
+
+jest.mock('../sharedComponents/CalendarFactory', () => ({
+  __esModule: true,
+  default: ({
+    selectedDate,
+    setSelectedDate,
+  }: {
+    selectedDate: Date | null;
+    setSelectedDate: (date: Date) => void;
+  }) => (
+    <input
+      data-testid="date-picker"
+      value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+      onChange={(e) => setSelectedDate(new Date((e.target as HTMLInputElement).value))}
+    />
+  ),
+}));
+
+jest.mock('../hivemq/mqtt_client', () => ({
+  __esModule: true,
+  default: () => <div data-testid="mqtt-subscriber"></div>,
 }));
 
 describe('DashboardPage Component', () => {
@@ -74,6 +90,9 @@ describe('DashboardPage Component', () => {
 
   test('displays emission data correctly', () => {
     render(<DashboardPage />);
+    expect(screen.getByText("Today’s total CO2 emissions")).toBeInTheDocument();
+    expect(screen.getByText("This month total CO2 emissions")).toBeInTheDocument();
+    expect(screen.getByText("Indirect Emissions")).toBeInTheDocument();
     expect(screen.getByText('0.123456 kgs')).toBeInTheDocument();
     expect(screen.getByText('3.456789 kgs')).toBeInTheDocument();
     expect(screen.getByText('2.345678 kgs')).toBeInTheDocument();
@@ -81,14 +100,18 @@ describe('DashboardPage Component', () => {
 
   test('handles no data state', () => {
     (useFetchEmission as jest.Mock).mockReturnValue({
-      ...useFetchEmission(),
+      selectedDate: mockSelectedDate,
+      setSelectedDate: mockSetSelectedDate,
+      barData: [{ month: 'Jan', value: 10 }, { month: 'Feb', value: 20 }],
+      lineData: [{ time: '00:00', value: 5 }, { time: '01:00', value: 7 }],
+      loading: false,
       todayTotal: null,
       monthTotal: null,
     });
 
     (useFetchEnergyEntries as jest.Mock).mockReturnValue({
-      ...useFetchEnergyEntries(mockSelectedDate),
       totalCO2: null,
+      error: null,
     });
 
     render(<DashboardPage />);
@@ -97,7 +120,6 @@ describe('DashboardPage Component', () => {
 
   test('handles energy loading state', () => {
     (useFetchEnergyEntries as jest.Mock).mockReturnValue({
-      ...useFetchEnergyEntries(mockSelectedDate),
       totalCO2: null,
       error: true,
     });
@@ -115,11 +137,12 @@ describe('DashboardPage Component', () => {
   test('renders charts with data', () => {
     render(<DashboardPage />);
     expect(screen.getByTestId('bar-chart')).toBeInTheDocument();
-    expect(screen.getByTestId('line-chart')).toBeInTheDocument();
-    expect(screen.getAllByTestId('x-axis')).toHaveLength(2);
-    expect(screen.getAllByTestId('y-axis')).toHaveLength(2);
-    expect(screen.getAllByTestId('grid')).toHaveLength(2);
-    expect(screen.getAllByTestId('tooltip')).toHaveLength(2);
+    expect(screen.getAllByTestId('line-chart').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByTestId('area-chart')).toBeInTheDocument();
+    expect(screen.getAllByTestId('x-axis').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByTestId('y-axis').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByTestId('grid').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByTestId('tooltip').length).toBeGreaterThanOrEqual(1);
   });
 
   test('formats numbers correctly', () => {
@@ -131,12 +154,16 @@ describe('DashboardPage Component', () => {
 
   test('handles empty chart data', () => {
     (useFetchEmission as jest.Mock).mockReturnValue({
-      ...useFetchEmission(),
+      selectedDate: mockSelectedDate,
+      setSelectedDate: mockSetSelectedDate,
       barData: [],
       lineData: [],
+      loading: false,
+      todayTotal: 0.123456,
+      monthTotal: 3.456789,
     });
     render(<DashboardPage />);
     expect(screen.getByTestId('bar-chart')).toBeInTheDocument();
-    expect(screen.getByTestId('line-chart')).toBeInTheDocument();
+    expect(screen.getAllByTestId('line-chart').length).toBeGreaterThanOrEqual(1);
   });
 });

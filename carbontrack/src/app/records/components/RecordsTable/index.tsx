@@ -28,7 +28,7 @@ const RecordsTable = ({ records, emptyMessage = "No records found." }: RecordsTa
         <tbody>
           {records.length === 0 ? (
             <tr>
-              <td colSpan={5} className="p>-4 text-white text-center">
+              <td colSpan={5} className="p-4 text-white text-center">
                 {emptyMessage}
               </td>
             </tr>
@@ -39,7 +39,7 @@ const RecordsTable = ({ records, emptyMessage = "No records found." }: RecordsTa
                   {item.energy_type.charAt(0).toUpperCase() + item.energy_type.slice(1).toLowerCase()}
                 </td>
                 <td className="2xl:p-3 xl:p-2 lg:p-1.5 border border-gray-700 text-white">{item.energy_amount}</td>
-                <td className="2xl:p-3 xl:p-2 lg:p-1.5 border border-gray-700 text-white">{item.tea_processed_amount}</td>
+                <td className="2xl:p-3 xl:p-2 lg:p-1.5 border border-gray-700 text-white">{item.tea_processed_amount} kg</td>
                 <td className="2xl:p-3 xl:p-2 lg:p-1.5 border border-gray-700 text-white">
                   {new Date(item.created_at).toLocaleDateString("en-US", {
                     year: "numeric",
@@ -47,7 +47,7 @@ const RecordsTable = ({ records, emptyMessage = "No records found." }: RecordsTa
                     day: "numeric",
                   })}
                 </td>
-                <td className="2xl:p-3 xl:p-2 lg:p-1.5 border border-gray-700 text-white">{item.co2_equivalent}</td>
+                <td className="2xl:p-3 xl:p-2 lg:p-1.5 border border-gray-700 text-white">{item.co2_equivalent} kg</td>
               </tr>
             ))
           )}

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useFetchUsers from "@/app/hooks/useFetchProfile";
@@ -7,7 +6,6 @@ import { updateUser } from "@/app/utils/fetchProfile";
 import { CameraIcon, Eye, EyeOff } from "lucide-react";
 import Button from "@/app/sharedComponents/Button";
 import Image from "next/image";
-
 interface ProfileFormData {
   email: string;
   password: string;
@@ -17,7 +15,6 @@ interface ProfileFormData {
   user_type: string;
   phone_number: string;
 }
-
 type ProfileUpdatePayload = {
   email: string;
   first_name: string;
@@ -25,22 +22,17 @@ type ProfileUpdatePayload = {
   password?: string;
   role: string;
 };
-
 export default function EditProfilePage() {
   const router = useRouter();
   const { user: profile, error, loading } = useFetchUsers();
-  
- 
   const getProfileRoute = () => {
     return formData.user_type === "factory" ? "/factory-profile" : "/ktda-profile";
   };
-  
   const [showPassword, setShowPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
-
   const [formData, setFormData] = useState<ProfileFormData>({
     email: "",
     password: "",
@@ -50,8 +42,6 @@ export default function EditProfilePage() {
     user_type: "",
     phone_number: "",
   });
-
-  
   useEffect(() => {
     if (profile) {
       setFormData({
@@ -65,11 +55,8 @@ export default function EditProfilePage() {
       });
     }
   }, [profile]);
-
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, files } = e.target;
-    
     if (type === "file" && files && files[0]) {
       const file = files[0];
       setProfileImage(file);
@@ -78,17 +65,12 @@ export default function EditProfilePage() {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
-
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUpdateError(null);
     setIsSubmitting(true);
     setUpdateSuccess(false);
-
     const { email, first_name: firstName, last_name: lastName, password } = formData;
-
-    
     if (!email) {
       setUpdateError("Email is required.");
       setIsSubmitting(false);
@@ -104,10 +86,7 @@ export default function EditProfilePage() {
       setIsSubmitting(false);
       return;
     }
-
-    
     let dataToSend: FormData | ProfileUpdatePayload;
-    
     if (profileImage) {
       const form = new FormData();
       form.append("email", email);
@@ -126,7 +105,6 @@ export default function EditProfilePage() {
         role: "manager",
       };
     }
-
     try {
       await updateUser(dataToSend);
       setUpdateSuccess(true);
@@ -142,19 +120,14 @@ export default function EditProfilePage() {
   if (loading) return <div className="mt-32 text-center text-white">Loading...</div>;
   if (error) return <div className="mt-32 text-center text-red-500">{error}</div>;
   if (!profile) return null;
- 
-
   return (
       <main className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-20">
         <div className="max-w-6xl mx-auto">
-          
           <div className="mb-10">
             <h1 className="text-4xl font-bold mb-2">Edit Profile</h1>
             <div className="w-32 h-1 bg-[#F79B72] rounded" />
           </div>
-          
           <div className="flex flex-col md:flex-row gap-10 bg-blend-multiply bg-gray-800 rounded-2xl shadow-xl p-8 relative">
-            
             <div className="md:w-1/3 flex flex-col items-center">
               <div className="relative mb-6">
                 <div className="w-64 h-64 rounded-full border-4 border-[#F79B72] flex items-center justify-center overflow-hidden bg-gray-700">
@@ -187,10 +160,10 @@ export default function EditProfilePage() {
                 <button
                   type="button"
                   onClick={() => document.getElementById("profileInput")?.click()}
-                  className="absolute bottom-4 right-4 bg-[#F79B72] text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-[#F3FBFD] transition-all"
+                  className="absolute cursor-pointer bottom-4 right-4 bg-[#F79B72] text-black w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-[#F3FBFD] transition-all"
                   aria-label="Upload profile picture"
                 >
-                  <CameraIcon className="w-6 h-6" />
+                  <CameraIcon className=" w-6 h-6" />
                 </button>
                 <input
                   id="profileInput"
@@ -209,18 +182,14 @@ export default function EditProfilePage() {
                 </div>
               )}
             </div>
-
-            
             <div className="md:w-2/3">
               {updateError && (
                 <div className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-200">
                   {updateError}
                 </div>
               )}
-
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
                   <div>
                     <label className="block text-gray-300 mb-2">First Name *</label>
                     <input
@@ -245,8 +214,6 @@ export default function EditProfilePage() {
                       placeholder="Last Name"
                     />
                   </div>
-                  
-                
                   <div>
                     <label className="block text-gray-300 mb-2">Phone Number</label>
                     <input
@@ -258,8 +225,6 @@ export default function EditProfilePage() {
                       placeholder="Phone Number"
                     />
                   </div>
-                  
-                  
                   <div>
                     <label className="block text-gray-300 mb-2">Email *</label>
                     <input
@@ -272,22 +237,6 @@ export default function EditProfilePage() {
                       placeholder="Email"
                     />
                   </div>
-                  
-                
-                  <div>
-                    <label className="block text-gray-300 mb-2">Role</label>
-                    <input
-                      type="text"
-                      name="user_type"
-                      value={formData.user_type}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F79B72] text-white"
-                      placeholder="User Type"
-                      readOnly
-                    />
-                  </div>
-                  
-                  
                   <div>
                     <label className="block text-gray-300 mb-2">New Password</label>
                     <div className="relative">
@@ -315,8 +264,6 @@ export default function EditProfilePage() {
                     </div>
                   </div>
                 </div>
-                
-                
                 <div className="flex justify-end gap-4 pt-4">
                   <button
                     type="button"
@@ -331,8 +278,6 @@ export default function EditProfilePage() {
                     buttonText={isSubmitting ? "updating..." : "Update Profile"}
                   />
                 </div>
-                
-                
                 {updateSuccess && (
                   <div className="mt-2 flex justify-end text-white font-semibold">
                     Profile updated successfully

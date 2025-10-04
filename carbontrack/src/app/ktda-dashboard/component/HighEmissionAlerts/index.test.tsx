@@ -10,8 +10,8 @@ describe('AlertModal', () => {
   });
 
   it('renders with no alerts message when alert list is empty', () => {
-    render(<AlertModal onClose={onCloseMock} alerts={[]} />);
-    expect(screen.getByText(/no factories exceeding the emission threshold/i)).toBeInTheDocument();
+    render(<AlertModal onClose={onCloseMock} alerts={[]} viewedFactories={[]} />);
+    expect(screen.getByText(/no factories are exceeding the emission threshold/i)).toBeInTheDocument();
   });
 
   it('renders a list of alert items correctly', () => {
@@ -31,26 +31,29 @@ describe('AlertModal', () => {
         teaProcessedKg: 5000,
       },
     ];
-    render(<AlertModal onClose={onCloseMock} alerts={alerts} />);
+    render(<AlertModal onClose={onCloseMock} alerts={alerts} viewedFactories={[]} />);
 
     alerts.forEach((alert) => {
       expect(screen.getByText(alert.factoryName)).toBeInTheDocument();
       expect(
         screen.getByText(
-          new RegExp(`Emission per kg tea: ${alert.emissionPerKg.toFixed(4)} \\(Target: ${alert.complianceTarget.toFixed(4)}\\)`, 'i'),
-        ),
+          new RegExp(
+            `Emission per kg of tea: ${alert.emissionPerKg.toFixed(4)} \\(Target: ${alert.complianceTarget.toFixed(4)}\\)`,
+            'i'
+          )
+        )
       ).toBeInTheDocument();
       expect(
-        screen.getByText(new RegExp(`Total emissions: ${alert.totalEmissions.toFixed(2)} kg CO₂e`, 'i')),
+        screen.getByText(new RegExp(`Total emissions: ${alert.totalEmissions.toFixed(2)} kg CO₂e`, 'i'))
       ).toBeInTheDocument();
       expect(
-        screen.getByText(new RegExp(`Tea processed: ${alert.teaProcessedKg.toFixed(2)} kg`, 'i')),
+        screen.getByText(new RegExp(`Tea processed: ${alert.teaProcessedKg.toFixed(2)} kg`, 'i'))
       ).toBeInTheDocument();
     });
   });
 
   it('calls onClose when close button is clicked', () => {
-    render(<AlertModal onClose={onCloseMock} alerts={[]} />);
+    render(<AlertModal onClose={onCloseMock} alerts={[]} viewedFactories={[]} />);
     const closeButton = screen.getByRole('button', { name: /close alert modal/i });
     fireEvent.click(closeButton);
     expect(onCloseMock).toHaveBeenCalledTimes(1);

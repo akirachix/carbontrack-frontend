@@ -33,7 +33,7 @@ const Pagination: React.FC<PaginationProps> = ({ page, totalPages, onPageChange,
   return (
     <div className="flex items-center justify-center 2xl:mt-7 2xl:gap-6 xl:mt-3 xl:gap-6 lg:mt-5 lg:gap-2">
       <button
-        className={`rounded-full p-2 ${page === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
+        className={`cursor-pointer rounded-full p-2 ${page === 1 ? "opacity-50 cursor-not-allowed" : ""}`}
         onClick={() => page > 1 && onPageChange(page - 1)}
         disabled={page === 1}
         aria-label="Previous"
@@ -67,7 +67,7 @@ const Pagination: React.FC<PaginationProps> = ({ page, totalPages, onPageChange,
         {" "}of {totalPages}
       </span>
       <button
-        className={`rounded-full p-2 ${page === totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
+        className={`cursor-pointer rounded-full p-2 ${page === totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
         onClick={() => page < totalPages && onPageChange(page + 1)}
         disabled={page === totalPages}
         aria-label="Next"

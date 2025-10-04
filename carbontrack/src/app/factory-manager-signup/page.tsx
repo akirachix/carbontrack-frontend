@@ -7,6 +7,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import Button from "../sharedComponents/Button";
 import useFetchFactories from "../hooks/useFetchFactories";
 import { useFetchSignup } from "../hooks/useFetchSignup";
+
 export default function SignupPage() {
   const router = useRouter();
   const { factories, loading, error } = useFetchFactories();

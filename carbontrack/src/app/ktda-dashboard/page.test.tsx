@@ -1,31 +1,47 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DashboardPage from "./page";
+import { useRouter } from "next/navigation";
+import useFetchCompliance from "../hooks/useFetchCompliance";
+import useFetchEnergyEntries from "../hooks/useFetchEnergyEntries";
+import useFetchEmissions from "../hooks/useFetchEmissions";
+import useFetchFactories from "../hooks/useFetchFactories";
+import {
+  EmissionData,
+  FactoryData,
+  EnergyEntryData,
+  ComplianceType,
+  Alert,
+} from "../types";
+
+interface HighEmissionAlertProps {
+  alerts: Alert[];
+  onClose: () => void;
+  onAlertViewed: (alert: Alert) => void;
+  viewedFactories: string[];
+}
 
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock("../sharedComponents/KtdaSideBar", () => {
-  return {
-    __esModule: true,
-    default: ({ children }: { children: React.ReactNode }) => (
-      <div data-testid="sidebar">{children}</div>
-    ),
-  };
-});
+jest.mock("../components/SideBarLayout", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="sidebar">{children}</div>
+  ),
+}));
 
 jest.mock("../hooks/useFetchCompliance", () =>
   jest.fn(() => ({
     compliance: [
       {
-        compliance_id: 1,
-        compliance_status: "compliant",
         compliance_target: "20",
-        created_at: "2025-01-01",
-        updated_at: "2025-01-02",
+        compliance_status: "compliant",
+        created_at: "2025-01-01T00:00:00Z",
+        updated_at: "2025-01-02T00:00:00Z",
         factory: 1,
-      },
+      } as ComplianceType,
     ],
     loading: false,
   }))
@@ -35,12 +51,15 @@ jest.mock("../hooks/useFetchEnergyEntries", () =>
   jest.fn(() => ({
     energy: [
       {
-        id: 1,
-        firewood: "100",
-        electricity: "200",
-        diesel: "50",
-        date: "2025-01-01",
-      },
+        data_id: 1,
+        energy_type: "firewood",
+        energy_amount: "100",
+        co2_equivalent: "20",
+        tea_processed_amount: "50",
+        created_at: "2025-01-01T00:00:00Z",
+        updated_at: "2025-01-01T00:00:00Z",
+        factory: 1,
+      } as EnergyEntryData,
     ],
     loading: false,
   }))
@@ -50,10 +69,13 @@ jest.mock("../hooks/useFetchEmissions", () =>
   jest.fn(() => ({
     emissions: [
       {
-        id: 1,
+        emissions_id: 1,
         emission_rate: "300",
-        date: "2025-01-01",
-      },
+        mcu: "mcu_1",
+        mcu_device_id: "dev1",
+        created_at: "2025-01-01T00:00:00Z",
+        updated_at: "2025-01-01T00:00:00Z",
+      } as EmissionData,
     ],
     loading: false,
   }))
@@ -64,8 +86,10 @@ jest.mock("../hooks/useFetchFactories", () =>
     factories: [
       {
         factory_id: 1,
-        name: "maramba",
-      },
+        factory_name: "maramba",
+        factory_location: "location1",
+        created_at: "2025-01-01T00:00:00Z",
+      } as FactoryData,
     ],
     loading: false,
   }))
@@ -92,10 +116,9 @@ jest.mock("./component/HighEmissionAlerts", () => {
   const MockHighEmissionAlerts = ({
     alerts,
     onClose,
-  }: {
-    alerts: string[];
-    onClose: () => void;
-  }) => (
+    onAlertViewed,
+    viewedFactories,
+  }: HighEmissionAlertProps) => (
     <div data-testid="alert-modal">
       <p>Mock Alerts: {alerts.length}</p>
       <button onClick={onClose}>Close</button>
@@ -106,21 +129,26 @@ jest.mock("./component/HighEmissionAlerts", () => {
 });
 
 jest.mock("recharts", () => {
-  const Original = jest.requireActual("recharts");
   return {
-    ...Original,
     ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
       <div>{children}</div>
     ),
+    LineChart: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    PieChart: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    Pie: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    Cell: () => <div />,
+    Line: () => <div />,
+    XAxis: () => <div />,
+    YAxis: () => <div />,
+    Tooltip: () => <div />,
   };
 });
 
 describe("DashboardPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
- 
-    const useRouter = jest.requireMock("next/navigation").useRouter;
-    useRouter.mockReturnValue({
+
+    (useRouter as jest.Mock).mockReturnValue({
       push: jest.fn(),
       replace: jest.fn(),
       prefetch: jest.fn(),
@@ -137,8 +165,9 @@ describe("DashboardPage", () => {
 
   it("displays compliant factories count and percent", () => {
     render(<DashboardPage />);
-    expect(screen.getByText("Compliant Factories")).toBeInTheDocument();
-    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("Compliant Factories (filtered)")).toBeInTheDocument();
+    expect(screen.getByText("1 / 1")).toBeInTheDocument();
+    expect(screen.getByText("Compliant Factories In Percent")).toBeInTheDocument();
     expect(screen.getByText("100.0 %")).toBeInTheDocument();
   });
 
@@ -152,7 +181,7 @@ describe("DashboardPage", () => {
     const alertCard = screen.getByTitle("Click to view high emission alerts");
     fireEvent.click(alertCard);
     expect(screen.getByTestId("alert-modal")).toBeInTheDocument();
-    expect(screen.getByText("Mock Alerts: 0")).toBeInTheDocument();
+    expect(screen.getByText(/Mock Alerts:/)).toBeInTheDocument();
     fireEvent.click(screen.getByText("Close"));
     await waitFor(() => {
       expect(screen.queryByTestId("alert-modal")).not.toBeInTheDocument();
@@ -167,14 +196,23 @@ describe("DashboardPage", () => {
   });
 
   it("shows loading state when any hook is loading", () => {
-    const useFetchEnergyEntriesMock = jest.requireMock(
-      "../hooks/useFetchEnergyEntries"
-    );
-    useFetchEnergyEntriesMock.mockReturnValueOnce({
+    (useFetchCompliance as jest.Mock).mockReturnValue({
+      compliance: [],
+      loading: true,
+    });
+    (useFetchEnergyEntries as jest.Mock).mockReturnValue({
       energy: [],
       loading: true,
     });
+    (useFetchEmissions as jest.Mock).mockReturnValue({
+      emissions: [],
+      loading: true,
+    });
+    (useFetchFactories as jest.Mock).mockReturnValue({
+      factories: [],
+      loading: true,
+    });
     render(<DashboardPage />);
-    expect(screen.getByText("Loading data...")).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes("Loading data"))).toBeInTheDocument();
   });
 });

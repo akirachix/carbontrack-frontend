@@ -13,9 +13,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: "Carbon Track",
   description: "Real-time CO2 monitoring web portal for KTDA tea factories",
-  // icons: {
-  //   icon: '/favicon.ico',
-  // },
+
 };
 export default function RootLayout({
   children,

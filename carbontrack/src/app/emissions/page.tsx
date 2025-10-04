@@ -4,11 +4,20 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useEmissionsData } from '../hooks/useFetchEmissionData';
 import { blendColors } from '../utils/fetchEmissionData';
 import SidebarLayout from '../components/SideBarLayout';
-import { IoPersonOutline, IoSettingsOutline } from 'react-icons/io5';
-import Link from 'next/link';
 import Calendar from '../sharedComponents/Calendar';
+
 export default function EmissionsHeatmapPage() {
-    const { factoryEmissions, loading, error, selectedDate, setSelectedDate, noDataForDate } = useEmissionsData();
+    const {
+        factoryEmissions,
+        loading,
+        error,
+        selectedDate,
+        setSelectedDate,
+        filterType,
+        setFilterType,
+        noDataForDate
+    } = useEmissionsData();
+
     const totalBoxes = 67;
     const columns = 10;
     const rows = Math.ceil(totalBoxes / columns);
@@ -69,26 +78,18 @@ export default function EmissionsHeatmapPage() {
         { color: colors.low, label: `≥${(avgEmission * 0.5).toFixed(0)} kg/s`, text: "Low Emissions" },
         { color: colors.zero, label: "0 kg/s", text: "No Emissions" },
     ];
-    const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
+
     return (
         <SidebarLayout>
             <div className="flex flex-col items-center min-h-[calc(100vh-60px)] p-10">
-               
                 <div className="font-bold 2xl:text-[48px] xl:text-[40px] lg:text-[19px] 2xl:ml-0 xl:ml-0 lg:ml-12 2xl:mb-[15px] xl:mb-[10px] lg:mb-[0px] tracking-wide w-full">Factory Emissions</div>
                 <div className="bg-[#161C22] text-white rounded-[18px] shadow-[0_2px_24px_#0003] 2xl:p-[36px_40px] xl:p-[10px_10px] lg:p-[0px_0px] flex flex-col w-full 2xl:max-w-screen-2xl xl:max-w-screen-xl lg:max-w-screen-0.5xl 2xl:mt-10 xl:mt-1 lg:mt-0">
                     <div className="2xl:mb-6 xl:mb-1 lg:mb-0 2xl:ml-0 xl:ml-0 lg:ml-5 2xl:pt-0 xl:pt-0 lg:pt-0.5  flex items-center">
                         <Calendar
-                            selectedDate={selectedDateObj}
-                            setSelectedDate={(date) => {
-                                if (date) {
-                                    const yyyy = date.getFullYear();
-                                    const mm = String(date.getMonth() + 1).padStart(2, '0');
-                                    const dd = String(date.getDate()).padStart(2, '0');
-                                    setSelectedDate(`${yyyy}-${mm}-${dd}`);
-                                } else {
-                                    setSelectedDate('');
-                                }
-                            }}
+                            selectedDate={selectedDate}
+                            setSelectedDate={setSelectedDate}
+                            filterType={filterType}
+                            setFilterType={setFilterType}
                         />
                     </div>
                     {noDataForDate && <div className="2xl:mt-2 xl:mt-2 lg:mt-0 text-sm text-yellow-300">No emissions data available for the selected date</div>}
