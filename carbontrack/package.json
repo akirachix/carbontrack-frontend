@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@heroui/react": "^2.8.4",
+    "jspdf": "^3.0.3",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.544.0",
     "mqtt": "^5.14.1",
     "next": "^15.5.3",

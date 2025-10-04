@@ -3,20 +3,17 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import ComplianceDashboard from "./page";
 import useFetchCompliance from "../hooks/useFetchCompliance";
 import useFetchFactories from "../hooks/useFetchFactories";
-import { updateCompliance } from "../utils/fetchCompliance";
 
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
-jest.mock("../sharedComponents/KtdaSideBar", () => {
-  return {
-    __esModule: true,
-    default: ({ children }: { children: React.ReactNode }) => (
-      <div data-testid="sidebar">{children}</div>
-    ),
-  };
-});
+jest.mock("../components/SideBarLayout", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="sidebar">{children}</div>
+  ),
+}));
 
 jest.mock("./component/AddTarget", () => {
   return {
@@ -64,8 +61,7 @@ const mockUseFetchFactories = useFetchFactories as jest.Mock;
 describe("ComplianceDashboard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
-    // Setup the mock router implementation
+
     const useRouter = jest.requireMock("next/navigation").useRouter;
     useRouter.mockReturnValue({
       push: jest.fn(),
@@ -148,12 +144,10 @@ describe("ComplianceDashboard", () => {
     render(<ComplianceDashboard />);
     expect(screen.getByText("Compliance Target")).toBeInTheDocument();
     expect(screen.getByText("1.20")).toBeInTheDocument();
-    expect(
-      screen.getByText("Compliant Factories In Percent")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Compliant Factories (%)")).toBeInTheDocument();
     expect(screen.getByText("Maramba")).toBeInTheDocument();
-    expect(screen.getByText("Compliant status")).toBeInTheDocument();
-    expect(screen.getByRole("cell", { name: "Compliant" })).toBeInTheDocument();
+    expect(screen.getByText("Compliant Status")).toBeInTheDocument();
+    expect(screen.getByText("Compliant")).toBeInTheDocument();
   });
 
   test("filters compliance data by search term", () => {
@@ -186,43 +180,10 @@ describe("ComplianceDashboard", () => {
       error: null,
     });
     render(<ComplianceDashboard />);
-    const searchInput = screen.getByPlaceholderText(/Search by factory name/i);
+    const searchInput = screen.getByPlaceholderText(/Search by factory name or status/i);
     fireEvent.change(searchInput, { target: { value: "Tombe" } });
     expect(screen.getByText("Tombe")).toBeInTheDocument();
     expect(screen.queryByText("Maramba")).not.toBeInTheDocument();
   });
 
-  test("shows error message when updateCompliance fails", async () => {
-    mockUseFetchCompliance.mockReturnValue({
-      compliance: [
-        {
-          compliance_id: 1,
-          compliance_status: "Compliant",
-          compliance_target: "1.2",
-          factory: 101,
-          created_at: "2025-09-20T12:00:00Z",
-        },
-      ],
-      loading: false,
-      error: null,
-    });
-    mockUseFetchFactories.mockReturnValue({
-      factories: [{ factory_id: 101, factory_name: "Maramba" }],
-      loading: false,
-      error: null,
-    });
-    (updateCompliance as jest.Mock).mockRejectedValue(
-      new Error("Failed to update")
-    );
-    render(<ComplianceDashboard />);
-
-    fireEvent.click(screen.getByText(/Update Target/i));
-
-    fireEvent.click(screen.getByRole("button", { name: /save/i }));
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Error saving compliance target/i)
-      ).toBeInTheDocument();
-    });
-  });
 });

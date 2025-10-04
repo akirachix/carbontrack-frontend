@@ -5,15 +5,18 @@ import {
   ComplianceType,
   McuData
 } from '../types';
+
 type EmissionWithFactory = EmissionData & {
   factory: number;
 };
+
 export function mapFactories(factories: FactoryData[]) {
   return factories.reduce((acc, factory) => {
     acc[factory.factory_id] = factory.factory_name;
     return acc;
   }, {} as Record<number, string>);
 }
+
 export function calculateAlerts(
   filteredCompliance: ComplianceType[],
   filteredEnergy: EnergyEntryData[],
@@ -46,16 +49,18 @@ export function calculateAlerts(
     })
     .filter((element): element is NonNullable<typeof element> => element !== null);
 }
+
 export function calculateEmissionTrend(filteredEmissions: EmissionData[]) {
   const allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const emissionRateByMonth: Record<string, number> = {};
   filteredEmissions.forEach((item) => {
     const date = new Date(item.updated_at);
     const month = date.toLocaleString("default", { month: "short" });
-    emissionRateByMonth[month] = parseFloat(item.emission_rate || "0");
+    emissionRateByMonth[month] = (emissionRateByMonth[month] || 0) + parseFloat(item.emission_rate || "0");
   });
   return allMonths.map((month) => ({ month, rate: emissionRateByMonth[month] || 0 }));
 }
+
 export function calculateEnergySummary(filteredEnergy: EnergyEntryData[]) {
   return filteredEnergy.reduce(
     (acc, item) => {
@@ -69,6 +74,7 @@ export function calculateEnergySummary(filteredEnergy: EnergyEntryData[]) {
     { firewood: 0, electricity: 0, diesel: 0, total: 0 }
   );
 }
+
 export function calculateTotalEmissions(
   filteredEmissions: EmissionWithFactory[],
   filteredEnergy: EnergyEntryData[]
@@ -77,6 +83,7 @@ export function calculateTotalEmissions(
   const totalEnergyCO2Equivalent = filteredEnergy.reduce((acc, item) => acc + parseFloat(item.co2_equivalent || "0"), 0);
   return totalEmissionRate + totalEnergyCO2Equivalent;
 }
+
 export function filterByDate<Type extends { created_at?: string; updated_at?: string }>(
   data: Type[],
   selectedDate: string
@@ -90,6 +97,7 @@ export function filterByDate<Type extends { created_at?: string; updated_at?: st
     return itemDate === selectedDate;
   });
 }
+
 export function addFactoryToEmissions(
   emissions: EmissionData[],
   mcuData: McuData[]

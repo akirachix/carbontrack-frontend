@@ -50,40 +50,31 @@ describe('API Functions', () => {
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue(mockRecords),
-      } ;
-      
+      };
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await fetchRecords();
+      const result = await fetchRecords(mockFactoryId); 
 
       expect(fetch).toHaveBeenCalledWith(`/api/energy_entries?factory=${mockFactoryId}`);
       expect(mockResponse.json).toHaveBeenCalled();
       expect(result).toEqual(mockRecords);
     });
 
-    test('should throw error when factoryId is not found in localStorage', async () => {
-      localStorageMock.getItem.mockReturnValue(null);
-
-      await expect(fetchRecords()).rejects.toThrow('Factory ID not found in localStorage');
-      expect(fetch).not.toHaveBeenCalled();
-    });
-
     test('should throw error when response is not ok', async () => {
       const mockResponse = {
         ok: false,
         statusText: 'Not Found',
-      } ;
-      
+      };
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await expect(fetchRecords()).rejects.toThrow('Something went wrong: Not Found');
+      await expect(fetchRecords(mockFactoryId)).rejects.toThrow('Something went wrong: Not Found');
     });
 
     test('should throw error when fetch fails', async () => {
       const errorMessage = 'Network error';
       (fetch as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-      await expect(fetchRecords()).rejects.toThrow(`Failed to fetch records: ${errorMessage}`);
+      await expect(fetchRecords(mockFactoryId)).rejects.toThrow(`Failed to fetch records: ${errorMessage}`);
     });
   });
 
@@ -93,7 +84,7 @@ describe('API Functions', () => {
       energy_amount: '300',
       tea_processed_amount: '100',
       co2_equivalent: '150',
-      factory: mockFactoryId
+      factory: mockFactoryId,
     };
 
     test('should save record successfully', async () => {
@@ -103,12 +94,11 @@ describe('API Functions', () => {
         created_at: '2023-05-16T09:15:00',
         updated_at: '2023-05-16T09:15:00',
       };
-      
+
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue(mockSavedRecord),
-      } ;
-      
+      };
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
       const result = await saveRecord(mockNewRecord);
@@ -122,21 +112,13 @@ describe('API Functions', () => {
       expect(result).toEqual(mockSavedRecord);
     });
 
-    test('should throw error when factoryId is not found in localStorage', async () => {
-      localStorageMock.getItem.mockReturnValue(null);
-
-      await expect(saveRecord(mockNewRecord)).rejects.toThrow('Factory ID not found in localStorage');
-      expect(fetch).not.toHaveBeenCalled();
-    });
-
     test('should throw error when response is not ok', async () => {
       const errorText = 'Invalid data';
       const mockResponse = {
         ok: false,
         status: 400,
         text: jest.fn().mockResolvedValue(errorText),
-      } ;
-      
+      };
       (fetch as jest.Mock).mockResolvedValue(mockResponse);
 
       await expect(saveRecord(mockNewRecord)).rejects.toThrow(`HTTP 400: ${errorText}`);

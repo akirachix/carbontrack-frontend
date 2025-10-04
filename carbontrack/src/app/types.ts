@@ -53,3 +53,11 @@ export interface ComplianceType{
         updated_at: string;
         factory: number;
 }
+export type Alert = {
+  factoryName: string;
+  emissionPerKg: number;
+  complianceTarget: number;
+  totalEmissions: number;
+  teaProcessedKg: number;
+  timestamp?: string | Date;
+};

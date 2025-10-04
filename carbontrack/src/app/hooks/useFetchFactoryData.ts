@@ -56,14 +56,13 @@ function processEmissionData(
 
       totalEmission += energyByFactory.get(factory.factory_id) || 0;
 
-      const changePercent = Math.floor(Math.random() * 40) - 20;
+      const changePercent = totalEmission === 0 ? 0 : Math.floor(Math.random() * 40) - 20;
 
       return {
         factoryId: factory.factory_id,
         factoryName: factory.factory_name,
         totalEmission,
         changePercent,
-        
       };
     })
     .sort((a, b) => b.totalEmission - a.totalEmission);
