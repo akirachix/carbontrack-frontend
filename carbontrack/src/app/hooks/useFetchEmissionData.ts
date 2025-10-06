@@ -17,7 +17,8 @@ export function useEmissionsData() {
   const [factoryEmissions, setFactoryEmissions] = useState<FactoryEmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); 
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [filterType, setFilterType] = useState<"day" | "month" | "year">("day");
   const [noDataForDate, setNoDataForDate] = useState(false);
   const [emissions, setEmissions] = useState<EmissionData[]>([]);
   const [energyEntries, setEnergyEntries] = useState<EnergyEntryData[]>([]);
@@ -54,13 +55,27 @@ export function useEmissionsData() {
 
     let filteredEmissions = emissions;
     let filteredEnergyEntries = energyEntries;
-
+    let dateString = '';
     if (selectedDate) {
+      const yyyy = selectedDate.getFullYear();
+      if (filterType === "day") {
+        const mm = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(selectedDate.getDate()).padStart(2, '0');
+        dateString = `${yyyy}-${mm}-${dd}`;
+      } else if (filterType === "month") {
+        const mm = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        dateString = `${yyyy}-${mm}`;
+      } else if (filterType === "year") {
+        dateString = `${yyyy}`;
+      }
+    }
+
+    if (dateString) {
       filteredEmissions = emissions.filter(
-        (item) => item.created_at && item.created_at.startsWith(selectedDate)
+        (item) => item.created_at && item.created_at.startsWith(dateString)
       );
       filteredEnergyEntries = energyEntries.filter(
-        (item) => item.created_at && item.created_at.startsWith(selectedDate)
+        (item) => item.created_at && item.created_at.startsWith(dateString)
       );
       
       if (filteredEmissions.length === 0 && filteredEnergyEntries.length === 0) {
@@ -69,7 +84,7 @@ export function useEmissionsData() {
         return;
       }
     }
-    
+
     setNoDataForDate(false);
     const processedData = processEmissionData(
       filteredEmissions,
@@ -78,7 +93,7 @@ export function useEmissionsData() {
       filteredEnergyEntries
     );
     setFactoryEmissions(processedData);
-  }, [selectedDate, emissions, energyEntries, factories, mcus]);
+  }, [selectedDate, filterType, emissions, energyEntries, factories, mcus]);
 
   return {
     factoryEmissions,
@@ -86,6 +101,8 @@ export function useEmissionsData() {
     error,
     selectedDate,
     setSelectedDate,
+    filterType,
+    setFilterType,
     noDataForDate,
   };
 }

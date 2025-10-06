@@ -54,6 +54,10 @@ function ModalForm({
       setErrorMessage("Factory ID is missing.");
       return;
     }
+    if (Number(energyAmount) < 0 || Number(teaProcessedAmount) < 0) {
+      setErrorMessage("Negative numbers are not allowed.");
+      return;
+    }
 
     setIsSaving(true);
     setErrorMessage("");
@@ -140,6 +144,7 @@ function ModalForm({
             <input
               type="number"
               value={energyAmount}
+              min="0"
               onChange={(e) => setEnergyAmount(e.target.value)}
               className={formFieldClasses}
               placeholder="e.g., 500"
@@ -153,6 +158,7 @@ function ModalForm({
             <input
               type="number"
               value={teaProcessedAmount}
+              min="0"
               onChange={(e) => setTeaProcessedAmount(e.target.value)}
               className={formFieldClasses}
               placeholder="e.g., 200"

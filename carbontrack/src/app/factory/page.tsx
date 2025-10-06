@@ -1,18 +1,18 @@
-
-'use client'
+"use client"
 
 import React, { useState } from 'react';
 import useFactoryEmissions from '../hooks/useFetchFactoryData';
-import { IoPersonOutline } from 'react-icons/io5';
 import SidebarLayout from '../components/SideBarLayout';
-import Link from 'next/link';
 import Pagination from '../sharedComponents/Pagination';
+import DownloadPDFButton from '../sharedComponents/DownloadPdfButton';
 import type { FactoryEmission } from '../types';
+
 export default function FactoryEmissionLeaderboard() {
     const { factoryEmissions = [], loading, error } = useFactoryEmissions();
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
+
     const filteredEmissions = factoryEmissions.filter((factory: FactoryEmission) => {
         if (searchTerm) {
             return factory.factoryName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -23,9 +23,11 @@ export default function FactoryEmissionLeaderboard() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredEmissions.slice(indexOfFirstItem, indexOfLastItem);
+
     React.useEffect(() => {
         setCurrentPage(1);
     }, [searchTerm]);
+
     const changeInPercent = (changePercent: number) => {
         const sign = changePercent >= 0 ? '+' : '';
         const colorClass = changePercent >= 0 ? 'text-red-400' : 'text-green-400';
@@ -35,6 +37,15 @@ export default function FactoryEmissionLeaderboard() {
             </td>
         );
     };
+
+    const emissionHeaders = ["Factory", "Total Emission (kg/s)", "Change from last month"];
+    const emissionRows = filteredEmissions.map(item => [
+        item.factoryName,
+        item.totalEmission.toFixed(4),
+        (item.changePercent >= 0 ? "+" : "") + item.changePercent + "%",
+    ]);
+    const pdfSubtitle = searchTerm ? `Search: ${searchTerm}` : "";
+
     return (
         <SidebarLayout>
             <div className="p-2 min-h-screen text-white mx-auto ml-10 pt-9">
@@ -50,12 +61,20 @@ export default function FactoryEmissionLeaderboard() {
                             className="2xl:p-3 xl:p-3 lg:p-2 w-[25vw] border rounded bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2A4759]"
                         />
                     </div>
+                    <div className='2xl:ml-192 xl:ml-62 lg:ml-70'>
+                        <DownloadPDFButton
+                            headers={emissionHeaders}
+                            rows={emissionRows}
+                            filename="FactoryEmissionLeaderboard"
+                            subtitle={pdfSubtitle}
+                        />
+                    </div>
                 </div>
                 <table className="2xl:w-[80vw] xl:w-[65vw] lg:w-[75vw] table-fixed border-collapse border border-gray-700 text-left rounded-[10px]">
                     <thead>
                         <tr className="bg-[#2A4759] text-white border border-gray-700 2xl:text-[16px] xl:text-[16px] lg:text-[13px]">
                             <th className="2xl:p-5 xl:p-4 lg:p-3 w-1/3 border border-gray-700 ">Factory</th>
-                            <th className="2xl:p-5 xl:p-4 lg:p-3  w-1/3 border border-gray-700">Total Emission(kg/s)</th>
+                            <th className="2xl:p-5 xl:p-4 lg:p-3  w-1/3 border border-gray-700">Total Emission(kg)</th>
                             <th className="2xl:p-5 xl:p-4 lg:p-3  w-1/3 border border-gray-700">Change from last month</th>
                         </tr>
                     </thead>

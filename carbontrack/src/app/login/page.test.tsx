@@ -5,7 +5,6 @@ import LoginPage from './page';
 import { useLogin } from '../hooks/useFetchLogin';
 import { useRouter } from 'next/navigation';
 
-// Mocks
 jest.mock('../hooks/useFetchLogin');
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
