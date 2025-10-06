@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import useFetchCompliance from "../hooks/useFetchCompliance";
 import useFetchFactories from "../hooks/useFetchFactories";
 import Pagination from "../sharedComponents/Pagination";
@@ -23,12 +23,12 @@ interface FactoryWithCompliance {
   compliance: Compliance | null;
 }
 export default function ComplianceDashboard() {
-const {
-  compliance,
-  loading: complianceLoading,
-  error: complianceError,
-  refetch: refetchCompliance
-} = useFetchCompliance();
+  const {
+    compliance,
+    loading: complianceLoading,
+    error: complianceError,
+    refetch: refetchCompliance
+  } = useFetchCompliance();
   const {
     factories,
     loading: factoriesLoading,
@@ -44,21 +44,21 @@ const {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedCompliance, setSelectedCompliance] = useState<Compliance | null>(null);
   const isLoading = complianceLoading || factoriesLoading;
-const factoryToLatestCompliance: Record<number, Compliance> = {};
-compliance.forEach((item) => {
-  const existing = factoryToLatestCompliance[item.factory];
-  const currentItemDate = new Date(item.updated_at || item.created_at || 0);
-  const existingDate = existing
-    ? new Date(existing.updated_at || existing.created_at || 0)
-    : new Date(0);
-  if (!existing || currentItemDate > existingDate) {
-    factoryToLatestCompliance[item.factory] = item;
-  }
-});
-const factoryComplianceList: FactoryWithCompliance[] = factories.map((factory) => ({
-  factory,
-  compliance: factoryToLatestCompliance[factory.factory_id] || null,
-}));
+  const factoryToLatestCompliance: Record<number, Compliance> = {};
+  compliance.forEach((item) => {
+    const existing = factoryToLatestCompliance[item.factory];
+    const currentItemDate = new Date(item.updated_at || item.created_at || 0);
+    const existingDate = existing
+      ? new Date(existing.updated_at || existing.created_at || 0)
+      : new Date(0);
+    if (!existing || currentItemDate > existingDate) {
+      factoryToLatestCompliance[item.factory] = item;
+    }
+  });
+  const factoryComplianceList: FactoryWithCompliance[] = factories.map((factory) => ({
+    factory,
+    compliance: factoryToLatestCompliance[factory.factory_id] || null,
+  }));
   let filteredFactoryCompliance = factoryComplianceList;
   if (searchTerm) {
     const lowerTerm = searchTerm.toLowerCase();
@@ -96,18 +96,18 @@ const factoryComplianceList: FactoryWithCompliance[] = factories.map((factory) =
     setModalOpen(true);
   };
   const closeModal = () => setModalOpen(false);
-const handleSaveTarget = async (
-  complianceId: number,
-  newTarget: string,
-  factory: number
-) => {
-  await updateCompliance(complianceId, newTarget, factory);
-  await refetchCompliance();
-};
+  const handleSaveTarget = async (
+    complianceId: number,
+    newTarget: string,
+    factory: number
+  ) => {
+    await updateCompliance(complianceId, newTarget, factory);
+    await refetchCompliance();
+  };
   return (
     <SidebarLayout>
       {isLoading ? (
-      <div className="p-2 min-h-screen text-white mx-auto px-10 pt-9">
+        <div className="p-2 min-h-screen text-white mx-auto px-10 pt-9 overflow-hidden">
           <p className="text-white text-lg">Loading compliance data...</p>
         </div>
       ) : complianceError ? (
@@ -119,7 +119,7 @@ const handleSaveTarget = async (
           Factories Error: {factoriesError}
         </div>
       ) : (
-        <div className="p-2 min-h-screen text-white  mx-10 pt-9">
+        <div className="p-2 min-h-screen text-white  mx-10 pt-4 overflow-y-auto h-[100vh]">
           <h1 className="font-500 2xl:text-[48px] xl:text-[35px] lg:text-[25px] ">
             Compliance
           </h1>
@@ -156,7 +156,7 @@ const handleSaveTarget = async (
             </button>
           </div>
           <div className="overflow-x-auto">
-          <table className="min-w-full table-fixed border-collapse border border-gray-700 text-left">
+            <table className="min-w-full table-fixed border-collapse border border-gray-700 text-left">
               <thead>
                 <tr className="bg-[#2A4759] text-white border border-gray-700 2xl:text-[16px] xl:text-[16px] lg:text-[13px]">
                   <th className="2xl:p-5 xl:p-4 lg:p-3 w-1/3 border border-gray-700">Factory</th>
@@ -180,17 +180,17 @@ const handleSaveTarget = async (
                       <td className="2xl:p-5 xl:p-4 lg:p-2 font-semibold border border-gray-700 2xl:text-[15px] xl:text-[15px] lg:text-[12px]">
                         {factory.factory_name}
                       </td>
-               <td>
-  {compliance?.compliance_status ? (
-    compliance.compliance_status.toLowerCase() === "compliant" ? (
-      <span className="text-green-400">{compliance.compliance_status}</span>
-    ) : (
-      <span className="text-red-500">{compliance.compliance_status}</span>
-    )
-  ) : (
-    <span className="text-orange-400">No status</span>
-  )}
-</td>
+                      <td>
+                        {compliance?.compliance_status ? (
+                          compliance.compliance_status.toLowerCase() === "compliant" ? (
+                            <span className="text-green-400">{compliance.compliance_status}</span>
+                          ) : (
+                            <span className="text-red-500">{compliance.compliance_status}</span>
+                          )
+                        ) : (
+                          <span className="text-orange-400">No status</span>
+                        )}
+                      </td>
                       <td className="2xl:p-5 xl:p-4 lg:p-2 italic text-gray-400 border border-gray-700 2xl:text-[15px] xl:text-[15px] lg:text-[12px]">
                         {compliance
                           ? formatDate(compliance.updated_at) || formatDate(compliance.created_at)
