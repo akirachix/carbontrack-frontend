@@ -109,7 +109,6 @@ describe('useEmissionsData', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    // Use a real Date object as per the hook's API
     act(() => {
       result.current.setSelectedDate(new Date("2023-01-01T10:00:00Z"));
     });
