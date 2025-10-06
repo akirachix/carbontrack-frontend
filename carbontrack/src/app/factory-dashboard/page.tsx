@@ -55,7 +55,7 @@ export default function DashboardPage() {
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 2xl:mb-8 xl:mb-8 lg:mb-4">
               <div className="bg-slate-700 xl:p-6 lg:p-3 p-6 2xl:p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
-                <p className="text-gray-300">Today's total CO2 emissions</p>
+                <p className="text-gray-300">Today&apos;s total CO2 emissions</p>
                 <p className="text-2xl font-bold mt-2 truncate">
                   {emissionsLoading
                     ? "Loading..."
