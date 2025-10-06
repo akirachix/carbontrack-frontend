@@ -8,41 +8,14 @@ import {
 import { IoPersonOutline } from "react-icons/io5";
 import { useFetchEmission } from "../hooks/useFetchEmissions";
 import { useFetchEnergyEntries } from "../hooks/useFetchEnergyEntries";
+import { useLiveHiveMQ } from "../hooks/useLiveMQTT";
 import Link from "next/link";
 import CalendarFactory from "../sharedComponents/CalendarFactory";
 import MqttSubscriber from "../hivemq/mqtt_client";
-import mqtt from "mqtt";
 
 export default function DashboardPage() {
-  const [liveData, setLiveData] = useState<{ time: string; value: number }[]>([]);
-  useEffect(() => {
-    const MQTT_BROKER = process.env.NEXT_PUBLIC_MQTT_BROKER || "wss://broker.hivemq.com:8000/mqtt";
-    const MQTT_TOPIC = "esp32/hello";
-    const options = {
-      username: process.env.NEXT_PUBLIC_MQTT_USERNAME,
-      password: process.env.NEXT_PUBLIC_MQTT_PASSWORD,
-    };
-    const client = mqtt.connect(MQTT_BROKER, options);
-    client.on("connect", () => {
-      client.subscribe(MQTT_TOPIC);
-    });
-    client.on("message", (topic, message) => {
-      try {
-        const mqttData = JSON.parse(message.toString());
-        setLiveData((prev) => [
-          ...prev,
-          {
-            time: mqttData.timestamp || new Date().toISOString(),
-            value: parseFloat(mqttData.co2_emission_kgs),
-          },
-        ]);
-      } catch (err) {
-      }
-    });
-    return () => {
-      client.end();
-    };
-  }, []);
+  const liveData = useLiveHiveMQ();
+  
   const {
     selectedDate,
     setSelectedDate,
@@ -82,7 +55,7 @@ export default function DashboardPage() {
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 2xl:mb-8 xl:mb-8 lg:mb-4">
               <div className="bg-slate-700 xl:p-6 lg:p-3 p-6 2xl:p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
-                <p className="text-gray-300">Today’s total CO2 emissions</p>
+                <p className="text-gray-300">Today's total CO2 emissions</p>
                 <p className="text-2xl font-bold mt-2 truncate">
                   {emissionsLoading
                     ? "Loading..."

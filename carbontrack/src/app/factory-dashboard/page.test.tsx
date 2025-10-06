@@ -90,7 +90,8 @@ describe('DashboardPage Component', () => {
 
   test('displays emission data correctly', () => {
     render(<DashboardPage />);
-    expect(screen.getByText("Today’s total CO2 emissions")).toBeInTheDocument();
+    // Use straight quotes to match the actual rendered text
+    expect(screen.getByText("Today's total CO2 emissions")).toBeInTheDocument();
     expect(screen.getByText("This month total CO2 emissions")).toBeInTheDocument();
     expect(screen.getByText("Indirect Emissions")).toBeInTheDocument();
     expect(screen.getByText('0.123456 kgs')).toBeInTheDocument();

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-
 import mqtt from "mqtt";
+
 const MQTT_BROKER = process.env.NEXT_PUBLIC_MQTT_BROKER || "wss://broker.hivemq.com:8000/mqtt";
 const MQTT_TOPIC = "esp32/hello";
 export function useLiveHiveMQ() {
   const [liveData, setLiveData] = useState<{ time: string; value: number }[]>([]);
+  
   useEffect(() => {
     const options = {
       username: process.env.NEXT_PUBLIC_MQTT_USERNAME,
@@ -20,7 +21,7 @@ export function useLiveHiveMQ() {
         setLiveData((prev) => [
           ...prev,
           {
-            time: mqttData.timestamp || new Date().toISOString(),
+            time: mqttData.timestamp || new Date(),
             value: parseFloat(mqttData.co2_emission_kgs),
           },
         ]);

@@ -28,15 +28,11 @@ const mockRecords = [
 describe('RecordsTable', () => {
   it('displays records correctly', () => {
     render(<RecordsTable records={mockRecords} />);
-
-    // Header columns
     expect(screen.getByText('Energy Type')).toBeInTheDocument();
     expect(screen.getByText('Energy Amount')).toBeInTheDocument();
     expect(screen.getByText('Tea Processed')).toBeInTheDocument();
     expect(screen.getByText('Created At')).toBeInTheDocument();
     expect(screen.getByText('CO2 Equivalent')).toBeInTheDocument();
-
-    // Row values (with " kg" for processed and CO2)
     expect(screen.getByText('Electricity')).toBeInTheDocument();
     expect(screen.getByText('100')).toBeInTheDocument();
     expect(screen.getByText('50 kg')).toBeInTheDocument();
