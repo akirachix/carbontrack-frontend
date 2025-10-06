@@ -79,6 +79,7 @@ describe("ComplianceTargetModal", () => {
   });
 
   it("calls onSave with correct values when valid target entered", async () => {
+    mockOnSave.mockResolvedValueOnce(undefined);
     render(
       <ComplianceTargetModal
         complianceId={101}
@@ -95,10 +96,12 @@ describe("ComplianceTargetModal", () => {
     await waitFor(() => {
       expect(mockOnSave).toHaveBeenCalledWith(101, "2.5", 1);
     });
+    await waitFor(() => {
+      expect(screen.getByText(/Compliance target updated successfully!/i)).toBeInTheDocument();
+    });
   });
 
-  it("shows alert when invalid target is entered", () => {
-    window.alert = jest.fn();
+  it("shows error message when invalid target is entered", () => {
     render(
       <ComplianceTargetModal
         complianceId={101}
@@ -112,13 +115,10 @@ describe("ComplianceTargetModal", () => {
     const input = screen.getByPlaceholderText(/kg CO2/i);
     fireEvent.change(input, { target: { value: "abc" } });
     fireEvent.click(screen.getByText(/Set target/i));
-    expect(window.alert).toHaveBeenCalledWith(
-      "Please enter a valid numeric target."
-    );
+    expect(screen.getByText(/Please enter a valid numeric target greater than 0./i)).toBeInTheDocument();
   });
 
-  it("shows alert when onSave throws error", async () => {
-    window.alert = jest.fn();
+  it("shows error message when onSave throws error", async () => {
     mockOnSave.mockRejectedValueOnce(new Error("Save failed"));
     render(
       <ComplianceTargetModal
@@ -134,7 +134,7 @@ describe("ComplianceTargetModal", () => {
     fireEvent.change(input, { target: { value: "2.5" } });
     fireEvent.click(screen.getByText(/Set target/i));
     await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith("Error saving target: Save failed");
+      expect(screen.getByText(/Error saving target: Save failed/i)).toBeInTheDocument();
     });
   });
 });

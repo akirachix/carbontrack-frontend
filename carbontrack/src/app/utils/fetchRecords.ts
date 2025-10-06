@@ -2,15 +2,8 @@ const baseUrl = "/api/energy_entries";
 
 import { EnergyEntryData } from "../types";
 
-function getFactoryId(): number {
-  const stored = localStorage.getItem("factory");
-  if (!stored) throw new Error("Factory ID not found in localStorage");
-  return Number(stored);
-}
-
-export async function fetchRecords(): Promise<EnergyEntryData[]> {
+export async function fetchRecords(factoryId: number): Promise<EnergyEntryData[]> {
   try {
-    const factoryId = getFactoryId();
     const response = await fetch(`${baseUrl}?factory=${factoryId}`);
     if (!response.ok) {
       throw new Error("Something went wrong: " + response.statusText);
@@ -23,7 +16,9 @@ export async function fetchRecords(): Promise<EnergyEntryData[]> {
 
 export async function saveRecord(data: Omit<EnergyEntryData, "data_id" | "created_at" | "updated_at">) {
   try {
-    const factoryId = getFactoryId();
+    const stored = localStorage.getItem("factory");
+    if (!stored) throw new Error("Factory ID not found in localStorage");
+    const factoryId = Number(stored);
     const payload = { ...data, factory: factoryId };
     const response = await fetch(`${baseUrl}/`, {
       method: "POST",

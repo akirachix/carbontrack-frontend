@@ -1,18 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useFetchCompliance from "../hooks/useFetchCompliance";
 import useFetchFactories from "../hooks/useFetchFactories";
 import Pagination from "../sharedComponents/Pagination";
 import ComplianceTargetModal from "./component/AddTarget";
 import { updateCompliance } from "../utils/fetchCompliance";
 import SidebarLayout from "../components/SideBarLayout";
-
-
 interface Factory {
   factory_id: number;
   factory_name: string;
 }
-
 interface Compliance {
   compliance_id: number;
   compliance_target: string;
@@ -21,18 +18,17 @@ interface Compliance {
   updated_at?: string | null;
   created_at?: string | null;
 }
-
+interface FactoryWithCompliance {
+  factory: Factory;
+  compliance: Compliance | null;
+}
 export default function ComplianceDashboard() {
   const {
     compliance,
     loading: complianceLoading,
     error: complianceError,
-  } = useFetchCompliance() as {
-    compliance: Compliance[];
-    loading: boolean;
-    error: string | null;
-  };
-
+    refetch: refetchCompliance
+  } = useFetchCompliance();
   const {
     factories,
     loading: factoriesLoading,
@@ -42,95 +38,76 @@ export default function ComplianceDashboard() {
     loading: boolean;
     error: string | null;
   };
-
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 8;
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedCompliance, setSelectedCompliance] = useState<Compliance | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [messageType, setMessageType] = useState<"success" | "error" | null>(null);
-
   const isLoading = complianceLoading || factoriesLoading;
-
-  const factoryMap: Record<number, string> = {};
-  factories.forEach((f) => {
-    factoryMap[f.factory_id] = f.factory_name;
+  const factoryToLatestCompliance: Record<number, Compliance> = {};
+  compliance.forEach((item) => {
+    const existing = factoryToLatestCompliance[item.factory];
+    const currentItemDate = new Date(item.updated_at || item.created_at || 0);
+    const existingDate = existing
+      ? new Date(existing.updated_at || existing.created_at || 0)
+      : new Date(0);
+    if (!existing || currentItemDate > existingDate) {
+      factoryToLatestCompliance[item.factory] = item;
+    }
   });
-
-  let filteredCompliance = compliance;
-
+  const factoryComplianceList: FactoryWithCompliance[] = factories.map((factory) => ({
+    factory,
+    compliance: factoryToLatestCompliance[factory.factory_id] || null,
+  }));
+  let filteredFactoryCompliance = factoryComplianceList;
   if (searchTerm) {
     const lowerTerm = searchTerm.toLowerCase();
-    filteredCompliance = filteredCompliance.filter((item) => {
-      const factoryName = factoryMap[item.factory] || "";
-      const status = item.compliance_status?.toLowerCase() || "";
-      return (
-        factoryName.toLowerCase().includes(lowerTerm) ||
-        status.includes(lowerTerm)
-      );
+    filteredFactoryCompliance = filteredFactoryCompliance.filter(({ factory, compliance }) => {
+      const matchesFactory = factory.factory_name.toLowerCase().includes(lowerTerm);
+      const matchesStatus = compliance?.compliance_status?.toLowerCase().includes(lowerTerm) || false;
+      return matchesFactory || matchesStatus;
     });
   }
-
-  const totalPages = Math.ceil(filteredCompliance.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredFactoryCompliance.length / itemsPerPage);
   const start = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredCompliance.slice(start, start + itemsPerPage);
-
-  const complianceTarget =
-    compliance.length > 0 ? compliance[0].compliance_target : "1.08";
-
-  const totalBreach = filteredCompliance.filter(
-    (c) => c.compliance_status?.toLowerCase() !== "compliant"
+  const paginatedData = filteredFactoryCompliance.slice(start, start + itemsPerPage);
+  const totalBreach = filteredFactoryCompliance.filter(
+    ({ compliance }) => compliance?.compliance_status?.toLowerCase() !== "compliant"
   ).length;
-
-  const compliantPercent = filteredCompliance.length
-    ? Math.round(
-      (filteredCompliance.filter(
-        (c) => c.compliance_status?.toLowerCase() === "compliant"
-      ).length /
-        filteredCompliance.length) *
-      100
-    )
+  const compliantCount = filteredFactoryCompliance.filter(
+    ({ compliance }) => compliance?.compliance_status?.toLowerCase() === "compliant"
+  ).length;
+  const compliantPercent = filteredFactoryCompliance.length
+    ? Math.round((compliantCount / filteredFactoryCompliance.length) * 100)
     : 0;
-
+  const complianceTarget = compliance.length > 0 ? compliance[0].compliance_target : "1.08";
   const formatDate = (dateString?: string | null) =>
-    dateString ? dateString.slice(0, 10) : "";
-
+    dateString ? dateString.split("T")[0] : "";
   const openModal = () => {
     if (compliance.length > 0) {
       setSelectedCompliance(compliance[0]);
+    } else if (factories.length > 0) {
+      setSelectedCompliance({
+        compliance_id: 0,
+        compliance_target: "1.08",
+        factory: factories[0].factory_id,
+      } as Compliance);
     }
     setModalOpen(true);
   };
-
   const closeModal = () => setModalOpen(false);
-
   const handleSaveTarget = async (
     complianceId: number,
     newTarget: string,
     factory: number
   ) => {
-    try {
-      await updateCompliance(complianceId, newTarget, factory);
-      setMessage("Compliance target updated successfully!");
-      setMessageType("success");
-      closeModal();
-      setTimeout(() => {
-        setMessage(null);
-        setMessageType(null);
-      }, 2000);
-    } catch (error) {
-      setMessage(
-        "Error saving compliance target: " + (error as Error).message
-      );
-      setMessageType("error");
-    }
+    await updateCompliance(complianceId, newTarget, factory);
+    await refetchCompliance();
   };
-
   return (
     <SidebarLayout>
       {isLoading ? (
-        <div className="flex items-center justify-center h-screen">
+        <div className="p-2 min-h-screen text-white mx-auto px-10 pt-9 overflow-hidden">
           <p className="text-white text-lg">Loading compliance data...</p>
         </div>
       ) : complianceError ? (
@@ -142,96 +119,82 @@ export default function ComplianceDashboard() {
           Factories Error: {factoriesError}
         </div>
       ) : (
-        <div className="p-4 mx-auto min-h-screen text-white w-[80vw] ml-15 xl:w-[72vw]">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 space-y-4 md:space-y-0 lg:mb-1">
-            <div>
-              <h2 className="text-[2rem] font-bold">Compliance</h2>
-            </div>
-          </div>
-          {message && (
-            <div
-              className={`mb-4 p-3 rounded text-center max-w-lg mx-auto ${messageType === "success" ? "text-green-600" : "bg-red-600"
-                }`}
-            >
-              {message}
-            </div>
-          )}
+        <div className="p-2 min-h-screen text-white  mx-10 pt-4 overflow-y-auto h-[100vh]">
+          <h1 className="font-500 2xl:text-[48px] xl:text-[35px] lg:text-[25px] ">
+            Compliance
+          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div className="p-4 bg-gray-800 rounded h-30 text-center lg:h-22">
-              <p className="text-[1.5em] mb-1 lg:text-[18px]">Compliance Target</p>
-              <p className="font-bold text-[2em] lg:text-[20px]">{complianceTarget}</p>
+            <div className="p-4 bg-gray-800 rounded text-center">
+              <p className="2xl:text-[18px] xl:text-[16px] lg:text-[14px] mb-1">Compliance Target</p>
+              <p className="font-bold 2xl:text-[20px] xl:text-[18px] lg:text-[16px]">{complianceTarget}</p>
             </div>
-            <div className="p-4 bg-gray-800 rounded text-center xl:h-22 lg:h-22">
-              <p className="text-sm mb-1 text-[1.5em] lg:text-[18px]">
-                Total compliance breach
-              </p>
-              <p className="font-bold text-[2em] lg:text-[20px]">{totalBreach} total</p>
+            <div className="p-4 bg-gray-800 rounded text-center">
+              <p className="2xl:text-[18px] xl:text-[16px] lg:text-[14px] mb-1">Total compliance breach</p>
+              <p className="font-bold 2xl:text-[20px] xl:text-[18px] lg:text-[16px]">{totalBreach}</p>
             </div>
-            <div className="p-4 bg-gray-800 rounded text-center xl:h-22 lg:h-22">
-              <p className="text-sm mb-1 text-[1.5em] xl:text-[1em] lg:text-[20px]">
-                Compliant Factories In Percent
-              </p>
-              <p className="font-bold text-[2em]">{compliantPercent}%</p>
+            <div className="p-4 bg-gray-800 rounded text-center">
+              <p className="2xl:text-[18px] xl:text-[16px] lg:text-[14px] mb-1">Compliant Factories (%)</p>
+              <p className="font-bold 2xl:text-[20px] xl:text-[18px] lg:text-[16px]">{compliantPercent}%</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center mb-4 space-y-3 sm:space-y-0 sm:space-x-4 justify-between">
             <input
               type="text"
-              placeholder="Search by factory name, status"
+              placeholder="Search by factory name or status"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none w-[30%]"
+              className="2xl:p-3 xl:p-3 lg:p-2 w-full sm:w-[25vw] border rounded bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2A4759]"
             />
             <button
               onClick={openModal}
-              className="bg-[#2A4759] px-4 py-2 rounded font-semibold hover:bg-[#C76C4C] transition"
+              className="bg-[#2A4759] cursor-pointer px-4 py-2 rounded font-semibold hover:bg-[#C76C4C] transition"
             >
               Update Target
             </button>
           </div>
-          <div className="overflow-x-auto border border-gray-700 rounded">
-            <table className="min-w-full text-left border-collapse border border-gray-700 lg:h-[60vh]">
-              <thead className="bg-[#2A4759] text-white">
-                <tr>
-                  <th className="p-3 border border-gray-700 w-1/3 xl:pb-2">Factory</th>
-                  <th className="p-3 border border-gray-700 w-1/3">
-                    Compliant status
-                  </th>
-                  <th className="p-3 border border-gray-700 w-1/3">
-                    Last Status Change
-                  </th>
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-fixed border-collapse border border-gray-700 text-left">
+              <thead>
+                <tr className="bg-[#2A4759] text-white border border-gray-700 2xl:text-[16px] xl:text-[16px] lg:text-[13px]">
+                  <th className="2xl:p-5 xl:p-4 lg:p-3 w-1/3 border border-gray-700">Factory</th>
+                  <th className="2xl:p-5 xl:p-4 lg:p-3 w-1/3 border border-gray-700">Compliant Status</th>
+                  <th className="2xl:p-5 xl:p-4 lg:p-3 w-1/3 border border-gray-700">Last Status Change</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedData.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="p-4 text-center ">
+                    <td colSpan={3} className="2xl:p-5 xl:p-4 lg:p-3 text-center border border-gray-700">
                       No data found
                     </td>
                   </tr>
                 ) : (
-                  paginatedData.map((item) => (
+                  paginatedData.map(({ factory, compliance }, index) => (
                     <tr
-                      key={item.compliance_id}
-                      className="bg-gray-800 even:bg-gray-900 border border-gray-700"
+                      key={factory.factory_id}
+                      className={`border border-gray-700 ${index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-900'}`}
                     >
-                      <td className="p-3 font-semibold border border-gray-700">
-                        {factoryMap[item.factory] || `Factory ${item.factory}`}
+                      <td className="2xl:p-5 xl:p-4 lg:p-2 font-semibold border border-gray-700 2xl:text-[15px] xl:text-[15px] lg:text-[12px]">
+                        {factory.factory_name}
                       </td>
-                      <td
-                        className={`p-3 border border-gray-700 ${item.compliance_status?.toLowerCase() === "compliant"
-                            ? "text-white"
-                            : "text-orange-600"
-                          }`}
-                      >
-                        {item.compliance_status}
+                      <td>
+                        {compliance?.compliance_status ? (
+                          compliance.compliance_status.toLowerCase() === "compliant" ? (
+                            <span className="text-green-400">{compliance.compliance_status}</span>
+                          ) : (
+                            <span className="text-red-500">{compliance.compliance_status}</span>
+                          )
+                        ) : (
+                          <span className="text-orange-400">No status</span>
+                        )}
                       </td>
-                      <td className="p-3 border border-gray-700 italic text-gray-400 ">
-                        {formatDate(item.updated_at) ||
-                          formatDate(item.created_at)}
+                      <td className="2xl:p-5 xl:p-4 lg:p-2 italic text-gray-400 border border-gray-700 2xl:text-[15px] xl:text-[15px] lg:text-[12px]">
+                        {compliance
+                          ? formatDate(compliance.updated_at) || formatDate(compliance.created_at)
+                          : "No status changed"}
                       </td>
                     </tr>
                   ))
@@ -239,14 +202,16 @@ export default function ComplianceDashboard() {
               </tbody>
             </table>
           </div>
-          <Pagination
-            page={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => {
-              if (page >= 1 && page <= totalPages) setCurrentPage(page);
-            }}
-            isDark
-          />
+          <div className="mt-4">
+            <Pagination
+              page={currentPage}
+              totalPages={totalPages}
+              isDark
+              onPageChange={(page) => {
+                if (page >= 1 && page <= totalPages) setCurrentPage(page);
+              }}
+            />
+          </div>
           {modalOpen && selectedCompliance && (
             <ComplianceTargetModal
               complianceId={selectedCompliance.compliance_id}
